@@ -443,7 +443,7 @@ window.openCurtain=function(){
 };
 
 // TYPEWRITER
-const STORY_RAW='אתמול בלילה<C> תחת אור הירח<C> נגנבה מפת האוצרות העתיקה של שמורת עדן הסודית<P>\n\nהמפה מובילה אל מיקומי האוצרות הטמונים ברחבי השמורה<C> ביניהם<D>האבן הקסומה שמגינה על השמורה<P>\n\nמפת האוצרות הוסתרה במקום סודי בלב השמורה<D>מקום שרק פקח השמורה יודע עליו<P>\n\nהבוקר גילה הפקח שהמפה נגנבה<C> והוא צריך את עזרתם של שני בלשים צעירים ומבריקים כדי לפתור את התעלומה<D>להבין מי מהחיות גנב את המפה ואיך<C> ולהשיב אותה אל פקח השמורה<P>\n\nיובל<C> מוכנה לבחור בלש שותף כדי לעבוד איתך על החקירה המסתורית<Q>';
+const STORY_RAW='אתמול בלילה<C> תחת אור הירח<C> נגנבה מפת האוצרות העתיקה של שמורת עדן הסודית<P> המפה מובילה אל מיקומי האוצרות הטמונים ברחבי השמורה<C> ביניהם<D>האבן הקסומה שמגינה על השמורה<P> מפת האוצרות הוסתרה במקום סודי בלב השמורה<D>מקום שרק פקח השמורה יודע עליו<P>\n\nהבוקר גילה הפקח שהמפה נגנבה<C> והוא צריך את עזרתם של שני בלשים צעירים ומבריקים כדי לפתור את התעלומה<D>להבין מי מהחיות גנב את המפה ואיך<C> ולהשיב אותה אל פקח השמורה<P>\n\nיובל<C> מוכנה לבחור בלש שותף כדי לעבוד איתך על החקירה המסתורית<Q>';
 
 function proc(r){return r.replace(/<C>/g,'<span class="sm">,</span>').replace(/<D>/g,' <span class="sm">—</span> ').replace(/<P>/g,'<span class="sm">.</span>').replace(/<Q>/g,'<span class="sm">?</span>');}
 function rawIdx(raw,ts){let s=0,r=0;const tags=['<C>','<D>','<P>','<Q>'];while(r<raw.length&&s<ts){let f=false;for(const t of tags){if(raw.startsWith(t,r)){s+=t==='<D>'?3:1;r+=t.length;f=true;break;}}if(!f){s++;r++;}}return r;}
@@ -468,32 +468,40 @@ function startTypewriter(){
 
 // ROLES
 window.selectRole=async function(role){
-  const snap=await get(ref(db,`sessions/${SID}/players/${role}`));
-  if(snap.exists()&&snap.val().connected){showNotif('⛔ תפקיד זה כבר נלקח!');return;}
+  try {
+    const snap=await get(ref(db,`sessions/${SID}/players/${role}`));
+    if(snap.exists()&&snap.val().connected){showNotif('⛔ תפקיד זה כבר נלקח!');return;}
+  } catch(e){ /* continue even if offline check fails */ }
+
   document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('sel'));
   document.getElementById(`rb-${role}`).classList.add('sel');
   myRole=role;
+
   const wrap=document.getElementById('partner-wrap');
+  const confirmBtn=document.getElementById('btn-confirm');
+
   if(role==='itay'){
     wrap.classList.add('show');
-    // Show confirm only after name entered — handled by onPartnerName
-    setTimeout(()=>document.getElementById('partner-name').focus(),100);
+    confirmBtn.classList.remove('vis'); // wait for name
+    setTimeout(()=>document.getElementById('partner-name').focus(),150);
   } else {
     wrap.classList.remove('show');
-    document.getElementById('btn-confirm').classList.add('vis');
+    confirmBtn.classList.add('vis');
   }
 };
 
 window.onPartnerName=function(){
   const val=document.getElementById('partner-name').value.trim();
-  // Update button label live
-  const rb=document.getElementById('rb-itay');
-  rb.childNodes[rb.childNodes.length-1].textContent=val||'בלש שותף';
-  document.getElementById('btn-confirm').className='police-confirm'+(val?' vis':'');
+  const confirmBtn=document.getElementById('btn-confirm');
+  if(val){
+    confirmBtn.classList.add('vis');
+  } else {
+    confirmBtn.classList.remove('vis');
+  }
 };
 
 window.confirmRole=async function(){
-  if(!myRole) return;
+  if(!myRole){showNotif('⛔ נא לבחור תפקיד');return;}
   if(myRole==='itay'){
     const val=document.getElementById('partner-name').value.trim();
     if(!val){showNotif('⛔ נא להכניס שם');return;}
@@ -509,9 +517,6 @@ function listenForPlayers(){
     if(snap.exists()){
       partnerName=snap.val();
       document.getElementById('pname-itay').textContent=partnerName;
-      // Update button carefully (keep ::before)
-      const rb=document.getElementById('rb-itay');
-      rb.childNodes[rb.childNodes.length-1].textContent=partnerName;
     }
   });
   onValue(ref(db,`sessions/${SID}/players`),snap=>{
