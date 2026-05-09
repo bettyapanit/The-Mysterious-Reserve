@@ -5,8 +5,8 @@
   "start_url": "/",
   "display": "fullscreen",
   "orientation": "portrait",
-  "background_color": "#0a1508",
-  "theme_color": "#1e4020",
+  "background_color": "#000000",
+  "theme_color": "#0d1f0f",
   "lang": "he",
   "dir": "rtl",
   "icons": [
