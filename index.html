@@ -10,136 +10,92 @@
 :root{
   --jd:#0a1508;--j1:#0d1f0f;--j2:#142b16;--j3:#1e4020;--j4:#2d6a30;
   --gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#8a6820;--cream:#f5edd8;--dim:#a8c4aa;
-  --police:#0a0f1a;--police2:#0d1520;--police3:#1a2540;--green-screen:#00ff41;--green-dim:#00a82a;
+  --gs:#00ff41;--gd:#00a82a;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;background:#000;color:var(--cream);}
-
-.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .6s;z-index:10;overflow-y:auto;}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s;z-index:10;overflow-y:auto;}
 .screen.active{opacity:1;pointer-events:all;}
 
-/* ══════════════════════════════
-   CURTAIN / INTRO
-══════════════════════════════ */
+/* ══ CURTAIN ══ */
 #s-curtain{background:#000;z-index:50;overflow:hidden;}
 
-.curt-bg{
-  position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 40%,#0f2e10 0%,#060e06 60%,#000 100%);
-}
-
-/* Jungle image peek behind curtain */
 .curt-jungle{
   position:absolute;inset:0;
   background:url('jungle.jpg') center center/cover no-repeat;
-  opacity:0;transition:opacity 1.2s ease;
-  filter:brightness(0.4) saturate(0.7);
+  filter:brightness(.35) saturate(.6);
+  opacity:0;transition:opacity 1.4s ease;
 }
 .curt-jungle.show{opacity:1;}
 
-/* Left and right curtain panels */
+/* Branch panels */
 .curt-l,.curt-r{
-  position:absolute;top:0;bottom:0;width:52%;
-  z-index:20;overflow:hidden;
-  transition:transform 1.6s cubic-bezier(.77,0,.18,1);
+  position:absolute;top:0;bottom:0;
+  width:57%;z-index:20;overflow:hidden;
+  transition:transform 1.9s cubic-bezier(.77,0,.18,1);
 }
 .curt-l{left:0;transform:translateX(0);}
 .curt-r{right:0;transform:translateX(0);}
-.curt-l.open{transform:translateX(-102%);}
-.curt-r.open{transform:translateX(102%);}
+.curt-l.open{transform:translateX(-103%);}
+.curt-r.open{transform:translateX(103%);}
 
-/* Rich jungle curtain texture using layered backgrounds */
-.curt-l{
-  background:
-    linear-gradient(170deg,#071a08 0%,#0d2e0f 30%,#071408 60%,#050f06 100%);
-}
-.curt-r{
-  background:
-    linear-gradient(190deg,#050f06 0%,#071408 30%,#0d2e0f 60%,#071a08 100%);
-}
+.curt-svg{position:absolute;inset:0;width:100%;height:100%;}
 
-/* SVG leaf overlays on curtains */
-.curt-l::before{
-  content:'';position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 80px 120px at 80% 15%,rgba(15,60,18,.9) 0%,transparent 100%),
-    radial-gradient(ellipse 60px 100px at 30% 35%,rgba(10,45,14,.8) 0%,transparent 100%),
-    radial-gradient(ellipse 100px 80px at 65% 55%,rgba(12,50,16,.7) 0%,transparent 100%),
-    radial-gradient(ellipse 70px 110px at 20% 75%,rgba(8,40,12,.9) 0%,transparent 100%),
-    radial-gradient(ellipse 50px 90px at 85% 85%,rgba(14,55,18,.8) 0%,transparent 100%);
-}
-.curt-r::before{
-  content:'';position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 80px 120px at 20% 10%,rgba(15,60,18,.9) 0%,transparent 100%),
-    radial-gradient(ellipse 60px 100px at 70% 30%,rgba(10,45,14,.8) 0%,transparent 100%),
-    radial-gradient(ellipse 100px 80px at 35% 58%,rgba(12,50,16,.7) 0%,transparent 100%),
-    radial-gradient(ellipse 70px 110px at 80% 72%,rgba(8,40,12,.9) 0%,transparent 100%),
-    radial-gradient(ellipse 50px 90px at 15% 88%,rgba(14,55,18,.8) 0%,transparent 100%);
-}
-
-/* Leaf emoji on curtains */
-.curt-leaves{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-.curt-leaves span{position:absolute;font-size:2rem;opacity:.4;filter:drop-shadow(0 0 4px rgba(0,80,0,.5));}
-
-/* Center title on curtain */
+/* Title over curtain */
 .curt-title{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  z-index:30;text-align:center;width:85%;pointer-events:none;
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:30;text-align:center;width:90%;
+  pointer-events:none;
 }
 .curt-title h1{
   font-family:'Secular One',sans-serif;
-  font-size:clamp(2.2rem,9vw,5rem);
+  font-size:clamp(2rem,7vw,4rem);
+  white-space:nowrap;
   color:var(--cream);
-  text-shadow:0 0 40px rgba(201,168,76,.6),0 2px 30px rgba(0,0,0,.9);
-  line-height:1.15;opacity:0;transition:opacity 1s ease;
+  text-shadow:0 0 40px rgba(201,168,76,.6),0 2px 30px rgba(0,0,0,.95);
+  opacity:0;transition:opacity 1s ease .2s;
 }
 .curt-title h1.show{opacity:1;}
 
 /* Fireflies */
-.ff-c{position:absolute;width:3px;height:3px;background:var(--gold-l);border-radius:50%;
-  box-shadow:0 0 5px 2px rgba(240,204,110,.5);z-index:25;animation:ffloat linear infinite;}
-@keyframes ffloat{0%{opacity:0;transform:translate(0,0)}15%{opacity:1}85%{opacity:.7}100%{opacity:0;transform:translate(var(--tx),var(--ty))}}
+.ff{position:absolute;width:3px;height:3px;background:var(--gold-l);border-radius:50%;
+  box-shadow:0 0 5px 2px rgba(240,204,110,.4);z-index:25;animation:ffloat linear infinite;}
+@keyframes ffloat{0%{opacity:0;transform:translate(0,0)}15%{opacity:1}85%{opacity:.6}100%{opacity:0;transform:translate(var(--tx),var(--ty))}}
 
-/* ══════════════════════════════
-   INTRO (story screen)
-══════════════════════════════ */
+/* ══ INTRO ══ */
 #s-intro{
   background:url('jungle.jpg') center center/cover no-repeat;
   overflow:hidden;
 }
-#s-intro::before{
-  content:'';position:absolute;inset:0;
-  background:rgba(0,0,0,.72);
-}
+#s-intro::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.75);}
 
 .intro-inner{
   position:relative;z-index:5;
-  text-align:center;padding:2rem 1.5rem;
-  max-width:640px;width:100%;
+  text-align:center;padding:1.5rem 1.5rem 1rem;
+  max-width:660px;width:100%;
 }
 
 .intro-title-main{
   font-family:'Secular One',sans-serif;
-  font-size:clamp(2.4rem,9vw,4.8rem);
+  font-size:clamp(1.8rem,6vw,3.2rem);
+  white-space:nowrap;
   color:var(--cream);
   text-shadow:0 0 30px rgba(201,168,76,.4);
-  margin-bottom:2rem;
-  line-height:1.1;
+  margin-bottom:1.5rem;
 }
 
-/* Typewriter story */
 .intro-story{
   font-family:'Special Elite',serif;
-  font-size:clamp(1rem,2.8vw,1.25rem);
-  color:var(--cream);
-  line-height:2;
-  margin-bottom:2rem;
+  font-size:clamp(1.05rem,2.6vw,1.22rem);
+  color:#e8dcc8;
+  line-height:1.8;
+  margin-bottom:1.6rem;
   text-align:right;
-  min-height:12em;
+  min-height:10em;
 }
 .tw-cursor{
-  display:inline-block;width:2px;height:1.1em;
+  display:inline-block;width:2px;height:1em;
   background:var(--gold-l);vertical-align:middle;
   animation:blink .65s ease infinite;
 }
@@ -147,325 +103,300 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 
 .btn-gold{
   font-family:'Secular One',sans-serif;font-size:1rem;
-  padding:.85rem 2rem;
+  padding:.8rem 1.8rem;
   background:linear-gradient(135deg,var(--gold-d),var(--gold));
   color:var(--jd);border:none;border-radius:6px;cursor:pointer;
   transition:transform .2s,box-shadow .2s;
-  box-shadow:0 4px 20px rgba(201,168,76,.3);
+  box-shadow:0 4px 20px rgba(201,168,76,.25);
 }
-.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,.5);}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,.45);}
 .btn-start{opacity:0;transition:opacity .6s;}
 .btn-start.show{opacity:1;}
 
-/* ══════════════════════════════
-   POLICE TERMINAL — ROLES
-══════════════════════════════ */
-#s-roles{
-  background:var(--police);
-  font-family:'Special Elite',serif;
-}
-
-/* CRT scanlines effect */
+/* ══ POLICE TERMINAL ══ */
+#s-roles{background:#0a0f1a;font-family:'Special Elite',serif;}
 #s-roles::before{
   content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.03) 2px,rgba(0,255,65,.03) 4px);
-  pointer-events:none;z-index:1;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.025) 2px,rgba(0,255,65,.025) 4px);
+  pointer-events:none;
 }
-/* CRT flicker */
 #s-roles::after{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 50%,transparent 60%,rgba(0,0,0,.4) 100%);
-  pointer-events:none;z-index:1;
+  background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.5) 100%);
+  pointer-events:none;
 }
 
-.police-header{
-  position:relative;z-index:5;
-  text-align:center;margin-bottom:1.5rem;
+.police-wrap{position:relative;z-index:5;width:100%;max-width:440px;padding:0 1.2rem;}
+.police-hdr{text-align:center;margin-bottom:1.4rem;}
+.police-logo{font-size:.65rem;letter-spacing:.22em;color:var(--gd);margin-bottom:.3rem;}
+.police-ttl{
+  font-size:clamp(1rem,4vw,1.4rem);color:var(--gs);
+  letter-spacing:.08em;text-shadow:0 0 10px rgba(0,255,65,.4);
 }
-.police-logo{
-  font-size:.7rem;letter-spacing:.2em;color:var(--green-dim);margin-bottom:.3rem;
-}
-.police-title{
-  font-size:clamp(1.1rem,4vw,1.6rem);color:var(--green-screen);
-  letter-spacing:.1em;text-shadow:0 0 10px rgba(0,255,65,.5);
-}
-.police-sub{font-size:.7rem;color:var(--green-dim);letter-spacing:.15em;margin-top:.2rem;}
-.police-divider{
-  width:100%;height:1px;
-  background:linear-gradient(90deg,transparent,var(--green-screen),transparent);
-  margin:.8rem 0;opacity:.4;
-}
-
-.roles-wrap{position:relative;z-index:5;width:100%;max-width:460px;padding:0 1rem;}
+.police-sub{font-size:.62rem;color:var(--gd);letter-spacing:.14em;margin-top:.15rem;}
+.pdiv{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gs),transparent);margin:.7rem 0;opacity:.35;}
 
 .role-btn{
-  width:100%;background:var(--police2);
-  border:1px solid var(--green-dim);
-  color:var(--green-screen);
+  width:100%;background:#0d1520;
+  border:1px solid var(--gd);color:var(--gs);
   font-family:'Special Elite',serif;
-  font-size:clamp(1.2rem,5vw,1.6rem);
-  padding:1.2rem 1.5rem;
-  border-radius:4px;cursor:pointer;
-  transition:all .2s;margin-bottom:1rem;
-  text-align:center;letter-spacing:.05em;
-  text-shadow:0 0 8px rgba(0,255,65,.4);
-  position:relative;overflow:hidden;
+  font-size:clamp(1.15rem,4.5vw,1.5rem);
+  padding:1.1rem 1.4rem;border-radius:4px;cursor:pointer;
+  transition:all .2s;margin-bottom:.9rem;
+  text-align:center;letter-spacing:.04em;
+  text-shadow:0 0 8px rgba(0,255,65,.35);
 }
-.role-btn::before{
-  content:'> ';opacity:.5;font-size:.9em;
-}
+.role-btn::before{content:'> ';opacity:.45;font-size:.85em;}
 .role-btn:hover,.role-btn.sel{
-  background:rgba(0,255,65,.08);
-  border-color:var(--green-screen);
-  box-shadow:0 0 15px rgba(0,255,65,.2),inset 0 0 15px rgba(0,255,65,.05);
+  background:rgba(0,255,65,.07);border-color:var(--gs);
+  box-shadow:0 0 16px rgba(0,255,65,.18),inset 0 0 12px rgba(0,255,65,.04);
 }
-.role-btn.sel{
-  border-color:var(--green-screen);
-  box-shadow:0 0 20px rgba(0,255,65,.3);
-}
-.role-btn.taken{
-  opacity:.4;cursor:not-allowed;color:var(--green-dim);
-}
+.role-btn.taken{opacity:.35;cursor:not-allowed;color:var(--gd);}
 
-/* Partner name input */
-.partner-input-wrap{
-  display:none;margin-bottom:1rem;
-  border:1px solid var(--green-dim);border-radius:4px;
-  background:var(--police2);padding:.8rem 1rem;
+.partner-wrap{
+  display:none;margin-bottom:.9rem;
+  border:1px solid var(--gd);border-radius:4px;
+  background:#0d1520;padding:.75rem 1rem;
 }
-.partner-input-wrap.show{display:block;}
-.partner-label{
-  font-size:.7rem;color:var(--green-dim);letter-spacing:.15em;margin-bottom:.4rem;
-  display:block;
-}
+.partner-wrap.show{display:block;}
+.partner-lbl{font-size:.62rem;color:var(--gd);letter-spacing:.14em;margin-bottom:.35rem;display:block;}
 .partner-input{
   width:100%;background:transparent;border:none;
-  color:var(--green-screen);font-family:'Special Elite',serif;
-  font-size:1.4rem;outline:none;letter-spacing:.05em;
-  text-shadow:0 0 8px rgba(0,255,65,.4);
-  caret-color:var(--green-screen);
+  color:var(--gs);font-family:'Special Elite',serif;
+  font-size:1.35rem;outline:none;letter-spacing:.04em;
+  text-shadow:0 0 8px rgba(0,255,65,.35);
+  caret-color:var(--gs);
 }
-.partner-input::placeholder{color:rgba(0,255,65,.25);}
+.partner-input::placeholder{color:rgba(0,255,65,.2);}
 
 .police-confirm{
-  width:100%;margin-top:.5rem;
-  background:transparent;border:1px solid var(--green-screen);
-  color:var(--green-screen);font-family:'Special Elite',serif;
-  font-size:1rem;padding:.8rem;border-radius:4px;cursor:pointer;
-  letter-spacing:.1em;transition:all .2s;
+  width:100%;margin-top:.4rem;
+  background:transparent;border:1px solid var(--gs);
+  color:var(--gs);font-family:'Special Elite',serif;
+  font-size:.95rem;padding:.75rem;border-radius:4px;cursor:pointer;
+  letter-spacing:.09em;transition:all .2s;
   opacity:0;pointer-events:none;
-  text-shadow:0 0 8px rgba(0,255,65,.4);
+  text-shadow:0 0 8px rgba(0,255,65,.35);
 }
 .police-confirm.vis{opacity:1;pointer-events:all;}
-.police-confirm:hover{background:rgba(0,255,65,.1);box-shadow:0 0 15px rgba(0,255,65,.2);}
+.police-confirm:hover{background:rgba(0,255,65,.09);box-shadow:0 0 14px rgba(0,255,65,.18);}
+.pcursor{display:inline-block;width:8px;height:1.1em;background:var(--gs);vertical-align:middle;animation:blink .8s ease infinite;margin-left:.2rem;}
 
-.police-cursor{
-  display:inline-block;width:8px;height:1.2em;
-  background:var(--green-screen);vertical-align:middle;
-  animation:blink .8s ease infinite;margin-right:.3rem;
-}
-
-/* ══════════════════════════════
-   WAITING
-══════════════════════════════ */
-#s-wait{background:var(--police);font-family:'Special Elite',serif;}
+/* ══ WAITING ══ */
+#s-wait{background:#0a0f1a;font-family:'Special Elite',serif;}
 #s-wait::before{
   content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.03) 2px,rgba(0,255,65,.03) 4px);
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.025) 2px,rgba(0,255,65,.025) 4px);
   pointer-events:none;
 }
 .wait-inner{position:relative;z-index:5;text-align:center;padding:2rem;}
-.wait-title{font-size:1.4rem;color:var(--green-screen);letter-spacing:.1em;margin-bottom:.3rem;text-shadow:0 0 10px rgba(0,255,65,.4);}
-.wait-sub{font-size:.75rem;color:var(--green-dim);letter-spacing:.15em;margin-bottom:2rem;}
-.players-row{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;}
-.p-card{
-  background:var(--police2);border:1px solid var(--green-dim);
-  border-radius:4px;padding:1rem 1.5rem;min-width:140px;text-align:center;
-  transition:border-color .3s;
-}
-.p-card.on{border-color:var(--green-screen);box-shadow:0 0 12px rgba(0,255,65,.2);}
-.p-card-name{font-size:1.1rem;color:var(--green-screen);margin-bottom:.5rem;letter-spacing:.05em;}
-.dot{width:10px;height:10px;border-radius:50%;background:#1a2a1a;margin:0 auto;transition:all .3s;}
-.dot.on{background:var(--green-screen);box-shadow:0 0 8px var(--green-screen);}
+.wait-ttl{font-size:1.3rem;color:var(--gs);letter-spacing:.09em;margin-bottom:.25rem;text-shadow:0 0 10px rgba(0,255,65,.35);}
+.wait-sub{font-size:.62rem;color:var(--gd);letter-spacing:.14em;margin-bottom:1.8rem;}
+.players-row{display:flex;gap:1.4rem;justify-content:center;flex-wrap:wrap;}
+.p-card{background:#0d1520;border:1px solid var(--gd);border-radius:4px;padding:.9rem 1.4rem;min-width:130px;text-align:center;transition:all .3s;}
+.p-card.on{border-color:var(--gs);box-shadow:0 0 12px rgba(0,255,65,.18);}
+.p-card-name{font-size:1rem;color:var(--gs);margin-bottom:.45rem;letter-spacing:.04em;}
+.dot{width:9px;height:9px;border-radius:50%;background:#1a2a1a;margin:0 auto;transition:all .3s;}
+.dot.on{background:var(--gs);box-shadow:0 0 8px var(--gs);}
 
-/* ══════════════════════════════
-   GAME HEADER
-══════════════════════════════ */
+/* ══ GAME ══ */
+#s-game{background:var(--jd);flex-direction:column;align-items:stretch;justify-content:flex-start;}
 .g-header{
-  background:rgba(8,15,8,.92);border-bottom:1px solid rgba(45,106,48,.5);
+  background:rgba(6,12,6,.93);border-bottom:1px solid rgba(45,106,48,.4);
   padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:80;flex-shrink:0;gap:.4rem;
-  backdrop-filter:blur(4px);
+  position:sticky;top:0;z-index:80;flex-shrink:0;gap:.4rem;backdrop-filter:blur(4px);
 }
-.g-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.82rem;white-space:nowrap;}
-.phase-pill{background:rgba(30,64,32,.8);color:var(--cream);font-size:.65rem;padding:.16rem .55rem;border-radius:20px;font-family:'Secular One',sans-serif;white-space:nowrap;}
-.timer-display{font-family:'Special Elite',serif;color:var(--gold-l);font-size:.9rem;min-width:52px;text-align:center;}
-.ev-count{font-size:.75rem;color:var(--dim);white-space:nowrap;}
+.g-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.8rem;white-space:nowrap;}
+.phase-pill{background:rgba(30,64,32,.8);color:var(--cream);font-size:.63rem;padding:.15rem .52rem;border-radius:20px;font-family:'Secular One',sans-serif;white-space:nowrap;}
+.timer-disp{font-family:'Special Elite',serif;color:var(--gold-l);font-size:.88rem;min-width:50px;text-align:center;}
+.ev-count{font-size:.73rem;color:var(--dim);white-space:nowrap;}
 .ev-count span{color:var(--gold-l);font-weight:bold;}
 
-/* ══════════════════════════════
-   SCENE — JUNGLE
-══════════════════════════════ */
-#s-game{background:var(--jd);flex-direction:column;align-items:stretch;justify-content:flex-start;}
-.scene-wrap{flex:1;position:relative;overflow:hidden;min-height:55vh;}
+.scene-wrap{flex:1;position:relative;overflow:hidden;min-height:52vh;}
 .scene{
-  position:relative;width:100%;height:100%;min-height:55vh;
+  position:relative;width:100%;height:100%;min-height:52vh;
   background:url('jungle.jpg') center center/cover no-repeat;
   cursor:crosshair;overflow:hidden;
 }
-/* Dark overlay to make clues more visible */
-.scene::before{
-  content:'';position:absolute;inset:0;
-  background:rgba(0,0,0,.25);pointer-events:none;z-index:1;
-}
-/* Bottom fog */
-.scene-fog{
-  position:absolute;bottom:0;left:0;right:0;height:80px;z-index:2;
-  background:linear-gradient(180deg,transparent,rgba(5,12,5,.7));
-  pointer-events:none;
-}
+.scene::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.22);pointer-events:none;z-index:1;}
+.scene-fog{position:absolute;bottom:0;left:0;right:0;height:70px;z-index:2;background:linear-gradient(180deg,transparent,rgba(4,10,4,.65));pointer-events:none;}
 
-/* CLUES */
-.clue{
-  position:absolute;cursor:pointer;user-select:none;z-index:20;
-  transition:transform .15s,filter .15s;
-}
-.clue:hover{
-  transform:scale(1.5)!important;
-  filter:drop-shadow(0 0 10px rgba(201,168,76,1)) drop-shadow(0 0 4px #fff);
-}
+.clue{position:absolute;cursor:pointer;user-select:none;z-index:20;transition:transform .15s,filter .15s;font-size:1.5rem;}
+.clue:hover{transform:scale(1.5)!important;filter:drop-shadow(0 0 10px rgba(240,204,110,1)) drop-shadow(0 0 4px #fff);}
 .clue.found{animation:cfound .5s ease forwards;pointer-events:none;}
-@keyframes cfound{
-  0%{transform:scale(1.5)}
-  50%{transform:scale(2.2);filter:drop-shadow(0 0 20px gold)}
-  100%{opacity:0;transform:scale(0)}
-}
+@keyframes cfound{0%{transform:scale(1.5)}50%{transform:scale(2.2);filter:drop-shadow(0 0 20px gold)}100%{opacity:0;transform:scale(0)}}
+.clue-track,.clue-ev{animation:hpulse 5s ease-in-out infinite;}
+@keyframes hpulse{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 5px rgba(201,168,76,.45))}}
+.clue:hover{animation:none!important;}
+.clue-fake{opacity:.75;}
 
-/* Track clues — rendered as SVG paw prints */
-.clue-track{font-size:1.6rem;}
-.clue-ev{font-size:1.5rem;}
-.clue-fake{font-size:1.4rem;opacity:.7;}
-
-/* Pulse on real clues to hint */
-.clue-track,.clue-ev{
-  animation:hint-pulse 4s ease-in-out infinite;
-}
-@keyframes hint-pulse{
-  0%,100%{filter:drop-shadow(0 0 0px transparent)}
-  50%{filter:drop-shadow(0 0 4px rgba(201,168,76,.4))}
-}
-.clue:hover{animation:none;}
-
-/* ══════════════════════════════
-   EVIDENCE PANEL
-══════════════════════════════ */
-.ev-panel{background:rgba(8,15,8,.95);border-top:1px solid rgba(45,106,48,.4);padding:.7rem 1rem;flex-shrink:0;}
-.ev-panel-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.75rem;margin-bottom:.55rem;letter-spacing:.04em;}
-.ev-grid{display:flex;gap:.5rem;flex-wrap:wrap;}
-.ev-slot{
-  width:48px;height:48px;border:1px dashed rgba(45,106,48,.5);border-radius:6px;
-  display:flex;align-items:center;justify-content:center;font-size:1.25rem;
-  background:rgba(0,0,0,.3);position:relative;transition:all .3s;
-}
+.ev-panel{background:rgba(6,12,6,.95);border-top:1px solid rgba(45,106,48,.35);padding:.65rem .9rem;flex-shrink:0;}
+.ev-panel-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.72rem;margin-bottom:.5rem;letter-spacing:.04em;}
+.ev-grid{display:flex;gap:.45rem;flex-wrap:wrap;}
+.ev-slot{width:46px;height:46px;border:1px dashed rgba(45,106,48,.45);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:rgba(0,0,0,.25);position:relative;transition:all .3s;}
 .ev-slot.filled{border-color:var(--gold);background:rgba(201,168,76,.07);animation:sfill .35s ease;}
 @keyframes sfill{from{transform:scale(.7)}to{transform:scale(1)}}
-.ev-slot .lbl{position:absolute;bottom:-15px;left:50%;transform:translateX(-50%);font-size:.5rem;color:var(--dim);white-space:nowrap;}
+.ev-slot .lbl{position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font-size:.48rem;color:var(--dim);white-space:nowrap;}
 
-/* ══════════════════════════════
-   NOTIF, PTAG, OVERLAY, DEV, BACK
-══════════════════════════════ */
-.notif{
-  position:fixed;top:65px;left:50%;transform:translateX(-50%) translateY(-12px);
-  background:rgba(30,64,32,.95);border:1px solid var(--gold);color:var(--cream);
-  padding:.42rem 1rem;border-radius:30px;font-size:.8rem;z-index:300;
-  opacity:0;transition:all .28s;pointer-events:none;white-space:nowrap;max-width:92vw;text-align:center;
-  backdrop-filter:blur(4px);
-}
+.notif{position:fixed;top:62px;left:50%;transform:translateX(-50%) translateY(-12px);background:rgba(25,55,25,.96);border:1px solid var(--gold);color:var(--cream);padding:.4rem .95rem;border-radius:30px;font-size:.78rem;z-index:300;opacity:0;transition:all .28s;pointer-events:none;white-space:nowrap;max-width:93vw;text-align:center;backdrop-filter:blur(4px);}
 .notif.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.ptag{
-  position:fixed;bottom:165px;right:.8rem;
-  background:rgba(30,64,32,.9);border:1px solid var(--gold);
-  border-radius:20px;padding:.2rem .6rem;font-size:.7rem;color:var(--gold);
-  font-family:'Secular One',sans-serif;z-index:50;
-}
-.overlay{
-  position:fixed;inset:0;background:rgba(5,10,5,.97);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:200;opacity:0;pointer-events:none;transition:opacity .5s;padding:2rem;text-align:center;
-}
+.ptag{position:fixed;bottom:160px;right:.7rem;background:rgba(25,55,25,.9);border:1px solid var(--gold);border-radius:20px;padding:.18rem .55rem;font-size:.68rem;color:var(--gold);font-family:'Secular One',sans-serif;z-index:50;}
+
+.overlay{position:fixed;inset:0;background:rgba(4,9,4,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .5s;padding:2rem;text-align:center;}
 .overlay.show{opacity:1;pointer-events:all;}
-.ov-icon{font-size:3rem;margin-bottom:.6rem;}
-.ov-title{font-family:'Secular One',sans-serif;font-size:1.6rem;color:var(--gold);margin-bottom:.35rem;}
-.ov-sub{color:var(--dim);margin-bottom:1.3rem;font-size:.9rem;}
-.ov-list{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.5rem;max-width:480px;}
-.ov-item{background:rgba(30,64,32,.6);border:1px solid var(--gold);border-radius:7px;padding:.32rem .8rem;font-size:.76rem;color:var(--cream);}
-.dev-btn-fixed{position:fixed;top:8px;left:8px;width:18px;height:18px;background:transparent;border:none;cursor:pointer;z-index:500;opacity:.1;transition:opacity .2s;font-size:12px;}
-.dev-btn-fixed:hover{opacity:.4;}
-.dev-panel{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;opacity:0;pointer-events:none;transition:opacity .3s;padding:2rem;}
+.ov-icon{font-size:2.8rem;margin-bottom:.55rem;}
+.ov-title{font-family:'Secular One',sans-serif;font-size:1.5rem;color:var(--gold);margin-bottom:.3rem;}
+.ov-sub{color:var(--dim);margin-bottom:1.2rem;font-size:.88rem;}
+.ov-list{display:flex;gap:.45rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.4rem;max-width:460px;}
+.ov-item{background:rgba(25,55,25,.6);border:1px solid var(--gold);border-radius:7px;padding:.3rem .75rem;font-size:.73rem;color:var(--cream);}
+
+.dev-btn-f{position:fixed;top:8px;left:8px;width:18px;height:18px;background:transparent;border:none;cursor:pointer;z-index:500;opacity:.1;transition:opacity .2s;font-size:12px;}
+.dev-btn-f:hover{opacity:.4;}
+.dev-panel{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;opacity:0;pointer-events:none;transition:opacity .3s;padding:2rem;}
 .dev-panel.open{opacity:1;pointer-events:all;}
-.dev-title{font-family:'Special Elite',serif;color:#0f0;font-size:1.2rem;}
-.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;width:100%;max-width:300px;}
-.dev-bi{background:#0a0a0a;border:1px solid #222;color:#0f0;font-family:monospace;font-size:.78rem;padding:.6rem;border-radius:5px;cursor:pointer;text-align:center;}
-.dev-bi:hover{background:#0d1a0d;border-color:#0f0;}
-.dev-close{background:transparent;border:1px solid #444;color:#666;font-size:.78rem;padding:.4rem 1.2rem;border-radius:5px;cursor:pointer;}
-.dev-ans{background:#0a0a0a;border:1px solid #222;border-radius:7px;padding:.8rem;width:100%;max-width:300px;max-height:180px;overflow-y:auto;font-family:monospace;font-size:.7rem;color:#0f0;line-height:1.6;display:none;}
-.back-btn{position:fixed;bottom:.8rem;right:.8rem;background:rgba(20,43,22,.9);border:1px solid rgba(45,106,48,.5);color:var(--dim);font-size:.75rem;padding:.35rem .8rem;border-radius:20px;cursor:pointer;z-index:100;font-family:'Secular One',sans-serif;display:none;}
+.dev-ttl{font-family:'Special Elite',serif;color:#0f0;font-size:1.2rem;}
+.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;width:100%;max-width:290px;}
+.dev-bi{background:#080808;border:1px solid #1a1a1a;color:#0f0;font-family:monospace;font-size:.76rem;padding:.55rem;border-radius:5px;cursor:pointer;text-align:center;}
+.dev-bi:hover{background:#0a160a;border-color:#0f0;}
+.dev-close{background:transparent;border:1px solid #333;color:#555;font-size:.76rem;padding:.38rem 1.2rem;border-radius:5px;cursor:pointer;}
+.dev-ans{background:#080808;border:1px solid #1a1a1a;border-radius:6px;padding:.75rem;width:100%;max-width:290px;max-height:170px;overflow-y:auto;font-family:monospace;font-size:.68rem;color:#0f0;line-height:1.6;display:none;}
+
+.back-btn{position:fixed;bottom:.8rem;right:.8rem;background:rgba(18,38,18,.9);border:1px solid rgba(45,106,48,.4);color:var(--dim);font-size:.72rem;padding:.32rem .75rem;border-radius:20px;cursor:pointer;z-index:100;font-family:'Secular One',sans-serif;display:none;}
 .back-btn.vis{display:block;}
 .back-btn:hover{border-color:var(--gold);color:var(--gold);}
-#s-load{background:#000;text-align:center;gap:1rem;}
-.spinner{width:42px;height:42px;border:2px solid #1a3a1a;border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
+
+#s-load{background:#000;text-align:center;gap:.9rem;}
+.spinner{width:40px;height:40px;border:2px solid #142014;border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.load-txt{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.95rem;}
+.load-txt{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.9rem;}
 
 @media(max-width:480px){
-  .intro-title-main{font-size:2.2rem;}
-  .intro-story{font-size:.95rem;}
-  .clue-track,.clue-ev{font-size:1.3rem;}
-  .ev-slot{width:42px;height:42px;}
+  .intro-title-main{font-size:1.6rem;}
+  .intro-story{font-size:.98rem;}
+  .clue{font-size:1.25rem;}
+  .ev-slot{width:40px;height:40px;}
 }
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
 <div class="screen active" id="s-load">
   <div class="spinner"></div>
   <div class="load-txt">טוען את השמורה...</div>
 </div>
 
-<!-- CINEMATIC CURTAIN -->
+<!-- ══ CURTAIN ══ -->
 <div class="screen" id="s-curtain">
-  <div class="curt-bg"></div>
   <div class="curt-jungle" id="curt-jungle"></div>
 
+  <!-- LEFT BRANCH PANEL -->
   <div class="curt-l" id="cl">
-    <div class="curt-leaves">
-      <span style="top:3%;left:55%;font-size:3rem;opacity:.5;">🌿</span>
-      <span style="top:14%;left:15%;font-size:2rem;opacity:.35;">🍃</span>
-      <span style="top:26%;left:72%;font-size:2.5rem;opacity:.45;">🌱</span>
-      <span style="top:40%;left:35%;font-size:1.8rem;opacity:.3;">🍂</span>
-      <span style="top:54%;left:68%;font-size:2.8rem;opacity:.4;">🌿</span>
-      <span style="top:66%;left:22%;font-size:2rem;opacity:.35;">🍃</span>
-      <span style="top:78%;left:58%;font-size:2.2rem;opacity:.4;">🌱</span>
-      <span style="top:88%;left:10%;font-size:3rem;opacity:.5;">🌿</span>
-      <span style="top:20%;left:85%;font-size:4rem;opacity:.3;">🌳</span>
-      <span style="top:60%;left:8%;font-size:3.5rem;opacity:.35;">🌲</span>
-    </div>
+    <svg class="curt-svg" viewBox="0 0 420 100%" preserveAspectRatio="xMaxYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Dark fill -->
+      <rect width="420" height="2000" fill="#060e06"/>
+
+      <!-- Main thick branch diagonals -->
+      <path d="M -20 -10 C 80 60, 200 160, 340 280 C 380 315, 420 355, 430 400" fill="none" stroke="#0c2010" stroke-width="32" stroke-linecap="round"/>
+      <path d="M -20 -10 C 80 60, 200 160, 340 280 C 380 315, 420 355, 430 400" fill="none" stroke="#102614" stroke-width="22" stroke-linecap="round"/>
+
+      <path d="M -30 160 C 60 185, 160 220, 260 290 C 320 330, 390 370, 430 410" fill="none" stroke="#0a1c0c" stroke-width="26" stroke-linecap="round"/>
+      <path d="M -30 160 C 60 185, 160 220, 260 290 C 320 330, 390 370, 430 410" fill="none" stroke="#0e2210" stroke-width="18" stroke-linecap="round"/>
+
+      <path d="M 20 -20 C 80 40, 140 100, 200 150 C 260 200, 340 240, 420 270" fill="none" stroke="#0b1e0d" stroke-width="20" stroke-linecap="round"/>
+
+      <!-- Sub-branches -->
+      <path d="M 150 140 C 200 110, 260 90, 310 70" fill="none" stroke="#0e2210" stroke-width="12" stroke-linecap="round"/>
+      <path d="M 200 190 C 240 160, 280 140, 330 125" fill="none" stroke="#0c1e0e" stroke-width="9" stroke-linecap="round"/>
+      <path d="M 80 90 C 110 65, 150 50, 190 40" fill="none" stroke="#0d2010" stroke-width="8" stroke-linecap="round"/>
+
+      <!-- LEAF CLUSTERS — large ellipses -->
+      <!-- Top cluster -->
+      <ellipse cx="60" cy="25" rx="62" ry="28" fill="#1a4e1a" transform="rotate(-28 60 25)"/>
+      <ellipse cx="40" cy="15" rx="46" ry="22" fill="#205420" transform="rotate(-18 40 15)"/>
+      <ellipse cx="95" cy="42" rx="40" ry="18" fill="#164216" transform="rotate(-42 95 42)"/>
+      <ellipse cx="28" cy="52" rx="34" ry="15" fill="#1e4e1e" transform="rotate(-12 28 52)"/>
+      <ellipse cx="130" cy="30" rx="38" ry="16" fill="#1c4c1c" transform="rotate(-55 130 30)"/>
+
+      <!-- Mid-top cluster -->
+      <ellipse cx="30" cy="130" rx="54" ry="24" fill="#185018" transform="rotate(12 30 130)"/>
+      <ellipse cx="58" cy="115" rx="44" ry="20" fill="#1e5820" transform="rotate(-4 58 115)"/>
+      <ellipse cx="12" cy="150" rx="36" ry="16" fill="#144014" transform="rotate(22 12 150)"/>
+      <ellipse cx="90" cy="108" rx="32" ry="14" fill="#1a4a1a" transform="rotate(-35 90 108)"/>
+
+      <!-- Main branch cluster -->
+      <ellipse cx="160" cy="155" rx="52" ry="22" fill="#1c521c" transform="rotate(-52 160 155)"/>
+      <ellipse cx="178" cy="138" rx="40" ry="17" fill="#225a22" transform="rotate(-38 178 138)"/>
+      <ellipse cx="138" cy="172" rx="34" ry="14" fill="#184018" transform="rotate(-65 138 172)"/>
+
+      <!-- Right overlap cluster — extends past center -->
+      <ellipse cx="290" cy="195" rx="68" ry="26" fill="#205e20" transform="rotate(-22 290 195)"/>
+      <ellipse cx="315" cy="178" rx="52" ry="21" fill="#266428" transform="rotate(-12 315 178)"/>
+      <ellipse cx="268" cy="215" rx="44" ry="18" fill="#1c501c" transform="rotate(-33 268 215)"/>
+      <ellipse cx="340" cy="165" rx="42" ry="17" fill="#245c24" transform="rotate(-8 340 165)"/>
+
+      <!-- Far right — overlapping right branch -->
+      <ellipse cx="385" cy="145" rx="55" ry="22" fill="#226022" transform="rotate(-18 385 145)"/>
+      <ellipse cx="408" cy="130" rx="42" ry="17" fill="#286628" transform="rotate(-8 408 130)"/>
+
+      <!-- Lower cluster -->
+      <ellipse cx="70" cy="270" rx="56" ry="24" fill="#1a541a" transform="rotate(14 70 270)"/>
+      <ellipse cx="100" cy="254" rx="44" ry="19" fill="#205e20" transform="rotate(5 100 254)"/>
+      <ellipse cx="44" cy="286" rx="38" ry="16" fill="#154215" transform="rotate(26 44 286)"/>
+      <ellipse cx="145" cy="260" rx="36" ry="15" fill="#1e521e" transform="rotate(-10 145 260)"/>
+
+      <!-- Tiny detail leaves -->
+      <ellipse cx="200" cy="95" rx="26" ry="11" fill="#1c4c1c" transform="rotate(-58 200 95)"/>
+      <ellipse cx="230" cy="82" rx="21" ry="9" fill="#225222" transform="rotate(-48 230 82)"/>
+      <ellipse cx="310" cy="128" rx="24" ry="10" fill="#205020" transform="rotate(-32 310 128)"/>
+      <ellipse cx="170" cy="60" rx="20" ry="9" fill="#1e4e1e" transform="rotate(-62 170 60)"/>
+
+      <!-- Subtle vein lines -->
+      <path d="M 60 25 L 95 12 M 60 25 L 38 40" fill="none" stroke="#0a2c0a" stroke-width="0.7" opacity="0.4"/>
+      <path d="M 160 155 L 190 142 M 160 155 L 136 168" fill="none" stroke="#0a2c0a" stroke-width="0.6" opacity="0.35"/>
+      <path d="M 290 195 L 320 180 M 290 195 L 265 210" fill="none" stroke="#0a2c0a" stroke-width="0.7" opacity="0.3"/>
+    </svg>
   </div>
 
+  <!-- RIGHT BRANCH PANEL — mirror of left -->
   <div class="curt-r" id="cr">
-    <div class="curt-leaves">
-      <span style="top:5%;right:50%;font-size:3rem;opacity:.5;">🌿</span>
-      <span style="top:17%;right:18%;font-size:2rem;opacity:.35;">🍃</span>
-      <span style="top:30%;right:65%;font-size:2.5rem;opacity:.45;">🌱</span>
-      <span style="top:44%;right:30%;font-size:1.8rem;opacity:.3;">🍂</span>
-      <span style="top:57%;right:72%;font-size:2.8rem;opacity:.4;">🌿</span>
-      <span style="top:70%;right:20%;font-size:2rem;opacity:.35;">🍃</span>
-      <span style="top:82%;right:55%;font-size:2.2rem;opacity:.4;">🌱</span>
-      <span style="top:90%;right:8%;font-size:3rem;opacity:.5;">🌿</span>
-      <span style="top:12%;right:82%;font-size:4rem;opacity:.3;">🌳</span>
-      <span style="top:50%;right:5%;font-size:3.5rem;opacity:.35;">🌲</span>
-    </div>
+    <svg class="curt-svg" viewBox="0 0 420 100%" preserveAspectRatio="xMinYMid slice" xmlns="http://www.w3.org/2000/svg" style="transform:scaleX(-1)">
+      <rect width="420" height="2000" fill="#060e06"/>
+
+      <path d="M -20 -10 C 80 60, 200 160, 340 280 C 380 315, 420 355, 430 400" fill="none" stroke="#0c2010" stroke-width="32" stroke-linecap="round"/>
+      <path d="M -20 -10 C 80 60, 200 160, 340 280 C 380 315, 420 355, 430 400" fill="none" stroke="#102614" stroke-width="22" stroke-linecap="round"/>
+      <path d="M -30 160 C 60 185, 160 220, 260 290 C 320 330, 390 370, 430 410" fill="none" stroke="#0a1c0c" stroke-width="26" stroke-linecap="round"/>
+      <path d="M -30 160 C 60 185, 160 220, 260 290 C 320 330, 390 370, 430 410" fill="none" stroke="#0e2210" stroke-width="18" stroke-linecap="round"/>
+      <path d="M 20 -20 C 80 40, 140 100, 200 150 C 260 200, 340 240, 420 270" fill="none" stroke="#0b1e0d" stroke-width="20" stroke-linecap="round"/>
+      <path d="M 150 140 C 200 110, 260 90, 310 70" fill="none" stroke="#0e2210" stroke-width="12" stroke-linecap="round"/>
+      <path d="M 200 190 C 240 160, 280 140, 330 125" fill="none" stroke="#0c1e0e" stroke-width="9" stroke-linecap="round"/>
+      <path d="M 80 90 C 110 65, 150 50, 190 40" fill="none" stroke="#0d2010" stroke-width="8" stroke-linecap="round"/>
+
+      <ellipse cx="60" cy="25" rx="62" ry="28" fill="#1c521c" transform="rotate(-28 60 25)"/>
+      <ellipse cx="40" cy="15" rx="46" ry="22" fill="#225822" transform="rotate(-18 40 15)"/>
+      <ellipse cx="95" cy="42" rx="40" ry="18" fill="#184618" transform="rotate(-42 95 42)"/>
+      <ellipse cx="28" cy="52" rx="34" ry="15" fill="#205020" transform="rotate(-12 28 52)"/>
+      <ellipse cx="130" cy="30" rx="38" ry="16" fill="#1e501e" transform="rotate(-55 130 30)"/>
+      <ellipse cx="30" cy="130" rx="54" ry="24" fill="#1a541a" transform="rotate(12 30 130)"/>
+      <ellipse cx="58" cy="115" rx="44" ry="20" fill="#205c22" transform="rotate(-4 58 115)"/>
+      <ellipse cx="12" cy="150" rx="36" ry="16" fill="#164416" transform="rotate(22 12 150)"/>
+      <ellipse cx="90" cy="108" rx="32" ry="14" fill="#1c4e1c" transform="rotate(-35 90 108)"/>
+      <ellipse cx="160" cy="155" rx="52" ry="22" fill="#1e561e" transform="rotate(-52 160 155)"/>
+      <ellipse cx="178" cy="138" rx="40" ry="17" fill="#245e24" transform="rotate(-38 178 138)"/>
+      <ellipse cx="138" cy="172" rx="34" ry="14" fill="#1a441a" transform="rotate(-65 138 172)"/>
+      <ellipse cx="290" cy="195" rx="68" ry="26" fill="#226022" transform="rotate(-22 290 195)"/>
+      <ellipse cx="315" cy="178" rx="52" ry="21" fill="#28662a" transform="rotate(-12 315 178)"/>
+      <ellipse cx="268" cy="215" rx="44" ry="18" fill="#1e541e" transform="rotate(-33 268 215)"/>
+      <ellipse cx="340" cy="165" rx="42" ry="17" fill="#266226" transform="rotate(-8 340 165)"/>
+      <ellipse cx="385" cy="145" rx="55" ry="22" fill="#246424" transform="rotate(-18 385 145)"/>
+      <ellipse cx="408" cy="130" rx="42" ry="17" fill="#2a6a2a" transform="rotate(-8 408 130)"/>
+      <ellipse cx="70" cy="270" rx="56" ry="24" fill="#1c581c" transform="rotate(14 70 270)"/>
+      <ellipse cx="100" cy="254" rx="44" ry="19" fill="#226222" transform="rotate(5 100 254)"/>
+      <ellipse cx="44" cy="286" rx="38" ry="16" fill="#174617" transform="rotate(26 44 286)"/>
+      <ellipse cx="145" cy="260" rx="36" ry="15" fill="#205620" transform="rotate(-10 145 260)"/>
+      <ellipse cx="200" cy="95" rx="26" ry="11" fill="#1e501e" transform="rotate(-58 200 95)"/>
+      <ellipse cx="230" cy="82" rx="21" ry="9" fill="#245624" transform="rotate(-48 230 82)"/>
+      <ellipse cx="310" cy="128" rx="24" ry="10" fill="#225422" transform="rotate(-32 310 128)"/>
+    </svg>
   </div>
 
   <div class="curt-title">
@@ -473,7 +404,7 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   </div>
 </div>
 
-<!-- INTRO -->
+<!-- ══ INTRO ══ -->
 <div class="screen" id="s-intro">
   <div class="intro-inner">
     <div class="intro-title-main">השמורה המסתורית</div>
@@ -482,34 +413,30 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   </div>
 </div>
 
-<!-- ROLES — POLICE TERMINAL -->
+<!-- ══ POLICE ROLES ══ -->
 <div class="screen" id="s-roles">
-  <div class="roles-wrap">
-    <div class="police-header">
+  <div class="police-wrap">
+    <div class="police-hdr">
       <div class="police-logo">★ מערכת זיהוי בלשים ★</div>
-      <div class="police-title"><span class="police-cursor"></span>השמורה המסתורית — כניסת בלשים</div>
+      <div class="police-ttl">השמורה המסתורית<span class="pcursor"></span></div>
       <div class="police-sub">DETECTIVE IDENTIFICATION SYSTEM v2.4</div>
-      <div class="police-divider"></div>
+      <div class="pdiv"></div>
     </div>
-
     <div class="role-btn" id="rb-yuval" onclick="selectRole('yuval')">הבלשית יובל</div>
-
     <div class="role-btn" id="rb-itay" onclick="selectRole('itay')">בלש שותף</div>
-
-    <div class="partner-input-wrap" id="partner-wrap">
-      <span class="partner-label">// הכנס שם הבלש השותף:</span>
+    <div class="partner-wrap" id="partner-wrap">
+      <span class="partner-lbl">// הכנס שם הבלש השותף:</span>
       <input class="partner-input" id="partner-name" type="text" placeholder="שם..." maxlength="20" oninput="onPartnerName()" autocomplete="off" autocorrect="off" spellcheck="false">
     </div>
-
-    <div class="police-divider"></div>
+    <div class="pdiv"></div>
     <button class="police-confirm" id="btn-confirm" onclick="confirmRole()">[ אישור — כניסה למערכת ]</button>
   </div>
 </div>
 
-<!-- WAITING -->
+<!-- ══ WAITING ══ -->
 <div class="screen" id="s-wait">
   <div class="wait-inner">
-    <div class="wait-title"><span class="police-cursor"></span>ממתינים לחיבור...</div>
+    <div class="wait-ttl">ממתינים לחיבור<span class="pcursor"></span></div>
     <div class="wait-sub">WAITING FOR ALL DETECTIVES TO CONNECT</div>
     <div class="players-row">
       <div class="p-card" id="pc-yuval">
@@ -524,19 +451,16 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   </div>
 </div>
 
-<!-- GAME -->
+<!-- ══ GAME ══ -->
 <div class="screen" id="s-game">
   <div class="g-header">
     <div class="g-title">🌿 שמורת עדן הסודית</div>
     <div class="phase-pill" id="phase-pill">שלב 1 — זירת הפשע</div>
-    <div class="timer-display" id="timer-disp">00:00</div>
+    <div class="timer-disp" id="timer-disp">00:00</div>
     <div class="ev-count">ראיות: <span id="ev-cnt">0</span>/14</div>
   </div>
-
   <div class="scene-wrap">
     <div class="scene" id="scene">
-
-      <!-- ══ REAL TRACKS (10) — scattered naturally across jungle ══ -->
       <div class="clue clue-track" id="c1" style="left:6%;top:72%;" data-t="track" data-a="אריה" data-l="עקבת אריה" onclick="collectClue(this)">🐾</div>
       <div class="clue clue-track" id="c2" style="left:19%;top:78%;" data-t="track" data-a="פיל" data-l="עקבת פיל" onclick="collectClue(this)">🦶</div>
       <div class="clue clue-track" id="c3" style="left:31%;top:65%;" data-t="track" data-a="גורילה" data-l="עקבת גורילה" onclick="collectClue(this)">👣</div>
@@ -547,14 +471,10 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
       <div class="clue clue-track" id="c8" style="left:88%;top:77%;" data-t="track" data-a="נמר" data-l="עקבת נמר" onclick="collectClue(this)">🐾</div>
       <div class="clue clue-track" id="c9" style="left:13%;top:55%;" data-t="track" data-a="דב" data-l="עקבת דב" onclick="collectClue(this)">🐻</div>
       <div class="clue clue-track" id="c10" style="left:93%;top:60%;" data-t="track" data-a="רקון" data-l="עקבת רקון" onclick="collectClue(this)">🦝</div>
-
-      <!-- ══ OTHER EVIDENCE (4) — higher in scene ══ -->
       <div class="clue clue-ev" id="c11" style="left:24%;top:38%;" data-t="ev" data-l="נוצה שחורה" onclick="collectClue(this)">🪶</div>
       <div class="clue clue-ev" id="c12" style="left:48%;top:42%;" data-t="ev" data-l="קרע בצמח" onclick="collectClue(this)">🌿</div>
       <div class="clue clue-ev" id="c13" style="left:72%;top:35%;" data-t="ev" data-l="עצם לעוסה" onclick="collectClue(this)">🦴</div>
       <div class="clue clue-ev" id="c14" style="left:60%;top:48%;" data-t="ev" data-l="פרווה בענף" onclick="collectClue(this)">🧶</div>
-
-      <!-- ══ FAKES (8) — blended across scene ══ -->
       <div class="clue clue-fake" id="f1" style="left:3%;top:42%;" data-t="fake" data-l="עלה רגיל" onclick="collectClue(this)">🍂</div>
       <div class="clue clue-fake" id="f2" style="left:36%;top:83%;" data-t="fake" data-l="אבן רגילה" onclick="collectClue(this)">🪨</div>
       <div class="clue clue-fake" id="f3" style="left:52%;top:28%;" data-t="fake" data-l="ענף ישן" onclick="collectClue(this)">🪵</div>
@@ -563,11 +483,9 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
       <div class="clue clue-fake" id="f6" style="left:76%;top:22%;" data-t="fake" data-l="פטרייה" onclick="collectClue(this)">🍄</div>
       <div class="clue clue-fake" id="f7" style="left:40%;top:20%;" data-t="fake" data-l="טל בוקר" onclick="collectClue(this)">💧</div>
       <div class="clue clue-fake" id="f8" style="left:65%;top:88%;" data-t="fake" data-l="ברי יער" onclick="collectClue(this)">🫐</div>
-
       <div class="scene-fog"></div>
     </div>
   </div>
-
   <div class="ev-panel">
     <div class="ev-panel-title">🗂️ ראיות שנאספו</div>
     <div class="ev-grid" id="ev-grid"></div>
@@ -575,21 +493,20 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   <div class="ptag" id="ptag">🦁 יובל</div>
 </div>
 
-<!-- PHASE COMPLETE -->
 <div class="overlay" id="ov-complete">
   <div class="ov-icon">🎉</div>
   <div class="ov-title">כל הראיות נאספו!</div>
-  <div class="ov-sub">שלב 2 עומד להתחיל — התאמת עקבות לחיות</div>
+  <div class="ov-sub">שלב 2 עומד להתחיל</div>
   <div class="ov-list" id="ov-list"></div>
   <button class="btn-gold" onclick="nextPhase()">➡️ שלב 2</button>
 </div>
 
 <div class="notif" id="notif"></div>
 <button class="back-btn" id="back-btn" onclick="goBack()">← חזרה</button>
-<button class="dev-btn-fixed" onclick="openDev()">🔧</button>
+<button class="dev-btn-f" onclick="openDev()">🔧</button>
 
 <div class="dev-panel" id="dev-panel">
-  <div class="dev-title">⚙️ DEV MODE</div>
+  <div class="dev-ttl">⚙️ DEV MODE</div>
   <div class="dev-grid">
     <div class="dev-bi" onclick="devGoto(1)">שלב 1</div>
     <div class="dev-bi" onclick="devGoto(2)">שלב 2</div>
@@ -609,7 +526,7 @@ import { getDatabase, ref, set, onValue, get } from 'https://www.gstatic.com/fir
 
 // ══ FIREBASE CONFIG — replace with yours ══
 const firebaseConfig = {
-apiKey: "AIzaSyDqwl7hKg3P-oqRcyy-ETs3UBAC9w6tPwE",
+  apiKey: "AIzaSy...",
   authDomain: "reserve-mystery.firebaseapp.com",
   databaseURL: "https://reserve-mystery-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "reserve-mystery",
@@ -628,7 +545,6 @@ let myRole = null, partnerName = 'שותף';
 let state = { phase:1, evidence:{}, startTime:null, skipValidation:false };
 let timerInterval = null, screenHistory = [];
 
-// ── LOCAL STORAGE ──
 const save = () => {
   localStorage.setItem('rm_state', JSON.stringify(state));
   localStorage.setItem('rm_role', myRole||'');
@@ -636,121 +552,96 @@ const save = () => {
 };
 const load = () => {
   try {
-    const s = localStorage.getItem('rm_state');
-    const r = localStorage.getItem('rm_role');
-    const p = localStorage.getItem('rm_partner');
-    if (s) state = {...state,...JSON.parse(s)};
-    if (r) myRole = r;
-    if (p) partnerName = p;
-  } catch(e){}
+    const s=localStorage.getItem('rm_state'), r=localStorage.getItem('rm_role'), p=localStorage.getItem('rm_partner');
+    if(s) state={...state,...JSON.parse(s)};
+    if(r) myRole=r;
+    if(p) partnerName=p;
+  }catch(e){}
 };
 
-// ── NAVIGATION ──
 window.goTo = function(id, hist=true) {
-  if (hist && !['s-load','s-curtain'].includes(id)) {
-    const cur = document.querySelector('.screen.active');
-    if (cur && cur.id !== id) screenHistory.push(cur.id);
+  if(hist && !['s-load','s-curtain'].includes(id)){
+    const cur=document.querySelector('.screen.active');
+    if(cur && cur.id!==id) screenHistory.push(cur.id);
   }
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.getElementById('back-btn').className = 'back-btn'+(screenHistory.length?' vis':'');
-  if (id === 's-intro') setTimeout(startTypewriter, 400);
+  document.getElementById('back-btn').className='back-btn'+(screenHistory.length?' vis':'');
+  if(id==='s-intro') setTimeout(startTypewriter, 500);
 };
 
 window.goBack = function() {
-  if (!screenHistory.length) return;
-  const prev = screenHistory.pop();
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  if(!screenHistory.length) return;
+  const prev=screenHistory.pop();
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(prev).classList.add('active');
-  document.getElementById('back-btn').className = 'back-btn'+(screenHistory.length?' vis':'');
+  document.getElementById('back-btn').className='back-btn'+(screenHistory.length?' vis':'');
 };
 
 // ── CURTAIN ──
 function playCurtain() {
   goTo('s-curtain', false);
-  // Add fireflies
-  for (let i=0; i<14; i++) {
-    const ff = document.createElement('div');
-    ff.className = 'ff-c';
-    ff.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*75}%;`;
+  for(let i=0;i<14;i++){
+    const ff=document.createElement('div');
+    ff.className='ff';
+    ff.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*80}%;`;
     ff.style.setProperty('--tx',(Math.random()*80-40)+'px');
     ff.style.setProperty('--ty',(Math.random()*40-20)+'px');
-    ff.style.animationDuration = (7+Math.random()*8)+'s';
-    ff.style.animationDelay = (Math.random()*3)+'s';
+    ff.style.animationDuration=(7+Math.random()*9)+'s';
+    ff.style.animationDelay=(Math.random()*4)+'s';
     document.getElementById('s-curtain').appendChild(ff);
   }
-  // Show jungle bg
-  setTimeout(() => document.getElementById('curt-jungle').classList.add('show'), 300);
-  // Show title
-  setTimeout(() => document.getElementById('curt-h1').classList.add('show'), 600);
-  // Open curtains
-  setTimeout(() => {
+  setTimeout(()=>document.getElementById('curt-jungle').classList.add('show'), 400);
+  setTimeout(()=>document.getElementById('curt-h1').classList.add('show'), 700);
+  setTimeout(()=>{
     document.getElementById('cl').classList.add('open');
     document.getElementById('cr').classList.add('open');
-  }, 1400);
-  // Go to intro
-  setTimeout(() => goTo('s-intro'), 3400);
+  }, 1600);
+  setTimeout(()=>goTo('s-intro'), 3800);
 }
 
 // ── TYPEWRITER ──
-const STORY = `אתמול בלילה, תחת אור הירח, נגנבה מפת האוצרות העתיקה של שמורת עדן הסודית.
-
-המפה מובילה אל מיקומי האוצרות הטמונים ברחבי השמורה, ביניהם — האבן הקסומה שמגינה על השמורה.
-
-מפת האוצרות הוסתרה במקום סודי בלב השמורה — מקום שרק פקח השמורה יודע עליו.
-
-הבוקר גילה הפקח שהמפה נגנבה ממקום המיסתור שלה, והוא צריך את עזרתם של שני בלשים צעירים ומבריקים כדי לפתור את התעלומה — להבין מי מהחיות גנב את המפה ואיך, ולהשיב אותה אל פקח השמורה.
-
-יובל, מוכנה לבחור בלש שותף כדי לעבוד איתך על החקירה המסתורית ולעזור לפקח השמורה לפתור את תעלומת מפת האוצרות העתיקה של שמורת עדן הסודית?`;
+const STORY = 'אתמול בלילה, תחת אור הירח, נגנבה מפת האוצרות העתיקה של שמורת עדן הסודית.\n\nהמפה מובילה אל מיקומי האוצרות הטמונים ברחבי השמורה, ביניהם \u2014 האבן הקסומה שמגינה על השמורה.\n\nמפת האוצרות הוסתרה במקום סודי בלב השמורה \u2014 מקום שרק פקח השמורה יודע עליו.\n\nהבוקר גילה הפקח שהמפה נגנבה, והוא צריך את עזרתם של שני בלשים צעירים ומבריקים כדי לפתור את התעלומה \u2014 להבין מי מהחיות גנב את המפה ואיך, ולהשיב אותה אל פקח השמורה.\n\nיובל, מוכנה לבחור בלש שותף כדי לעבוד איתך על החקירה המסתורית?';
 
 function startTypewriter() {
-  const el = document.getElementById('story-el');
-  el.innerHTML = '';
+  const el=document.getElementById('story-el');
+  el.innerHTML='';
   document.getElementById('btn-start').classList.remove('show');
-  let i = 0;
-  const chars = STORY.split('');
-
-  function typeNext() {
-    if (i >= chars.length) {
-      el.innerHTML = el.innerHTML.replace('<span class="tw-cursor"></span>','');
-      setTimeout(() => document.getElementById('btn-start').classList.add('show'), 400);
+  let i=0;
+  const chars=STORY.split('');
+  function next(){
+    if(i>=chars.length){
+      el.innerHTML=el.innerHTML.replace('<span class="tw-cursor"></span>','');
+      setTimeout(()=>document.getElementById('btn-start').classList.add('show'),400);
       return;
     }
-    const ch = chars[i];
-    // Remove old cursor, add char + new cursor
-    el.innerHTML = el.innerHTML.replace('<span class="tw-cursor"></span>','');
-    if (ch === '\n') {
-      el.innerHTML += '<br>';
-    } else {
-      el.innerHTML += ch;
-    }
-    el.innerHTML += '<span class="tw-cursor"></span>';
+    const ch=chars[i];
+    el.innerHTML=el.innerHTML.replace('<span class="tw-cursor"></span>','');
+    el.innerHTML += ch==='\n' ? '<br>' : ch;
+    el.innerHTML+='<span class="tw-cursor"></span>';
     i++;
-    // Speed: punctuation = longer pause, space = medium, normal = fast
-    const delay = '.!?'.includes(ch) ? 180 :
-                  ch === ',' ? 100 :
-                  ch === '\n' ? 300 :
-                  ch === ' ' ? 35 :
-                  22 + Math.random()*15;
-    setTimeout(typeNext, delay);
+    const d = ch==='.' || ch==='?' ? 200 :
+              ch===',' ? 90 :
+              ch==='\u2014' ? 120 :
+              ch==='\n' ? 350 :
+              ch===' ' ? 30 :
+              20 + Math.random()*14;
+    setTimeout(next, d);
   }
-  setTimeout(typeNext, 300);
+  setTimeout(next, 200);
 }
 
 // ── ROLES ──
 window.selectRole = async function(role) {
-  const snap = await get(ref(db,`sessions/${SID}/players/${role}`));
-  if (snap.exists() && snap.val().connected) { showNotif('⛔ תפקיד זה כבר נלקח!'); return; }
-
-  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('sel'));
+  const snap=await get(ref(db,`sessions/${SID}/players/${role}`));
+  if(snap.exists()&&snap.val().connected){showNotif('⛔ תפקיד זה כבר נלקח!');return;}
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('sel'));
   document.getElementById(`rb-${role}`).classList.add('sel');
-  myRole = role;
-
-  // Show name input only for partner
-  const wrap = document.getElementById('partner-wrap');
-  if (role === 'itay') {
+  myRole=role;
+  const wrap=document.getElementById('partner-wrap');
+  if(role==='itay'){
     wrap.classList.add('show');
-    setTimeout(() => document.getElementById('partner-name').focus(), 100);
+    setTimeout(()=>document.getElementById('partner-name').focus(),100);
   } else {
     wrap.classList.remove('show');
     document.getElementById('btn-confirm').classList.add('vis');
@@ -758,192 +649,168 @@ window.selectRole = async function(role) {
 };
 
 window.onPartnerName = function() {
-  const val = document.getElementById('partner-name').value.trim();
-  const btn = document.getElementById('btn-confirm');
-  // Update button text live
-  const rb = document.getElementById('rb-itay');
-  rb.textContent = val || 'בלש שותף';
-  btn.className = 'police-confirm'+(val?' vis':'');
+  const val=document.getElementById('partner-name').value.trim();
+  document.getElementById('rb-itay').textContent=val||'בלש שותף';
+  document.getElementById('btn-confirm').className='police-confirm'+(val?' vis':'');
 };
 
 window.confirmRole = async function() {
-  if (!myRole) return;
-  if (myRole === 'itay') {
-    const val = document.getElementById('partner-name').value.trim();
-    if (!val) { showNotif('⛔ נא להכניס שם'); return; }
-    partnerName = val;
-    // Update partner name in DB so yuval sees it
-    await set(ref(db,`sessions/${SID}/partnerName`), val);
+  if(!myRole) return;
+  if(myRole==='itay'){
+    const val=document.getElementById('partner-name').value.trim();
+    if(!val){showNotif('⛔ נא להכניס שם');return;}
+    partnerName=val;
+    await set(ref(db,`sessions/${SID}/partnerName`),val);
   }
-  await set(ref(db,`sessions/${SID}/players/${myRole}`), {
-    connected: true,
-    name: myRole === 'yuval' ? 'יובל' : partnerName
+  await set(ref(db,`sessions/${SID}/players/${myRole}`),{
+    connected:true, name:myRole==='yuval'?'יובל':partnerName
   });
-  save();
-  goTo('s-wait');
-  listenForPlayers();
+  save(); goTo('s-wait'); listenForPlayers();
 };
 
-// ── PLAYERS ──
 function listenForPlayers() {
-  // Listen for partner name too
-  onValue(ref(db,`sessions/${SID}/partnerName`), snap => {
-    if (snap.exists()) {
-      partnerName = snap.val();
-      document.getElementById('pname-itay').textContent = partnerName;
-      document.getElementById('rb-itay').textContent = partnerName;
+  onValue(ref(db,`sessions/${SID}/partnerName`),snap=>{
+    if(snap.exists()){
+      partnerName=snap.val();
+      document.getElementById('pname-itay').textContent=partnerName;
+      document.getElementById('rb-itay').textContent=partnerName;
     }
   });
-  onValue(ref(db,`sessions/${SID}/players`), snap => {
-    const p = snap.val()||{};
-    const yu = p.yuval?.connected, it = p.itay?.connected;
-    setDot('yuval',yu); setDot('itay',it);
-    if (p.yuval?.name) document.getElementById('pname-yuval').textContent = p.yuval.name;
-    if (p.itay?.name) document.getElementById('pname-itay').textContent = p.itay.name;
-    if (yu && it) setTimeout(startGame, 800);
+  onValue(ref(db,`sessions/${SID}/players`),snap=>{
+    const p=snap.val()||{};
+    const yu=p.yuval?.connected,it=p.itay?.connected;
+    setDot('yuval',yu);setDot('itay',it);
+    if(p.yuval?.name) document.getElementById('pname-yuval').textContent=p.yuval.name;
+    if(p.itay?.name) document.getElementById('pname-itay').textContent=p.itay.name;
+    if(yu&&it) setTimeout(startGame,800);
   });
 }
-function setDot(role, on) {
-  document.getElementById(`dot-${role}`).className = 'dot'+(on?' on':'');
-  document.getElementById(`pc-${role}`).className = 'p-card'+(on?' on':'');
+function setDot(role,on){
+  document.getElementById(`dot-${role}`).className='dot'+(on?' on':'');
+  document.getElementById(`pc-${role}`).className='p-card'+(on?' on':'');
 }
 
-// ── GAME ──
-function startGame() {
-  document.getElementById('ptag').textContent = myRole==='yuval' ? '🦁 יובל' : `🦅 ${partnerName}`;
-  goTo('s-game');
-  listenEvidence();
-  listenTimer();
-  get(ref(db,`sessions/${SID}/startTime`)).then(snap => {
-    if (!snap.exists()) set(ref(db,`sessions/${SID}/startTime`), Date.now());
+function startGame(){
+  document.getElementById('ptag').textContent=myRole==='yuval'?'🦁 יובל':`🦅 ${partnerName}`;
+  goTo('s-game');listenEvidence();listenTimer();
+  get(ref(db,`sessions/${SID}/startTime`)).then(snap=>{
+    if(!snap.exists()) set(ref(db,`sessions/${SID}/startTime`),Date.now());
   });
 }
 
-function listenTimer() {
-  onValue(ref(db,`sessions/${SID}/startTime`), snap => {
-    if (!snap.exists()) return;
-    const start = snap.val(); state.startTime = start;
-    if (timerInterval) clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-      const e = Math.floor((Date.now()-start)/1000);
-      document.getElementById('timer-disp').textContent =
+function listenTimer(){
+  onValue(ref(db,`sessions/${SID}/startTime`),snap=>{
+    if(!snap.exists()) return;
+    const start=snap.val();state.startTime=start;
+    if(timerInterval) clearInterval(timerInterval);
+    timerInterval=setInterval(()=>{
+      const e=Math.floor((Date.now()-start)/1000);
+      document.getElementById('timer-disp').textContent=
         String(Math.floor(e/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0');
-    }, 1000);
+    },1000);
   });
 }
 
-window.collectClue = async function(el) {
-  if (el.classList.contains('found')) return;
-  const type=el.dataset.t, label=el.dataset.l, id=el.id;
-  if (type==='fake') {
-    showNotif(`🚫 ${label} — זו לא ראיה`);
-    el.style.opacity='.15'; el.style.pointerEvents='none';
+window.collectClue = async function(el){
+  if(el.classList.contains('found')) return;
+  const type=el.dataset.t,label=el.dataset.l,id=el.id;
+  if(type==='fake'){
+    showNotif(`🚫 ${label} \u2014 זו לא ראיה`);
+    el.style.opacity='.12';el.style.pointerEvents='none';
     return;
   }
   el.classList.add('found');
   showNotif(`✅ נמצא: ${label}!`);
-  await set(ref(db,`sessions/${SID}/evidence/${id}`), {
-    id, label, type, animal:el.dataset.a||null, by:myRole, ts:Date.now()
+  await set(ref(db,`sessions/${SID}/evidence/${id}`),{
+    id,label,type,animal:el.dataset.a||null,by:myRole,ts:Date.now()
   });
 };
 
-function listenEvidence() {
-  onValue(ref(db,`sessions/${SID}/evidence`), snap => {
-    const ev = snap.val()||{};
-    const items = Object.values(ev);
-    state.evidence = ev; save();
-    document.getElementById('ev-cnt').textContent = items.length;
+function listenEvidence(){
+  onValue(ref(db,`sessions/${SID}/evidence`),snap=>{
+    const ev=snap.val()||{},items=Object.values(ev);
+    state.evidence=ev;save();
+    document.getElementById('ev-cnt').textContent=items.length;
     renderGrid(items);
-    items.forEach(item => {
-      const el = document.getElementById(item.id);
-      if (el && !el.classList.contains('found')) {
+    items.forEach(item=>{
+      const el=document.getElementById(item.id);
+      if(el&&!el.classList.contains('found')){
         el.classList.add('found');
-        setTimeout(() => { if(el) el.style.display='none'; }, 500);
+        setTimeout(()=>{if(el)el.style.display='none';},500);
       }
     });
-    if (items.length >= 14) setTimeout(() => showComplete(items), 700);
+    if(items.length>=14) setTimeout(()=>showComplete(items),700);
   });
 }
 
-function renderGrid(items) {
-  const grid = document.getElementById('ev-grid');
-  grid.innerHTML = '';
-  items.forEach(item => {
-    const s = document.createElement('div');
-    s.className = 'ev-slot filled';
-    const em = item.type==='track'?'🐾':item.label?.includes('נוצה')?'🪶':item.label?.includes('עצם')?'🦴':item.label?.includes('פרווה')?'🧶':'🌿';
-    s.innerHTML = `${em}<span class="lbl">${item.label}</span>`;
+function renderGrid(items){
+  const grid=document.getElementById('ev-grid');
+  grid.innerHTML='';
+  items.forEach(item=>{
+    const s=document.createElement('div');
+    s.className='ev-slot filled';
+    const em=item.type==='track'?'🐾':item.label?.includes('נוצה')?'🪶':item.label?.includes('עצם')?'🦴':item.label?.includes('פרווה')?'🧶':'🌿';
+    s.innerHTML=`${em}<span class="lbl">${item.label}</span>`;
     grid.appendChild(s);
   });
 }
 
-function showComplete(items) {
-  const list = document.getElementById('ov-list');
-  list.innerHTML = '';
-  items.forEach(i => {
-    const d = document.createElement('div');
-    d.className = 'ov-item';
-    d.textContent = (i.type==='track'?'🐾 ':'🔍 ')+i.label;
+function showComplete(items){
+  const list=document.getElementById('ov-list');
+  list.innerHTML='';
+  items.forEach(i=>{
+    const d=document.createElement('div');
+    d.className='ov-item';
+    d.textContent=(i.type==='track'?'🐾 ':'🔍 ')+i.label;
     list.appendChild(d);
   });
   document.getElementById('ov-complete').classList.add('show');
 }
-window.nextPhase = function() {
-  document.getElementById('ov-complete').classList.remove('show');
-  showNotif('🚧 שלב 2 בפיתוח — בקרוב!');
-};
+window.nextPhase=function(){document.getElementById('ov-complete').classList.remove('show');showNotif('🚧 שלב 2 בפיתוח');};
 
-// ── NOTIF ──
 let nt;
-window.showNotif = function(msg) {
-  const el = document.getElementById('notif');
-  el.textContent = msg; el.classList.add('show');
-  clearTimeout(nt); nt = setTimeout(() => el.classList.remove('show'), 2800);
+window.showNotif=function(msg){
+  const el=document.getElementById('notif');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(nt);nt=setTimeout(()=>el.classList.remove('show'),2800);
 };
 
-// ── DEV ──
-window.openDev = function() {
-  const c = prompt('קוד:');
-  if (c===DEV_CODE) document.getElementById('dev-panel').classList.add('open');
-  else if (c!==null) showNotif('❌ קוד שגוי');
+window.openDev=function(){
+  const c=prompt('קוד:');
+  if(c===DEV_CODE) document.getElementById('dev-panel').classList.add('open');
+  else if(c!==null) showNotif('❌ קוד שגוי');
 };
-window.closeDev = () => document.getElementById('dev-panel').classList.remove('open');
-window.devGoto = function(p) {
+window.closeDev=()=>document.getElementById('dev-panel').classList.remove('open');
+window.devGoto=function(p){
   closeDev();
-  if (p===1) goTo('s-game');
-  else if (p===6) showComplete(Object.values(state.evidence));
+  if(p===1) goTo('s-game');
+  else if(p===6) showComplete(Object.values(state.evidence));
   else showNotif('🚧 שלב '+p+' בפיתוח');
 };
-window.devReset = async function() {
-  if (!confirm('איפוס מלא?')) return;
+window.devReset=async function(){
+  if(!confirm('איפוס מלא?')) return;
   closeDev();
   await set(ref(db,`sessions/${SID}`),null);
-  localStorage.clear(); location.reload();
+  localStorage.clear();location.reload();
 };
-window.devSkip = function() { state.skipValidation=true; save(); closeDev(); showNotif('✅ ולידציות מבוטלות'); };
-window.devAns = function() {
-  const el = document.getElementById('dev-ans');
-  el.style.display = el.style.display==='none'?'block':'none';
-  el.innerHTML = `<strong>דיירות:</strong> אריה, פיל, גורילה, תנין, נשר, גירית, חזיר בר, ג'ירפה<br>
-<strong>פולשות:</strong> נמר, דב, רקון, שועל<br><br>
-c1:אריה c2:פיל c3:גורילה c4:תנין c5:נשר<br>
-c6:גירית c7:חזיר בר c8:נמר c9:דב c10:רקון<br>
-c11:נוצה c12:קרע c13:עצם c14:פרווה`;
+window.devSkip=function(){state.skipValidation=true;save();closeDev();showNotif('✅ ולידציות מבוטלות');};
+window.devAns=function(){
+  const el=document.getElementById('dev-ans');
+  el.style.display=el.style.display==='none'?'block':'none';
+  el.innerHTML=`<strong>דיירות:</strong> אריה, פיל, גורילה, תנין, נשר, גירית, חזיר בר, ג'ירפה<br><strong>פולשות:</strong> נמר, דב, רקון, שועל<br><br>c1-c10: עקבות | c11-c14: ראיות`;
 };
 
-// ── INIT ──
 load();
-setTimeout(() => {
-  if (myRole && state.startTime) {
-    document.getElementById('ptag').textContent = myRole==='yuval'?'🦁 יובל':`🦅 ${partnerName}`;
-    goTo('s-game',false);
-    listenEvidence(); listenTimer(); listenForPlayers();
-  } else if (myRole) {
-    goTo('s-wait',false); listenForPlayers();
+setTimeout(()=>{
+  if(myRole&&state.startTime){
+    document.getElementById('ptag').textContent=myRole==='yuval'?'🦁 יובל':`🦅 ${partnerName}`;
+    goTo('s-game',false);listenEvidence();listenTimer();listenForPlayers();
+  } else if(myRole){
+    goTo('s-wait',false);listenForPlayers();
   } else {
     playCurtain();
   }
-}, 1000);
+},1000);
 </script>
 </body>
 </html>
