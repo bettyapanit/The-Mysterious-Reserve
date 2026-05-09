@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>השמורה המסתורית</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Assistant:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --jd:#0a1508;--j1:#0d1f0f;--j2:#142b16;--j3:#1e4020;--j4:#2d6a30;--j5:#4a9e4e;
+  --gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#8a6820;--cream:#f5edd8;--dim:#a8c4aa;--rad:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;background:var(--j1);color:var(--cream);}
+
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s;z-index:10;overflow-y:auto;}
+.screen.active{opacity:1;pointer-events:all;}
+
+/* ══ CINEMATIC CURTAIN INTRO ══ */
+#s-curtain{background:#000;z-index:50;overflow:hidden;}
+.curtain-scene{position:absolute;inset:0;background:
+  radial-gradient(ellipse at 50% 30%,#1a3a0a 0%,#0a1a04 40%,#000 100%);}
+
+/* Curtain panels — left and right */
+.curtain-left,.curtain-right{
+  position:absolute;top:0;bottom:0;width:55%;
+  background:linear-gradient(180deg,#0a1a06 0%,#061204 100%);
+  z-index:10;transition:transform 1.4s cubic-bezier(.77,0,.18,1);
+  overflow:hidden;
+}
+.curtain-left{left:0;transform:translateX(0);}
+.curtain-right{right:0;transform:translateX(0);}
+.curtain-left.open{transform:translateX(-100%);}
+.curtain-right.open{transform:translateX(100%);}
+
+/* Leaf texture on curtains */
+.curtain-left::before,.curtain-right::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    radial-gradient(ellipse 60px 90px at 70% 20%,rgba(30,64,20,.8) 0%,transparent 100%),
+    radial-gradient(ellipse 40px 70px at 30% 50%,rgba(20,50,15,.7) 0%,transparent 100%),
+    radial-gradient(ellipse 80px 60px at 60% 75%,rgba(25,55,18,.6) 0%,transparent 100%),
+    radial-gradient(ellipse 50px 80px at 20% 85%,rgba(18,45,12,.8) 0%,transparent 100%);
+}
+.curtain-right::before{
+  background-image:
+    radial-gradient(ellipse 70px 90px at 30% 15%,rgba(30,64,20,.8) 0%,transparent 100%),
+    radial-gradient(ellipse 45px 65px at 70% 45%,rgba(20,50,15,.7) 0%,transparent 100%),
+    radial-gradient(ellipse 60px 55px at 40% 80%,rgba(25,55,18,.6) 0%,transparent 100%),
+    radial-gradient(ellipse 55px 75px at 80% 90%,rgba(18,45,12,.8) 0%,transparent 100%);
+}
+
+/* Leaf emoji decorations on curtains */
+.curtain-leaves{position:absolute;inset:0;pointer-events:none;font-size:2.5rem;opacity:.55;}
+
+/* Jungle scene revealed behind curtain */
+.curtain-bg{position:absolute;inset:0;z-index:1;
+  background:radial-gradient(ellipse at 50% 35%,rgba(45,106,48,.5) 0%,transparent 55%),
+  linear-gradient(180deg,#081306 0%,#1a3a1c 50%,#081306 100%);}
+.curtain-trees{position:absolute;bottom:0;left:0;right:0;height:45%;z-index:2;
+  background:var(--j1);
+  clip-path:polygon(0% 100%,0% 50%,3% 20%,6% 45%,9% 10%,12% 42%,15% 0%,18% 38%,21% 5%,24% 35%,27% 8%,30% 44%,33% 0%,36% 40%,39% 5%,42% 48%,45% 0%,48% 36%,51% 15%,54% 46%,57% 0%,60% 40%,63% 10%,66% 50%,69% 0%,72% 40%,75% 15%,78% 55%,81% 10%,84% 46%,87% 5%,90% 40%,93% 20%,96% 50%,100% 25%,100% 100%);}
+.curtain-moon{position:absolute;top:8%;left:50%;transform:translateX(-50%);z-index:3;font-size:3.5rem;opacity:.85;}
+.curtain-title{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;text-align:center;width:90%;}
+.curtain-title h1{font-family:'Secular One',sans-serif;font-size:clamp(2rem,8vw,4rem);color:var(--cream);text-shadow:0 0 30px rgba(201,168,76,.5),0 2px 20px rgba(0,0,0,.8);line-height:1.15;}
+.curtain-title .sub{font-size:clamp(.8rem,2.5vw,1rem);color:var(--gold);letter-spacing:.2em;margin-top:.5rem;opacity:0;transition:opacity .5s;}
+.curtain-title .sub.show{opacity:1;}
+
+/* Fireflies in curtain scene */
+.cff{position:absolute;width:3px;height:3px;background:var(--gold-l);border-radius:50%;box-shadow:0 0 5px 2px rgba(240,204,110,.5);z-index:4;animation:ffloat linear infinite;}
+@keyframes ffloat{0%{opacity:0;transform:translate(0,0)}15%{opacity:1}85%{opacity:.7}100%{opacity:0;transform:translate(var(--tx),var(--ty))}}
+
+/* ══ INTRO (after curtain) ══ */
+#s-intro{background:var(--j1);overflow:hidden;}
+.intro-bg{position:absolute;inset:0;background:
+  radial-gradient(ellipse at 25% 45%,rgba(45,106,48,.35) 0%,transparent 55%),
+  radial-gradient(ellipse at 75% 30%,rgba(30,64,32,.25) 0%,transparent 50%);}
+.trees{position:absolute;bottom:0;left:0;right:0;height:38%;background:var(--j1);
+  clip-path:polygon(0% 100%,0% 55%,3% 25%,6% 50%,9% 15%,12% 45%,15% 5%,18% 40%,21% 0%,24% 38%,27% 12%,30% 46%,33% 0%,36% 42%,39% 8%,42% 50%,45% 3%,48% 38%,51% 18%,54% 48%,57% 0%,60% 42%,63% 12%,66% 52%,69% 3%,72% 42%,75% 18%,78% 57%,81% 12%,84% 48%,87% 8%,90% 42%,93% 22%,96% 52%,100% 28%,100% 100%);}
+.ff-wrap{position:absolute;inset:0;pointer-events:none;}
+.ff{position:absolute;width:3px;height:3px;background:var(--gold-l);border-radius:50%;box-shadow:0 0 6px 2px rgba(240,204,110,.5);animation:ffloat linear infinite;}
+
+.intro-inner{position:relative;z-index:5;text-align:center;padding:2rem 1.5rem;max-width:580px;}
+.intro-tag{font-size:.7rem;letter-spacing:.35em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;opacity:0;animation:fup .8s .2s forwards;}
+.intro-h{font-family:'Secular One',sans-serif;font-size:clamp(2rem,8vw,4rem);line-height:1.15;margin-bottom:.4rem;opacity:0;animation:fup .8s .6s forwards;text-shadow:0 0 40px rgba(201,168,76,.3);}
+.intro-sub{font-size:clamp(.85rem,2.5vw,1.1rem);color:var(--gold);font-weight:300;letter-spacing:.1em;margin-bottom:1.2rem;opacity:0;animation:fup .8s 1s forwards;}
+.intro-line{width:100px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:.6rem auto 1rem;opacity:0;animation:fup .8s 1.3s forwards;}
+
+/* Typewriter story */
+.intro-story{font-size:clamp(.82rem,2.3vw,.98rem);color:var(--dim);line-height:2;margin-bottom:2rem;min-height:5em;opacity:0;animation:fup .8s 1.5s forwards;}
+.intro-story strong{color:var(--cream);}
+.tw-cursor{display:inline-block;width:2px;height:1em;background:var(--gold);vertical-align:middle;animation:blink .7s ease infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.btn-gold{font-family:'Secular One',sans-serif;font-size:1.1rem;padding:.85rem 2.3rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--j1);border:none;border-radius:var(--rad);cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 20px rgba(201,168,76,.25);}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,.45);}
+.btn-start{opacity:0;transition:opacity .5s;}
+.btn-start.show{opacity:1;}
+@keyframes fup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ ROLES ══ */
+#s-roles{background:var(--j2);}
+.section-h{font-family:'Secular One',sans-serif;font-size:clamp(1.4rem,5vw,2rem);color:var(--gold);margin-bottom:.4rem;text-align:center;}
+.section-sub{color:var(--dim);font-size:.92rem;margin-bottom:1.8rem;text-align:center;}
+.roles-row{display:flex;gap:1.4rem;flex-wrap:wrap;justify-content:center;padding:0 1rem;}
+.role-card{background:var(--j3);border:2px solid var(--j4);border-radius:14px;padding:1.6rem 1.3rem;width:195px;text-align:center;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.role-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,.12),transparent);opacity:0;transition:opacity .25s;}
+.role-card:hover::after,.role-card.sel::after{opacity:1;}
+.role-card:hover,.role-card.sel{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 6px 24px rgba(201,168,76,.18);}
+.role-card.sel{background:var(--j4);}
+.role-em{font-size:2.6rem;display:block;margin-bottom:.7rem;}
+.role-name{font-family:'Secular One',sans-serif;font-size:1.25rem;color:var(--cream);margin-bottom:.35rem;}
+.role-desc{font-size:.78rem;color:var(--dim);line-height:1.5;}
+.role-taken{position:absolute;top:.5rem;left:.5rem;background:var(--gold);color:var(--j1);font-size:.62rem;padding:.12rem .45rem;border-radius:20px;font-family:'Secular One',sans-serif;}
+#btn-role{margin-top:1.6rem;opacity:0;pointer-events:none;transition:opacity .3s;}
+#btn-role.vis{opacity:1;pointer-events:all;}
+
+/* ══ WAITING ══ */
+#s-wait{background:var(--j2);text-align:center;gap:1.4rem;}
+.wait-icon{font-size:3.2rem;animation:bob 2s ease infinite;}
+@keyframes bob{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.players-row{display:flex;gap:1.4rem;justify-content:center;flex-wrap:wrap;}
+.p-card{background:var(--j3);border:2px solid var(--j4);border-radius:12px;padding:1rem 1.4rem;min-width:128px;text-align:center;transition:border-color .3s;}
+.p-card.on{border-color:var(--gold);}
+.p-card-name{font-family:'Secular One',sans-serif;font-size:1rem;margin-bottom:.5rem;}
+.dot{width:10px;height:10px;border-radius:50%;background:#444;margin:0 auto;transition:all .3s;}
+.dot.on{background:#4caf50;box-shadow:0 0 8px #4caf50;}
+
+/* ══ GAME HEADER ══ */
+.g-header{background:var(--j2);border-bottom:2px solid var(--j4);padding:.65rem 1.1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:80;flex-shrink:0;gap:.4rem;}
+.g-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.85rem;white-space:nowrap;}
+.phase-pill{background:var(--j3);color:var(--cream);font-size:.68rem;padding:.18rem .6rem;border-radius:20px;font-family:'Secular One',sans-serif;white-space:nowrap;}
+.timer-display{font-family:'Secular One',sans-serif;color:var(--gold-l);font-size:.9rem;letter-spacing:.04em;min-width:55px;text-align:center;}
+.ev-count{font-size:.78rem;color:var(--dim);white-space:nowrap;}
+.ev-count span{color:var(--gold-l);font-weight:bold;}
+
+/* ══ SCENE ══ */
+#s-game{background:var(--j1);flex-direction:column;align-items:stretch;justify-content:flex-start;}
+.scene-wrap{flex:1;position:relative;overflow:hidden;min-height:52vh;}
+.scene{position:relative;width:100%;height:100%;min-height:52vh;
+  background:radial-gradient(ellipse at 30% 40%,rgba(45,106,48,.4) 0%,transparent 50%),
+  radial-gradient(ellipse at 70% 60%,rgba(30,64,32,.5) 0%,transparent 40%),
+  linear-gradient(180deg,#081306 0%,#1a3a1c 45%,#0d1f0f 100%);cursor:crosshair;overflow:hidden;}
+.deco{position:absolute;pointer-events:none;user-select:none;}
+.scene-fog{position:absolute;bottom:90px;left:-10%;right:-10%;height:65px;background:linear-gradient(180deg,transparent,rgba(20,43,22,.4),transparent);animation:fog 12s ease-in-out infinite alternate;pointer-events:none;}
+@keyframes fog{from{transform:translateX(-5%)}to{transform:translateX(5%)}}
+.scene-ground{position:absolute;bottom:0;left:0;right:0;height:95px;background:linear-gradient(180deg,transparent,rgba(8,19,6,.9) 50%,#081306);pointer-events:none;}
+.clue{position:absolute;font-size:1.65rem;cursor:pointer;transition:transform .15s,filter .15s;user-select:none;z-index:20;}
+.clue:hover{transform:scale(1.38)!important;filter:drop-shadow(0 0 8px rgba(201,168,76,.9));}
+.clue.found{animation:cfound .45s ease forwards;pointer-events:none;}
+@keyframes cfound{0%{transform:scale(1.4)}50%{transform:scale(2);filter:drop-shadow(0 0 15px gold)}100%{opacity:0;transform:scale(0)}}
+
+/* ══ EVIDENCE PANEL ══ */
+.ev-panel{background:var(--j2);border-top:2px solid var(--j4);padding:.8rem 1.1rem;flex-shrink:0;}
+.ev-panel-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.78rem;margin-bottom:.6rem;letter-spacing:.04em;}
+.ev-grid{display:flex;gap:.55rem;flex-wrap:wrap;}
+.ev-slot{width:52px;height:52px;border:2px dashed var(--j4);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.35rem;background:rgba(0,0,0,.2);position:relative;transition:all .3s;}
+.ev-slot.filled{border-color:var(--gold);background:rgba(201,168,76,.08);animation:sfill .35s ease;}
+@keyframes sfill{from{transform:scale(.8)}to{transform:scale(1)}}
+.ev-slot .lbl{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:.52rem;color:var(--dim);white-space:nowrap;}
+
+/* ══ NOTIF ══ */
+.notif{position:fixed;top:68px;left:50%;transform:translateX(-50%) translateY(-15px);background:var(--j4);border:1px solid var(--gold);color:var(--cream);padding:.45rem 1.1rem;border-radius:30px;font-size:.82rem;z-index:300;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+.notif.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.ptag{position:fixed;bottom:170px;right:1rem;background:var(--j3);border:1px solid var(--gold);border-radius:20px;padding:.22rem .65rem;font-size:.72rem;color:var(--gold);font-family:'Secular One',sans-serif;z-index:50;}
+
+/* ══ OVERLAY ══ */
+.overlay{position:fixed;inset:0;background:rgba(10,21,8,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .5s;padding:2rem;text-align:center;}
+.overlay.show{opacity:1;pointer-events:all;}
+.ov-icon{font-size:3.2rem;margin-bottom:.7rem;}
+.ov-title{font-family:'Secular One',sans-serif;font-size:1.7rem;color:var(--gold);margin-bottom:.4rem;}
+.ov-sub{color:var(--dim);margin-bottom:1.4rem;font-size:.92rem;}
+.ov-list{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.6rem;max-width:500px;}
+.ov-item{background:var(--j3);border:1px solid var(--gold);border-radius:8px;padding:.35rem .85rem;font-size:.78rem;color:var(--cream);display:flex;align-items:center;gap:.32rem;}
+
+/* ══ DEV MODE ══ */
+.dev-btn{position:fixed;top:8px;left:8px;width:20px;height:20px;background:transparent;border:none;cursor:pointer;z-index:500;opacity:.12;transition:opacity .2s;font-size:13px;}
+.dev-btn:hover{opacity:.45;}
+.dev-panel{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.9rem;opacity:0;pointer-events:none;transition:opacity .3s;padding:2rem;}
+.dev-panel.open{opacity:1;pointer-events:all;}
+.dev-title{font-family:'Secular One',sans-serif;color:#0f0;font-size:1.3rem;margin-bottom:.4rem;}
+.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;width:100%;max-width:320px;}
+.dev-btn-item{background:#111;border:1px solid #333;color:#0f0;font-family:monospace;font-size:.82rem;padding:.65rem;border-radius:6px;cursor:pointer;text-align:center;}
+.dev-btn-item:hover{background:#1a2e1a;border-color:#0f0;}
+.dev-close{background:transparent;border:1px solid #555;color:#888;font-size:.82rem;padding:.45rem 1.4rem;border-radius:6px;cursor:pointer;margin-top:.3rem;}
+.dev-answers{background:#111;border:1px solid #333;border-radius:8px;padding:.9rem;width:100%;max-width:320px;max-height:190px;overflow-y:auto;font-family:monospace;font-size:.72rem;color:#0f0;line-height:1.6;display:none;}
+
+/* ══ BACK ══ */
+.back-btn{position:fixed;bottom:1rem;right:1rem;background:var(--j3);border:1px solid var(--j4);color:var(--dim);font-size:.78rem;padding:.38rem .85rem;border-radius:20px;cursor:pointer;z-index:100;font-family:'Secular One',sans-serif;display:none;}
+.back-btn.vis{display:block;}
+.back-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ══ LOADING ══ */
+#s-load{background:var(--j1);text-align:center;gap:1.1rem;}
+.spinner{width:46px;height:46px;border:3px solid var(--j4);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-txt{font-family:'Secular One',sans-serif;color:var(--gold);font-size:1rem;}
+
+@media(max-width:480px){
+  .intro-h{font-size:1.9rem;}
+  .role-card{width:150px;padding:1.1rem .9rem;}
+  .clue{font-size:1.35rem;}
+  .ev-slot{width:44px;height:44px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="screen active" id="s-load">
+  <div class="spinner"></div>
+  <div class="load-txt">טוען את השמורה...</div>
+</div>
+
+<!-- CINEMATIC CURTAIN -->
+<div class="screen" id="s-curtain">
+  <div class="curtain-scene"></div>
+
+  <!-- Scene behind curtain -->
+  <div class="curtain-bg"></div>
+  <div class="curtain-trees"></div>
+  <div class="curtain-moon">🌕</div>
+
+  <!-- Title in center -->
+  <div class="curtain-title">
+    <h1>השמורה<br>המסתורית</h1>
+    <div class="sub" id="curtain-sub">חקירה בלילה</div>
+  </div>
+
+  <!-- Left curtain panel -->
+  <div class="curtain-left" id="cl">
+    <div class="curtain-leaves">
+      <span style="position:absolute;top:5%;left:60%;">🌿</span>
+      <span style="position:absolute;top:18%;left:20%;">🍃</span>
+      <span style="position:absolute;top:32%;left:70%;">🌱</span>
+      <span style="position:absolute;top:48%;left:40%;">🍂</span>
+      <span style="position:absolute;top:62%;left:65%;">🌿</span>
+      <span style="position:absolute;top:75%;left:25%;">🍃</span>
+      <span style="position:absolute;top:85%;left:55%;">🌱</span>
+      <span style="position:absolute;top:15%;left:80%;">🌳</span>
+      <span style="position:absolute;top:55%;left:10%;">🌲</span>
+    </div>
+  </div>
+
+  <!-- Right curtain panel -->
+  <div class="curtain-right" id="cr">
+    <div class="curtain-leaves">
+      <span style="position:absolute;top:8%;right:60%;">🌿</span>
+      <span style="position:absolute;top:22%;right:25%;">🍃</span>
+      <span style="position:absolute;top:38%;right:65%;">🌱</span>
+      <span style="position:absolute;top:52%;right:35%;">🍂</span>
+      <span style="position:absolute;top:65%;right:70%;">🌿</span>
+      <span style="position:absolute;top:78%;right:20%;">🍃</span>
+      <span style="position:absolute;top:88%;right:50%;">🌱</span>
+      <span style="position:absolute;top:12%;right:75%;">🌳</span>
+      <span style="position:absolute;top:45%;right:15%;">🌲</span>
+    </div>
+  </div>
+</div>
+
+<!-- INTRO -->
+<div class="screen" id="s-intro">
+  <div class="intro-bg"></div>
+  <div class="ff-wrap" id="ff-wrap"></div>
+  <div class="trees"></div>
+  <div class="intro-inner">
+    <div class="intro-tag">🌿 שמורת עדן הסודית 🌿</div>
+    <h1 class="intro-h">השמורה<br>המסתורית</h1>
+    <div class="intro-sub">חקירה בלילה</div>
+    <div class="intro-line"></div>
+    <p class="intro-story" id="intro-story-el"></p>
+    <button class="btn-gold btn-start" id="btn-start" onclick="goTo('s-roles')">🔍 התחל בחקירה</button>
+  </div>
+</div>
+
+<!-- ROLES -->
+<div class="screen" id="s-roles">
+  <div class="section-h">מי את/ה?</div>
+  <div class="section-sub">כל בלש בוחר את תפקידו</div>
+  <div class="roles-row">
+    <div class="role-card" id="rc-yuval" onclick="selectRole('yuval')">
+      <span class="role-em">🦁</span>
+      <div class="role-name">יובל</div>
+      <div class="role-desc">הבלשת הראשית<br>מומחית בעקבות</div>
+    </div>
+    <div class="role-card" id="rc-itay" onclick="selectRole('itay')">
+      <span class="role-em">🦅</span>
+      <div class="role-name">איתי</div>
+      <div class="role-desc">הבלש השותף<br>מומחה בסימנים</div>
+    </div>
+  </div>
+  <button class="btn-gold" id="btn-role" onclick="confirmRole()">✅ אני מוכן/ה!</button>
+</div>
+
+<!-- WAITING -->
+<div class="screen" id="s-wait">
+  <div class="wait-icon">⏳</div>
+  <div class="section-h">ממתינים לשותף...</div>
+  <div class="section-sub">ברגע ששניכם מחוברים, החקירה מתחילה!</div>
+  <div class="players-row">
+    <div class="p-card" id="pc-yuval">
+      <div class="p-card-name">🦁 יובל</div>
+      <div class="dot" id="dot-yuval"></div>
+    </div>
+    <div class="p-card" id="pc-itay">
+      <div class="p-card-name">🦅 איתי</div>
+      <div class="dot" id="dot-itay"></div>
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="s-game">
+  <div class="g-header">
+    <div class="g-title">🌿 שמורת עדן הסודית</div>
+    <div class="phase-pill" id="phase-pill">שלב 1 — זירת הפשע</div>
+    <div class="timer-display" id="timer-disp">00:00</div>
+    <div class="ev-count">ראיות: <span id="ev-cnt">0</span>/14</div>
+  </div>
+  <div class="scene-wrap">
+    <div class="scene" id="scene">
+      <div class="deco" style="left:2%;bottom:62px;font-size:6.5rem;">🌳</div>
+      <div class="deco" style="left:13%;bottom:48px;font-size:4.8rem;">🌿</div>
+      <div class="deco" style="left:23%;bottom:68px;font-size:7.5rem;">🌲</div>
+      <div class="deco" style="left:36%;bottom:40px;font-size:4.2rem;">🍃</div>
+      <div class="deco" style="left:56%;bottom:62px;font-size:6rem;">🌳</div>
+      <div class="deco" style="left:71%;bottom:52px;font-size:8.5rem;">🌲</div>
+      <div class="deco" style="left:83%;bottom:42px;font-size:5rem;">🌿</div>
+      <div class="deco" style="left:93%;bottom:58px;font-size:6.5rem;">🌳</div>
+      <div class="deco" style="top:5%;right:9%;font-size:2.6rem;opacity:.8;">🌕</div>
+      <div class="deco" style="top:7%;left:14%;font-size:.65rem;opacity:.5;">✨</div>
+      <div class="deco" style="top:11%;left:42%;font-size:.55rem;opacity:.4;">⭐</div>
+      <div class="deco" style="top:5%;left:62%;font-size:.65rem;opacity:.4;">✨</div>
+      <div class="deco" style="bottom:110px;left:50%;transform:translateX(-50%);font-size:2rem;">🏕️</div>
+
+      <!-- Real tracks (10) -->
+      <div class="clue" id="c1" style="left:7%;top:53%;" data-t="track" data-a="אריה" data-l="עקבת אריה" onclick="collectClue(this)">🐾</div>
+      <div class="clue" id="c2" style="left:17%;top:61%;" data-t="track" data-a="פיל" data-l="עקבת פיל" onclick="collectClue(this)">🦶</div>
+      <div class="clue" id="c3" style="left:27%;top:46%;" data-t="track" data-a="גורילה" data-l="עקבת גורילה" onclick="collectClue(this)">👣</div>
+      <div class="clue" id="c4" style="left:37%;top:57%;" data-t="track" data-a="תנין" data-l="עקבת תנין" onclick="collectClue(this)">🐾</div>
+      <div class="clue" id="c5" style="left:46%;top:43%;" data-t="track" data-a="נשר" data-l="עקבת נשר" onclick="collectClue(this)">🦅</div>
+      <div class="clue" id="c6" style="left:58%;top:59%;" data-t="track" data-a="גירית" data-l="עקבת גירית" onclick="collectClue(this)">🐾</div>
+      <div class="clue" id="c7" style="left:65%;top:48%;" data-t="track" data-a="חזיר בר" data-l="עקבת חזיר בר" onclick="collectClue(this)">🐗</div>
+      <div class="clue" id="c8" style="left:75%;top:54%;" data-t="track" data-a="נמר" data-l="עקבת נמר" onclick="collectClue(this)">🐾</div>
+      <div class="clue" id="c9" style="left:84%;top:62%;" data-t="track" data-a="דב" data-l="עקבת דב" onclick="collectClue(this)">🐻</div>
+      <div class="clue" id="c10" style="left:91%;top:46%;" data-t="track" data-a="רקון" data-l="עקבת רקון" onclick="collectClue(this)">🦝</div>
+
+      <!-- Other evidence (4) -->
+      <div class="clue" id="c11" style="left:13%;top:33%;" data-t="ev" data-l="נוצה שחורה" onclick="collectClue(this)">🪶</div>
+      <div class="clue" id="c12" style="left:44%;top:28%;" data-t="ev" data-l="קרע בצמח" onclick="collectClue(this)">🌿</div>
+      <div class="clue" id="c13" style="left:72%;top:33%;" data-t="ev" data-l="עצם לעוסה" onclick="collectClue(this)">🦴</div>
+      <div class="clue" id="c14" style="left:55%;top:23%;" data-t="ev" data-l="פרווה בענף" onclick="collectClue(this)">🧶</div>
+
+      <!-- Fakes (8) -->
+      <div class="clue" id="f1" style="left:5%;top:28%;" data-t="fake" data-l="עלה רגיל" onclick="collectClue(this)">🍂</div>
+      <div class="clue" id="f2" style="left:24%;top:64%;" data-t="fake" data-l="אבן רגילה" onclick="collectClue(this)">🪨</div>
+      <div class="clue" id="f3" style="left:34%;top:26%;" data-t="fake" data-l="ענף ישן" onclick="collectClue(this)">🪵</div>
+      <div class="clue" id="f4" style="left:50%;top:67%;" data-t="fake" data-l="פרח בר" onclick="collectClue(this)">🌸</div>
+      <div class="clue" id="f5" style="left:79%;top:27%;" data-t="fake" data-l="חרק" onclick="collectClue(this)">🐛</div>
+      <div class="clue" id="f6" style="left:88%;top:34%;" data-t="fake" data-l="פטרייה" onclick="collectClue(this)">🍄</div>
+      <div class="clue" id="f7" style="left:16%;top:20%;" data-t="fake" data-l="טל בוקר" onclick="collectClue(this)">💧</div>
+      <div class="clue" id="f8" style="left:62%;top:21%;" data-t="fake" data-l="אבן נצנצת" onclick="collectClue(this)">💎</div>
+
+      <div class="scene-fog"></div>
+      <div class="scene-ground"></div>
+    </div>
+  </div>
+  <div class="ev-panel">
+    <div class="ev-panel-title">🗂️ ראיות שנאספו</div>
+    <div class="ev-grid" id="ev-grid"></div>
+  </div>
+  <div class="ptag" id="ptag">🦁 יובל</div>
+</div>
+
+<!-- PHASE COMPLETE -->
+<div class="overlay" id="ov-complete">
+  <div class="ov-icon">🎉</div>
+  <div class="ov-title">כל הראיות נאספו!</div>
+  <div class="ov-sub">שלב 2 עומד להתחיל — התאמת עקבות לחיות</div>
+  <div class="ov-list" id="ov-list"></div>
+  <button class="btn-gold" onclick="nextPhase()">➡️ שלב 2</button>
+</div>
+
+<div class="notif" id="notif"></div>
+<button class="back-btn" id="back-btn" onclick="goBack()">← חזרה</button>
+<button class="dev-btn" id="dev-trigger" onclick="openDevPrompt()">🔧</button>
+
+<div class="dev-panel" id="dev-panel">
+  <div class="dev-title">⚙️ DEV MODE</div>
+  <div class="dev-grid">
+    <div class="dev-btn-item" onclick="devGoto(1)">שלב 1</div>
+    <div class="dev-btn-item" onclick="devGoto(2)">שלב 2</div>
+    <div class="dev-btn-item" onclick="devGoto(3)">שלב 3</div>
+    <div class="dev-btn-item" onclick="devGoto(6)">סיום</div>
+    <div class="dev-btn-item" onclick="devReset()">איפוס מלא</div>
+    <div class="dev-btn-item" onclick="devSkipVal()">דלג ולידציות</div>
+    <div class="dev-btn-item" onclick="devShowAnswers()" style="grid-column:1/-1;">דף תשובות</div>
+  </div>
+  <div class="dev-answers" id="dev-answers"></div>
+  <button class="dev-close" onclick="closeDevPanel()">סגור</button>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, onValue, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+// ══ FIREBASE CONFIG ══
+const firebaseConfig = {
+  apiKey: "AIzaSyDqwl7hKg3P-oqRcyy-ETs3UBAC9w6tPwE",
+  authDomain: "reserve-mystery.firebaseapp.com",
+  databaseURL: "https://reserve-mystery-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "reserve-mystery",
+  storageBucket: "reserve-mystery.firebasestorage.app",
+  messagingSenderId: "583018945713",
+  appId: "1:583018945713:web:eef1e6c80ab0e72aaad690"
+};
+// ════════════════════
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const SID = 'game1';
+const DEV_CODE = '7763';
+
+let myRole = null;
+let state = { phase:1, evidence:{}, startTime:null, skipValidation:false };
+let timerInterval = null;
+let screenHistory = [];
+
+// ── TYPEWRITER ──
+const STORY_LINES = [
+  { html: 'בלילה אחד, תחת אור הירח,', delay: 0 },
+  { html: '<strong>מפת האוצר העתיקה של שמורת עדן הסודית</strong> — נגנבה.', delay: 600 },
+  { html: '', delay: 200 },
+  { html: 'המפה מסמנת את לב השמורה —', delay: 400 },
+  { html: 'מקום שרק הרנג\'רים יודעים עליו.', delay: 400 },
+  { html: 'נדרשים שני בלשים צעירים ומבריקים', delay: 600 },
+  { html: 'על-מנת לפתור את התעלומה.', delay: 300 },
+];
+
+function typewriterEffect() {
+  const el = document.getElementById('intro-story-el');
+  el.innerHTML = '';
+  let lineIndex = 0;
+  let charIndex = 0;
+  let currentHtml = '';
+  let totalDelay = 800;
+
+  function typeLine() {
+    if (lineIndex >= STORY_LINES.length) {
+      // Remove cursor, show button
+      el.innerHTML = el.innerHTML.replace('<span class="tw-cursor"></span>', '');
+      setTimeout(() => document.getElementById('btn-start').classList.add('show'), 300);
+      return;
+    }
+    const line = STORY_LINES[lineIndex];
+    const plainText = line.html.replace(/<[^>]+>/g, '');
+
+    setTimeout(() => {
+      charIndex = 0;
+      function typeChar() {
+        if (charIndex <= plainText.length) {
+          // Rebuild HTML with typed chars
+          const typed = plainText.slice(0, charIndex);
+          const display = line.html.includes('<strong>')
+            ? line.html.replace(plainText, typed)
+            : typed;
+          el.innerHTML = currentHtml +
+            (display ? display + '<span class="tw-cursor"></span>' : '<br>');
+          charIndex++;
+          setTimeout(typeChar, charIndex === 1 ? 0 : 28 + Math.random() * 18);
+        } else {
+          // Line done
+          currentHtml += (line.html ? line.html + '<br>' : '<br>');
+          lineIndex++;
+          typeLine();
+        }
+      }
+      typeChar();
+    }, totalDelay + line.delay);
+    totalDelay = 0;
+  }
+  typeLine();
+}
+
+// ── LOCAL STORAGE ──
+function saveLocal() {
+  localStorage.setItem('reserve_state', JSON.stringify(state));
+  localStorage.setItem('reserve_role', myRole || '');
+}
+function loadLocal() {
+  try {
+    const s = localStorage.getItem('reserve_state');
+    const r = localStorage.getItem('reserve_role');
+    if (s) state = { ...state, ...JSON.parse(s) };
+    if (r) myRole = r;
+  } catch(e) {}
+}
+
+// ── NAVIGATION ──
+window.goTo = function(id, addHistory=true) {
+  if (addHistory && id !== 's-load' && id !== 's-curtain') {
+    const cur = document.querySelector('.screen.active');
+    if (cur && cur.id !== id) screenHistory.push(cur.id);
+  }
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('back-btn').className = 'back-btn' + (screenHistory.length > 0 ? ' vis' : '');
+  if (id === 's-intro') setTimeout(typewriterEffect, 1600);
+};
+
+window.goBack = function() {
+  if (!screenHistory.length) return;
+  const prev = screenHistory.pop();
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(prev).classList.add('active');
+  document.getElementById('back-btn').className = 'back-btn' + (screenHistory.length > 0 ? ' vis' : '');
+};
+
+// ── CURTAIN ANIMATION ──
+function playCurtain() {
+  goTo('s-curtain', false);
+  // Add fireflies to curtain
+  const scene = document.querySelector('.curtain-scene');
+  for (let i = 0; i < 12; i++) {
+    const ff = document.createElement('div');
+    ff.className = 'cff';
+    ff.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*70}%;`;
+    ff.style.setProperty('--tx', (Math.random()*80-40)+'px');
+    ff.style.setProperty('--ty', (Math.random()*40-20)+'px');
+    ff.style.animationDuration = (7+Math.random()*8)+'s';
+    ff.style.animationDelay = (Math.random()*4)+'s';
+    document.getElementById('s-curtain').appendChild(ff);
+  }
+
+  // Open curtains after 1.2s
+  setTimeout(() => {
+    document.getElementById('cl').classList.add('open');
+    document.getElementById('cr').classList.add('open');
+    document.getElementById('curtain-sub').classList.add('show');
+  }, 1200);
+
+  // Transition to intro after curtain opens
+  setTimeout(() => goTo('s-intro'), 3200);
+}
+
+// ── ROLES ──
+window.selectRole = async function(role) {
+  const snap = await get(ref(db, `sessions/${SID}/players/${role}`));
+  if (snap.exists() && snap.val().connected) {
+    showNotif('⛔ תפקיד זה כבר נלקח!');
+    return;
+  }
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('sel'));
+  document.getElementById(`rc-${role}`).classList.add('sel');
+  myRole = role;
+  document.getElementById('btn-role').classList.add('vis');
+};
+
+window.confirmRole = async function() {
+  if (!myRole) return;
+  await set(ref(db, `sessions/${SID}/players/${myRole}`), {
+    connected: true, name: myRole === 'yuval' ? 'יובל' : 'איתי'
+  });
+  saveLocal();
+  goTo('s-wait');
+  listenForPlayers();
+};
+
+// ── PLAYERS ──
+function listenForPlayers() {
+  onValue(ref(db, `sessions/${SID}/players`), snap => {
+    const p = snap.val() || {};
+    const yu = p.yuval?.connected, it = p.itay?.connected;
+    setDot('yuval', yu); setDot('itay', it);
+    if (yu && it) setTimeout(startGame, 800);
+  });
+}
+function setDot(role, on) {
+  const d = document.getElementById(`dot-${role}`);
+  const c = document.getElementById(`pc-${role}`);
+  if (d) d.className = 'dot'+(on?' on':'');
+  if (c) c.className = 'p-card'+(on?' on':'');
+}
+
+// ── GAME ──
+function startGame() {
+  document.getElementById('ptag').textContent = myRole==='yuval' ? '🦁 יובל' : '🦅 איתי';
+  goTo('s-game');
+  listenEvidence();
+  listenTimer();
+  get(ref(db, `sessions/${SID}/startTime`)).then(snap => {
+    if (!snap.exists()) set(ref(db, `sessions/${SID}/startTime`), Date.now());
+  });
+}
+
+function listenTimer() {
+  onValue(ref(db, `sessions/${SID}/startTime`), snap => {
+    if (!snap.exists()) return;
+    const start = snap.val();
+    state.startTime = start;
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      const e = Math.floor((Date.now()-start)/1000);
+      const m = String(Math.floor(e/60)).padStart(2,'0');
+      const s = String(e%60).padStart(2,'0');
+      document.getElementById('timer-disp').textContent = `${m}:${s}`;
+    }, 1000);
+  });
+}
+
+window.collectClue = async function(el) {
+  if (el.classList.contains('found')) return;
+  const type = el.dataset.t, label = el.dataset.l, id = el.id;
+  if (type === 'fake') {
+    showNotif(`🚫 ${label} — זו לא ראיה`);
+    el.style.opacity = '.22';
+    el.style.pointerEvents = 'none';
+    return;
+  }
+  el.classList.add('found');
+  showNotif(`✅ נמצא: ${label}!`);
+  await set(ref(db, `sessions/${SID}/evidence/${id}`), {
+    id, label, type, animal: el.dataset.a||null, by: myRole, ts: Date.now()
+  });
+};
+
+function listenEvidence() {
+  onValue(ref(db, `sessions/${SID}/evidence`), snap => {
+    const ev = snap.val()||{};
+    const items = Object.values(ev);
+    state.evidence = ev; saveLocal();
+    document.getElementById('ev-cnt').textContent = items.length;
+    renderEvGrid(items);
+    items.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (el && !el.classList.contains('found')) {
+        el.classList.add('found');
+        setTimeout(() => { if(el) el.style.display='none'; }, 500);
+      }
+    });
+    if (items.length >= 14) setTimeout(() => showComplete(items), 700);
+  });
+}
+
+function renderEvGrid(items) {
+  const grid = document.getElementById('ev-grid');
+  grid.innerHTML = '';
+  items.forEach(item => {
+    const slot = document.createElement('div');
+    slot.className = 'ev-slot filled';
+    const em = item.type==='track' ? '🐾' :
+      item.label?.includes('נוצה')?'🪶':item.label?.includes('עצם')?'🦴':item.label?.includes('פרווה')?'🧶':'🌿';
+    slot.innerHTML = `${em}<span class="lbl">${item.label}</span>`;
+    grid.appendChild(slot);
+  });
+}
+
+function showComplete(items) {
+  const list = document.getElementById('ov-list');
+  list.innerHTML = '';
+  items.forEach(i => {
+    const d = document.createElement('div');
+    d.className = 'ov-item';
+    d.textContent = (i.type==='track'?'🐾 ':'🔍 ')+i.label;
+    list.appendChild(d);
+  });
+  document.getElementById('ov-complete').classList.add('show');
+}
+
+window.nextPhase = function() {
+  document.getElementById('ov-complete').classList.remove('show');
+  showNotif('🚧 שלב 2 בפיתוח — בקרוב!');
+};
+
+// ── NOTIF ──
+let notifTimer;
+window.showNotif = function(msg) {
+  const el = document.getElementById('notif');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(() => el.classList.remove('show'), 2600);
+};
+
+// ── DEV ──
+window.openDevPrompt = function() {
+  const code = prompt('קוד גישה:');
+  if (code===DEV_CODE) document.getElementById('dev-panel').classList.add('open');
+  else if (code!==null) showNotif('❌ קוד שגוי');
+};
+window.closeDevPanel = () => document.getElementById('dev-panel').classList.remove('open');
+window.devGoto = function(phase) {
+  closeDevPanel();
+  if (phase===1) goTo('s-game');
+  else if (phase===6) showComplete(Object.values(state.evidence));
+  else showNotif('🚧 שלב '+phase+' בפיתוח');
+};
+window.devReset = async function() {
+  if (!confirm('איפוס מלא?')) return;
+  closeDevPanel();
+  await set(ref(db,`sessions/${SID}`), null);
+  localStorage.clear(); location.reload();
+};
+window.devSkipVal = function() {
+  state.skipValidation=true; saveLocal(); closeDevPanel(); showNotif('✅ ולידציות מבוטלות');
+};
+window.devShowAnswers = function() {
+  const el = document.getElementById('dev-answers');
+  el.style.display = el.style.display==='none'?'block':'none';
+  el.innerHTML = `<strong>12 חיות:</strong><br>
+דיירות: אריה, פיל, גורילה, תנין, נשר, גירית, חזיר בר, ג'ירפה<br>
+פולשות: נמר, דב, רקון, שועל<br><br>
+<strong>ראיות שלב 1:</strong><br>
+c1:אריה c2:פיל c3:גורילה c4:תנין c5:נשר<br>
+c6:גירית c7:חזיר בר c8:נמר c9:דב c10:רקון<br>
+c11:נוצה c12:קרע c13:עצם c14:פרווה`;
+};
+
+// ── FIREFLIES ──
+function createFireflies() {
+  const wrap = document.getElementById('ff-wrap');
+  for (let i=0; i<16; i++) {
+    const ff = document.createElement('div');
+    ff.className = 'ff';
+    ff.style.left = Math.random()*100+'%';
+    ff.style.top = Math.random()*65+'%';
+    ff.style.setProperty('--tx',(Math.random()*90-45)+'px');
+    ff.style.setProperty('--ty',(Math.random()*50-25)+'px');
+    ff.style.animationDuration = (6+Math.random()*9)+'s';
+    ff.style.animationDelay = (Math.random()*6)+'s';
+    wrap.appendChild(ff);
+  }
+}
+
+// ── INIT ──
+loadLocal();
+createFireflies();
+
+setTimeout(() => {
+  if (myRole && state.startTime) {
+    goTo('s-game', false);
+    document.getElementById('ptag').textContent = myRole==='yuval'?'🦁 יובל':'🦅 איתי';
+    listenEvidence(); listenTimer(); listenForPlayers();
+  } else if (myRole) {
+    goTo('s-wait', false);
+    listenForPlayers();
+  } else {
+    playCurtain();
+  }
+}, 1100);
+</script>
+</body>
+</html>
