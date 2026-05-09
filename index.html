@@ -23,38 +23,59 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 .curt-jungle{
   position:absolute;inset:0;
   background:url('jungle.jpg') center center/cover no-repeat;
-  filter:brightness(.35) saturate(.6);
+  filter:brightness(.35) saturate(.7);
   opacity:0;transition:opacity 1.4s ease;
 }
 .curt-jungle.show{opacity:1;}
 
-/* Branch panels */
+/* Branch image panels */
 .curt-l,.curt-r{
-  position:absolute;top:0;bottom:0;
-  width:57%;z-index:20;overflow:hidden;
-  transition:transform 1.9s cubic-bezier(.77,0,.18,1);
+  position:absolute;top:0;bottom:0;z-index:20;overflow:hidden;
+  transition:transform 2s cubic-bezier(.77,0,.18,1);
 }
-.curt-l{left:0;transform:translateX(0);}
-.curt-r{right:0;transform:translateX(0);}
-.curt-l.open{transform:translateX(-103%);}
-.curt-r.open{transform:translateX(103%);}
 
-.curt-svg{position:absolute;inset:0;width:100%;height:100%;}
+/* Left branch — anchored left, takes ~60% width */
+.curt-l{
+  left:0;width:62%;
+  transform:translateX(0);
+}
+.curt-l.open{transform:translateX(-105%);}
 
-/* Title over curtain */
+/* Right branch — anchored right, takes ~62% width, overlaps left */
+.curt-r{
+  right:0;width:62%;
+  transform:translateX(0);
+  transition-delay:.08s;
+}
+.curt-r.open{transform:translateX(105%);}
+
+.curt-l-img{
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;
+  object-fit:cover;object-position:left center;
+  mix-blend-mode:screen;
+}
+.curt-r-img{
+  position:absolute;top:0;right:0;
+  width:100%;height:100%;
+  object-fit:cover;object-position:right center;
+  mix-blend-mode:screen;
+}
+
+/* Title */
 .curt-title{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
-  z-index:30;text-align:center;width:90%;
+  z-index:30;text-align:center;width:95%;
   pointer-events:none;
 }
 .curt-title h1{
   font-family:'Secular One',sans-serif;
-  font-size:clamp(2rem,7vw,4rem);
+  font-size:clamp(2rem,7vw,4.2rem);
   white-space:nowrap;
   color:var(--cream);
-  text-shadow:0 0 40px rgba(201,168,76,.6),0 2px 30px rgba(0,0,0,.95);
-  opacity:0;transition:opacity 1s ease .2s;
+  text-shadow:0 0 40px rgba(201,168,76,.7),0 2px 30px rgba(0,0,0,.98);
+  opacity:0;transition:opacity 1s ease .3s;
 }
 .curt-title h1.show{opacity:1;}
 
@@ -68,7 +89,7 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   background:url('jungle.jpg') center center/cover no-repeat;
   overflow:hidden;
 }
-#s-intro::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.75);}
+#s-intro::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.76);}
 
 .intro-inner{
   position:relative;z-index:5;
@@ -82,18 +103,22 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   white-space:nowrap;
   color:var(--cream);
   text-shadow:0 0 30px rgba(201,168,76,.4);
-  margin-bottom:1.5rem;
+  margin-bottom:1.4rem;
 }
 
+/* Special Elite with smaller dashes/commas fix */
 .intro-story{
   font-family:'Special Elite',serif;
-  font-size:clamp(1.05rem,2.6vw,1.22rem);
+  font-size:clamp(1.08rem,2.7vw,1.24rem);
   color:#e8dcc8;
-  line-height:1.8;
-  margin-bottom:1.6rem;
+  line-height:1.72;
+  margin-bottom:1.5rem;
   text-align:right;
-  min-height:10em;
+  min-height:9em;
+  /* Scale down punctuation via font-size trick on spans */
 }
+.intro-story .sm{font-size:.78em;vertical-align:.05em;}
+
 .tw-cursor{
   display:inline-block;width:2px;height:1em;
   background:var(--gold-l);vertical-align:middle;
@@ -114,56 +139,66 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 .btn-start.show{opacity:1;}
 
 /* ══ POLICE TERMINAL ══ */
-#s-roles{background:#0a0f1a;font-family:'Special Elite',serif;}
+#s-roles{
+  background:url('jungle.jpg') center center/cover no-repeat;
+  font-family:'Special Elite',serif;
+  overflow:hidden;
+}
 #s-roles::before{
   content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.025) 2px,rgba(0,255,65,.025) 4px);
-  pointer-events:none;
+  background:rgba(0,0,0,.82);
 }
+/* Scanlines */
 #s-roles::after{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.5) 100%);
-  pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.02) 2px,rgba(0,255,65,.02) 4px);
+  pointer-events:none;z-index:1;
 }
 
-.police-wrap{position:relative;z-index:5;width:100%;max-width:440px;padding:0 1.2rem;}
-.police-hdr{text-align:center;margin-bottom:1.4rem;}
-.police-logo{font-size:.65rem;letter-spacing:.22em;color:var(--gd);margin-bottom:.3rem;}
-.police-ttl{
-  font-size:clamp(1rem,4vw,1.4rem);color:var(--gs);
-  letter-spacing:.08em;text-shadow:0 0 10px rgba(0,255,65,.4);
+.police-wrap{position:relative;z-index:5;width:100%;max-width:480px;padding:0 1.4rem;}
+.police-hdr{text-align:center;margin-bottom:1.6rem;}
+
+.police-logo{
+  font-size:clamp(1rem,3.5vw,1.4rem);
+  letter-spacing:.08em;color:var(--gs);
+  text-shadow:0 0 12px rgba(0,255,65,.5);
+  margin-bottom:.5rem;
+  line-height:1.4;
 }
-.police-sub{font-size:.62rem;color:var(--gd);letter-spacing:.14em;margin-top:.15rem;}
-.pdiv{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gs),transparent);margin:.7rem 0;opacity:.35;}
+
+.pdiv{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gs),transparent);margin:.8rem 0;opacity:.35;}
 
 .role-btn{
-  width:100%;background:#0d1520;
+  width:100%;background:rgba(10,20,10,.7);
   border:1px solid var(--gd);color:var(--gs);
   font-family:'Special Elite',serif;
-  font-size:clamp(1.15rem,4.5vw,1.5rem);
+  font-size:clamp(1.3rem,5vw,1.7rem);
   padding:1.1rem 1.4rem;border-radius:4px;cursor:pointer;
   transition:all .2s;margin-bottom:.9rem;
   text-align:center;letter-spacing:.04em;
-  text-shadow:0 0 8px rgba(0,255,65,.35);
+  text-shadow:0 0 10px rgba(0,255,65,.4);
+  backdrop-filter:blur(4px);
 }
-.role-btn::before{content:'> ';opacity:.45;font-size:.85em;}
+.role-btn::before{content:'> ';opacity:.4;font-size:.85em;}
 .role-btn:hover,.role-btn.sel{
-  background:rgba(0,255,65,.07);border-color:var(--gs);
-  box-shadow:0 0 16px rgba(0,255,65,.18),inset 0 0 12px rgba(0,255,65,.04);
+  background:rgba(0,255,65,.08);border-color:var(--gs);
+  box-shadow:0 0 18px rgba(0,255,65,.2),inset 0 0 14px rgba(0,255,65,.04);
 }
-.role-btn.taken{opacity:.35;cursor:not-allowed;color:var(--gd);}
+.role-btn.taken{opacity:.3;cursor:not-allowed;color:var(--gd);}
 
+/* Partner name input */
 .partner-wrap{
   display:none;margin-bottom:.9rem;
   border:1px solid var(--gd);border-radius:4px;
-  background:#0d1520;padding:.75rem 1rem;
+  background:rgba(10,20,10,.7);padding:.8rem 1.1rem;
+  backdrop-filter:blur(4px);
 }
 .partner-wrap.show{display:block;}
-.partner-lbl{font-size:.62rem;color:var(--gd);letter-spacing:.14em;margin-bottom:.35rem;display:block;}
+.partner-lbl{font-size:.7rem;color:var(--gd);letter-spacing:.14em;margin-bottom:.4rem;display:block;}
 .partner-input{
   width:100%;background:transparent;border:none;
   color:var(--gs);font-family:'Special Elite',serif;
-  font-size:1.35rem;outline:none;letter-spacing:.04em;
+  font-size:1.5rem;outline:none;letter-spacing:.04em;
   text-shadow:0 0 8px rgba(0,255,65,.35);
   caret-color:var(--gs);
 }
@@ -173,29 +208,33 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   width:100%;margin-top:.4rem;
   background:transparent;border:1px solid var(--gs);
   color:var(--gs);font-family:'Special Elite',serif;
-  font-size:.95rem;padding:.75rem;border-radius:4px;cursor:pointer;
+  font-size:1rem;padding:.8rem;border-radius:4px;cursor:pointer;
   letter-spacing:.09em;transition:all .2s;
   opacity:0;pointer-events:none;
   text-shadow:0 0 8px rgba(0,255,65,.35);
 }
 .police-confirm.vis{opacity:1;pointer-events:all;}
 .police-confirm:hover{background:rgba(0,255,65,.09);box-shadow:0 0 14px rgba(0,255,65,.18);}
-.pcursor{display:inline-block;width:8px;height:1.1em;background:var(--gs);vertical-align:middle;animation:blink .8s ease infinite;margin-left:.2rem;}
+.pcursor{display:inline-block;width:8px;height:1em;background:var(--gs);vertical-align:middle;animation:blink .8s ease infinite;margin-right:.2rem;}
 
 /* ══ WAITING ══ */
-#s-wait{background:#0a0f1a;font-family:'Special Elite',serif;}
-#s-wait::before{
+#s-wait{
+  background:url('jungle.jpg') center center/cover no-repeat;
+  font-family:'Special Elite',serif;
+}
+#s-wait::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.82);}
+#s-wait::after{
   content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.025) 2px,rgba(0,255,65,.025) 4px);
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.02) 2px,rgba(0,255,65,.02) 4px);
   pointer-events:none;
 }
 .wait-inner{position:relative;z-index:5;text-align:center;padding:2rem;}
-.wait-ttl{font-size:1.3rem;color:var(--gs);letter-spacing:.09em;margin-bottom:.25rem;text-shadow:0 0 10px rgba(0,255,65,.35);}
-.wait-sub{font-size:.62rem;color:var(--gd);letter-spacing:.14em;margin-bottom:1.8rem;}
+.wait-ttl{font-size:1.4rem;color:var(--gs);letter-spacing:.09em;margin-bottom:.25rem;text-shadow:0 0 10px rgba(0,255,65,.35);}
+.wait-sub{font-size:.65rem;color:var(--gd);letter-spacing:.14em;margin-bottom:1.8rem;}
 .players-row{display:flex;gap:1.4rem;justify-content:center;flex-wrap:wrap;}
-.p-card{background:#0d1520;border:1px solid var(--gd);border-radius:4px;padding:.9rem 1.4rem;min-width:130px;text-align:center;transition:all .3s;}
+.p-card{background:rgba(10,20,10,.7);border:1px solid var(--gd);border-radius:4px;padding:.9rem 1.4rem;min-width:130px;text-align:center;transition:all .3s;backdrop-filter:blur(4px);}
 .p-card.on{border-color:var(--gs);box-shadow:0 0 12px rgba(0,255,65,.18);}
-.p-card-name{font-size:1rem;color:var(--gs);margin-bottom:.45rem;letter-spacing:.04em;}
+.p-card-name{font-size:1.1rem;color:var(--gs);margin-bottom:.45rem;letter-spacing:.04em;}
 .dot{width:9px;height:9px;border-radius:50%;background:#1a2a1a;margin:0 auto;transition:all .3s;}
 .dot.on{background:var(--gs);box-shadow:0 0 8px var(--gs);}
 
@@ -272,7 +311,7 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 
 @media(max-width:480px){
   .intro-title-main{font-size:1.6rem;}
-  .intro-story{font-size:.98rem;}
+  .intro-story{font-size:1rem;}
   .clue{font-size:1.25rem;}
   .ev-slot{width:40px;height:40px;}
 }
@@ -289,114 +328,11 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 <div class="screen" id="s-curtain">
   <div class="curt-jungle" id="curt-jungle"></div>
 
-  <!-- LEFT BRANCH PANEL -->
   <div class="curt-l" id="cl">
-    <svg class="curt-svg" viewBox="0 0 420 100%" preserveAspectRatio="xMaxYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <!-- Dark fill -->
-      <rect width="420" height="2000" fill="#060e06"/>
-
-      <!-- Main thick branch diagonals -->
-      <path d="M -20 -10 C 80 60, 200 160, 340 280 C 380 315, 420 355, 430 400" fill="none" stroke="#0c2010" stroke-width="32" stroke-linecap="round"/>
-      <path d="M -20 -10 C 80 60, 200 160, 340 280 C 380 315, 420 355, 430 400" fill="none" stroke="#102614" stroke-width="22" stroke-linecap="round"/>
-
-      <path d="M -30 160 C 60 185, 160 220, 260 290 C 320 330, 390 370, 430 410" fill="none" stroke="#0a1c0c" stroke-width="26" stroke-linecap="round"/>
-      <path d="M -30 160 C 60 185, 160 220, 260 290 C 320 330, 390 370, 430 410" fill="none" stroke="#0e2210" stroke-width="18" stroke-linecap="round"/>
-
-      <path d="M 20 -20 C 80 40, 140 100, 200 150 C 260 200, 340 240, 420 270" fill="none" stroke="#0b1e0d" stroke-width="20" stroke-linecap="round"/>
-
-      <!-- Sub-branches -->
-      <path d="M 150 140 C 200 110, 260 90, 310 70" fill="none" stroke="#0e2210" stroke-width="12" stroke-linecap="round"/>
-      <path d="M 200 190 C 240 160, 280 140, 330 125" fill="none" stroke="#0c1e0e" stroke-width="9" stroke-linecap="round"/>
-      <path d="M 80 90 C 110 65, 150 50, 190 40" fill="none" stroke="#0d2010" stroke-width="8" stroke-linecap="round"/>
-
-      <!-- LEAF CLUSTERS — large ellipses -->
-      <!-- Top cluster -->
-      <ellipse cx="60" cy="25" rx="62" ry="28" fill="#1a4e1a" transform="rotate(-28 60 25)"/>
-      <ellipse cx="40" cy="15" rx="46" ry="22" fill="#205420" transform="rotate(-18 40 15)"/>
-      <ellipse cx="95" cy="42" rx="40" ry="18" fill="#164216" transform="rotate(-42 95 42)"/>
-      <ellipse cx="28" cy="52" rx="34" ry="15" fill="#1e4e1e" transform="rotate(-12 28 52)"/>
-      <ellipse cx="130" cy="30" rx="38" ry="16" fill="#1c4c1c" transform="rotate(-55 130 30)"/>
-
-      <!-- Mid-top cluster -->
-      <ellipse cx="30" cy="130" rx="54" ry="24" fill="#185018" transform="rotate(12 30 130)"/>
-      <ellipse cx="58" cy="115" rx="44" ry="20" fill="#1e5820" transform="rotate(-4 58 115)"/>
-      <ellipse cx="12" cy="150" rx="36" ry="16" fill="#144014" transform="rotate(22 12 150)"/>
-      <ellipse cx="90" cy="108" rx="32" ry="14" fill="#1a4a1a" transform="rotate(-35 90 108)"/>
-
-      <!-- Main branch cluster -->
-      <ellipse cx="160" cy="155" rx="52" ry="22" fill="#1c521c" transform="rotate(-52 160 155)"/>
-      <ellipse cx="178" cy="138" rx="40" ry="17" fill="#225a22" transform="rotate(-38 178 138)"/>
-      <ellipse cx="138" cy="172" rx="34" ry="14" fill="#184018" transform="rotate(-65 138 172)"/>
-
-      <!-- Right overlap cluster — extends past center -->
-      <ellipse cx="290" cy="195" rx="68" ry="26" fill="#205e20" transform="rotate(-22 290 195)"/>
-      <ellipse cx="315" cy="178" rx="52" ry="21" fill="#266428" transform="rotate(-12 315 178)"/>
-      <ellipse cx="268" cy="215" rx="44" ry="18" fill="#1c501c" transform="rotate(-33 268 215)"/>
-      <ellipse cx="340" cy="165" rx="42" ry="17" fill="#245c24" transform="rotate(-8 340 165)"/>
-
-      <!-- Far right — overlapping right branch -->
-      <ellipse cx="385" cy="145" rx="55" ry="22" fill="#226022" transform="rotate(-18 385 145)"/>
-      <ellipse cx="408" cy="130" rx="42" ry="17" fill="#286628" transform="rotate(-8 408 130)"/>
-
-      <!-- Lower cluster -->
-      <ellipse cx="70" cy="270" rx="56" ry="24" fill="#1a541a" transform="rotate(14 70 270)"/>
-      <ellipse cx="100" cy="254" rx="44" ry="19" fill="#205e20" transform="rotate(5 100 254)"/>
-      <ellipse cx="44" cy="286" rx="38" ry="16" fill="#154215" transform="rotate(26 44 286)"/>
-      <ellipse cx="145" cy="260" rx="36" ry="15" fill="#1e521e" transform="rotate(-10 145 260)"/>
-
-      <!-- Tiny detail leaves -->
-      <ellipse cx="200" cy="95" rx="26" ry="11" fill="#1c4c1c" transform="rotate(-58 200 95)"/>
-      <ellipse cx="230" cy="82" rx="21" ry="9" fill="#225222" transform="rotate(-48 230 82)"/>
-      <ellipse cx="310" cy="128" rx="24" ry="10" fill="#205020" transform="rotate(-32 310 128)"/>
-      <ellipse cx="170" cy="60" rx="20" ry="9" fill="#1e4e1e" transform="rotate(-62 170 60)"/>
-
-      <!-- Subtle vein lines -->
-      <path d="M 60 25 L 95 12 M 60 25 L 38 40" fill="none" stroke="#0a2c0a" stroke-width="0.7" opacity="0.4"/>
-      <path d="M 160 155 L 190 142 M 160 155 L 136 168" fill="none" stroke="#0a2c0a" stroke-width="0.6" opacity="0.35"/>
-      <path d="M 290 195 L 320 180 M 290 195 L 265 210" fill="none" stroke="#0a2c0a" stroke-width="0.7" opacity="0.3"/>
-    </svg>
+    <img class="curt-l-img" src="branches_left.png" alt="">
   </div>
-
-  <!-- RIGHT BRANCH PANEL — mirror of left -->
   <div class="curt-r" id="cr">
-    <svg class="curt-svg" viewBox="0 0 420 100%" preserveAspectRatio="xMinYMid slice" xmlns="http://www.w3.org/2000/svg" style="transform:scaleX(-1)">
-      <rect width="420" height="2000" fill="#060e06"/>
-
-      <path d="M -20 -10 C 80 60, 200 160, 340 280 C 380 315, 420 355, 430 400" fill="none" stroke="#0c2010" stroke-width="32" stroke-linecap="round"/>
-      <path d="M -20 -10 C 80 60, 200 160, 340 280 C 380 315, 420 355, 430 400" fill="none" stroke="#102614" stroke-width="22" stroke-linecap="round"/>
-      <path d="M -30 160 C 60 185, 160 220, 260 290 C 320 330, 390 370, 430 410" fill="none" stroke="#0a1c0c" stroke-width="26" stroke-linecap="round"/>
-      <path d="M -30 160 C 60 185, 160 220, 260 290 C 320 330, 390 370, 430 410" fill="none" stroke="#0e2210" stroke-width="18" stroke-linecap="round"/>
-      <path d="M 20 -20 C 80 40, 140 100, 200 150 C 260 200, 340 240, 420 270" fill="none" stroke="#0b1e0d" stroke-width="20" stroke-linecap="round"/>
-      <path d="M 150 140 C 200 110, 260 90, 310 70" fill="none" stroke="#0e2210" stroke-width="12" stroke-linecap="round"/>
-      <path d="M 200 190 C 240 160, 280 140, 330 125" fill="none" stroke="#0c1e0e" stroke-width="9" stroke-linecap="round"/>
-      <path d="M 80 90 C 110 65, 150 50, 190 40" fill="none" stroke="#0d2010" stroke-width="8" stroke-linecap="round"/>
-
-      <ellipse cx="60" cy="25" rx="62" ry="28" fill="#1c521c" transform="rotate(-28 60 25)"/>
-      <ellipse cx="40" cy="15" rx="46" ry="22" fill="#225822" transform="rotate(-18 40 15)"/>
-      <ellipse cx="95" cy="42" rx="40" ry="18" fill="#184618" transform="rotate(-42 95 42)"/>
-      <ellipse cx="28" cy="52" rx="34" ry="15" fill="#205020" transform="rotate(-12 28 52)"/>
-      <ellipse cx="130" cy="30" rx="38" ry="16" fill="#1e501e" transform="rotate(-55 130 30)"/>
-      <ellipse cx="30" cy="130" rx="54" ry="24" fill="#1a541a" transform="rotate(12 30 130)"/>
-      <ellipse cx="58" cy="115" rx="44" ry="20" fill="#205c22" transform="rotate(-4 58 115)"/>
-      <ellipse cx="12" cy="150" rx="36" ry="16" fill="#164416" transform="rotate(22 12 150)"/>
-      <ellipse cx="90" cy="108" rx="32" ry="14" fill="#1c4e1c" transform="rotate(-35 90 108)"/>
-      <ellipse cx="160" cy="155" rx="52" ry="22" fill="#1e561e" transform="rotate(-52 160 155)"/>
-      <ellipse cx="178" cy="138" rx="40" ry="17" fill="#245e24" transform="rotate(-38 178 138)"/>
-      <ellipse cx="138" cy="172" rx="34" ry="14" fill="#1a441a" transform="rotate(-65 138 172)"/>
-      <ellipse cx="290" cy="195" rx="68" ry="26" fill="#226022" transform="rotate(-22 290 195)"/>
-      <ellipse cx="315" cy="178" rx="52" ry="21" fill="#28662a" transform="rotate(-12 315 178)"/>
-      <ellipse cx="268" cy="215" rx="44" ry="18" fill="#1e541e" transform="rotate(-33 268 215)"/>
-      <ellipse cx="340" cy="165" rx="42" ry="17" fill="#266226" transform="rotate(-8 340 165)"/>
-      <ellipse cx="385" cy="145" rx="55" ry="22" fill="#246424" transform="rotate(-18 385 145)"/>
-      <ellipse cx="408" cy="130" rx="42" ry="17" fill="#2a6a2a" transform="rotate(-8 408 130)"/>
-      <ellipse cx="70" cy="270" rx="56" ry="24" fill="#1c581c" transform="rotate(14 70 270)"/>
-      <ellipse cx="100" cy="254" rx="44" ry="19" fill="#226222" transform="rotate(5 100 254)"/>
-      <ellipse cx="44" cy="286" rx="38" ry="16" fill="#174617" transform="rotate(26 44 286)"/>
-      <ellipse cx="145" cy="260" rx="36" ry="15" fill="#205620" transform="rotate(-10 145 260)"/>
-      <ellipse cx="200" cy="95" rx="26" ry="11" fill="#1e501e" transform="rotate(-58 200 95)"/>
-      <ellipse cx="230" cy="82" rx="21" ry="9" fill="#245624" transform="rotate(-48 230 82)"/>
-      <ellipse cx="310" cy="128" rx="24" ry="10" fill="#225422" transform="rotate(-32 310 128)"/>
-    </svg>
+    <img class="curt-r-img" src="branches_right.png" alt="">
   </div>
 
   <div class="curt-title">
@@ -417,16 +353,17 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 <div class="screen" id="s-roles">
   <div class="police-wrap">
     <div class="police-hdr">
-      <div class="police-logo">★ מערכת זיהוי בלשים ★</div>
-      <div class="police-ttl">השמורה המסתורית<span class="pcursor"></span></div>
-      <div class="police-sub">DETECTIVE IDENTIFICATION SYSTEM v2.4</div>
+      <div class="police-logo">
+        <span class="pcursor"></span>★ מערכת רישום בלשים לתיק חקירה ★
+      </div>
       <div class="pdiv"></div>
     </div>
     <div class="role-btn" id="rb-yuval" onclick="selectRole('yuval')">הבלשית יובל</div>
     <div class="role-btn" id="rb-itay" onclick="selectRole('itay')">בלש שותף</div>
     <div class="partner-wrap" id="partner-wrap">
       <span class="partner-lbl">// הכנס שם הבלש השותף:</span>
-      <input class="partner-input" id="partner-name" type="text" placeholder="שם..." maxlength="20" oninput="onPartnerName()" autocomplete="off" autocorrect="off" spellcheck="false">
+      <input class="partner-input" id="partner-name" type="text" placeholder="שם..." maxlength="20"
+        oninput="onPartnerName()" autocomplete="off" autocorrect="off" spellcheck="false">
     </div>
     <div class="pdiv"></div>
     <button class="police-confirm" id="btn-confirm" onclick="confirmRole()">[ אישור — כניסה למערכת ]</button>
@@ -524,9 +461,9 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getDatabase, ref, set, onValue, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-// ══ FIREBASE CONFIG — replace with yours ══
+// ══ FIREBASE CONFIG ══
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
+  apiKey: "AIzaSyDqw17hKg3P-oqRcyy-ETs3UBAC9w6tPwE",
   authDomain: "reserve-mystery.firebaseapp.com",
   databaseURL: "https://reserve-mystery-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "reserve-mystery",
@@ -534,7 +471,7 @@ const firebaseConfig = {
   messagingSenderId: "583018945713",
   appId: "1:583018945713:web:eef1e6c80ab0e72aaad690"
 };
-// ══════════════════════════════════════════
+// ══════════════════════
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -552,7 +489,7 @@ const save = () => {
 };
 const load = () => {
   try {
-    const s=localStorage.getItem('rm_state'), r=localStorage.getItem('rm_role'), p=localStorage.getItem('rm_partner');
+    const s=localStorage.getItem('rm_state'),r=localStorage.getItem('rm_role'),p=localStorage.getItem('rm_partner');
     if(s) state={...state,...JSON.parse(s)};
     if(r) myRole=r;
     if(p) partnerName=p;
@@ -592,43 +529,88 @@ function playCurtain() {
     document.getElementById('s-curtain').appendChild(ff);
   }
   setTimeout(()=>document.getElementById('curt-jungle').classList.add('show'), 400);
-  setTimeout(()=>document.getElementById('curt-h1').classList.add('show'), 700);
+  setTimeout(()=>document.getElementById('curt-h1').classList.add('show'), 800);
   setTimeout(()=>{
     document.getElementById('cl').classList.add('open');
     document.getElementById('cr').classList.add('open');
-  }, 1600);
-  setTimeout(()=>goTo('s-intro'), 3800);
+  }, 1800);
+  setTimeout(()=>goTo('s-intro'), 4200);
 }
 
-// ── TYPEWRITER ──
-const STORY = 'אתמול בלילה, תחת אור הירח, נגנבה מפת האוצרות העתיקה של שמורת עדן הסודית.\n\nהמפה מובילה אל מיקומי האוצרות הטמונים ברחבי השמורה, ביניהם \u2014 האבן הקסומה שמגינה על השמורה.\n\nמפת האוצרות הוסתרה במקום סודי בלב השמורה \u2014 מקום שרק פקח השמורה יודע עליו.\n\nהבוקר גילה הפקח שהמפה נגנבה, והוא צריך את עזרתם של שני בלשים צעירים ומבריקים כדי לפתור את התעלומה \u2014 להבין מי מהחיות גנב את המפה ואיך, ולהשיב אותה אל פקח השמורה.\n\nיובל, מוכנה לבחור בלש שותף כדי לעבוד איתך על החקירה המסתורית?';
+// ── TYPEWRITER — with small punctuation via innerHTML ──
+// We insert thin-space + small-caps span for em-dashes and commas
+const STORY_RAW = 'אתמול בלילה<C> תחת אור הירח<C> נגנבה מפת האוצרות העתיקה של שמורת עדן הסודית<P>\n\nהמפה מובילה אל מיקומי האוצרות הטמונים ברחבי השמורה<C> ביניהם<D>האבן הקסומה שמגינה על השמורה<P>\n\nמפת האוצרות הוסתרה במקום סודי בלב השמורה<D>מקום שרק פקח השמורה יודע עליו<P>\n\nהבוקר גילה הפקח שהמפה נגנבה<C> והוא צריך את עזרתם של שני בלשים צעירים ומבריקים כדי לפתור את התעלומה<D>להבין מי מהחיות גנב את המפה ואיך<C> ולהשיב אותה אל פקח השמורה<P>\n\nיובל<C> מוכנה לבחור בלש שותף כדי לעבוד איתך על החקירה המסתורית<Q>';
+
+// C = comma, D = em-dash (small), P = period, Q = ?
+function processStory(raw) {
+  return raw
+    .replace(/\<C\>/g, '<span class="sm">,</span>')
+    .replace(/\<D\>/g, ' <span class="sm">—</span> ')
+    .replace(/\<P\>/g, '<span class="sm">.</span>')
+    .replace(/\<Q\>/g, '<span class="sm">?</span>');
+}
 
 function startTypewriter() {
-  const el=document.getElementById('story-el');
-  el.innerHTML='';
+  const el = document.getElementById('story-el');
+  el.innerHTML = '';
   document.getElementById('btn-start').classList.remove('show');
-  let i=0;
-  const chars=STORY.split('');
-  function next(){
-    if(i>=chars.length){
-      el.innerHTML=el.innerHTML.replace('<span class="tw-cursor"></span>','');
-      setTimeout(()=>document.getElementById('btn-start').classList.add('show'),400);
+
+  // Build array of tokens: {html, delay}
+  // We type char by char but track position in processed string
+  const processed = processStory(STORY_RAW);
+  // Strip HTML for typing simulation, keep HTML for final render
+  // Strategy: type into a temp div, reveal processed HTML progressively
+  const stripped = STORY_RAW
+    .replace(/<C>/g, ',')
+    .replace(/<D>/g, ' — ')
+    .replace(/<P>/g, '.')
+    .replace(/<Q>/g, '?');
+
+  const chars = stripped.split('');
+  let i = 0;
+
+  function next() {
+    if(i >= chars.length) {
+      // Final render with styled punctuation
+      el.innerHTML = processStory(STORY_RAW).replace(/\n/g, '<br>');
+      setTimeout(()=>document.getElementById('btn-start').classList.add('show'), 400);
       return;
     }
-    const ch=chars[i];
-    el.innerHTML=el.innerHTML.replace('<span class="tw-cursor"></span>','');
-    el.innerHTML += ch==='\n' ? '<br>' : ch;
-    el.innerHTML+='<span class="tw-cursor"></span>';
+    const ch = chars[i];
+    // Build current text, replace special chars with styled spans
+    const current = chars.slice(0, i+1).join('');
+    const html = processStory(
+      STORY_RAW.slice(0, matchRawIndex(STORY_RAW, i+1))
+    ).replace(/\n/g, '<br>');
+    el.innerHTML = html + '<span class="tw-cursor"></span>';
     i++;
-    const d = ch==='.' || ch==='?' ? 200 :
-              ch===',' ? 90 :
-              ch==='\u2014' ? 120 :
-              ch==='\n' ? 350 :
-              ch===' ' ? 30 :
-              20 + Math.random()*14;
+    const d = ch==='.' || ch==='?' ? 220 :
+              ch===',' ? 95 :
+              ch==='—' ? 130 :
+              ch==='\n' ? 380 :
+              ch===' ' ? 28 :
+              18 + Math.random()*13;
     setTimeout(next, d);
   }
   setTimeout(next, 200);
+}
+
+// Map stripped index back to raw index
+function matchRawIndex(raw, targetStripped) {
+  let s = 0, r = 0;
+  const tags = ['<C>','<D>','<P>','<Q>'];
+  const lens = {'\<C\>':1,'\<D\>':3,'\<P\>':1,'\<Q\>':1}; // stripped lengths
+  while(r < raw.length && s < targetStripped) {
+    let found = false;
+    for(const tag of tags) {
+      if(raw.startsWith(tag, r)) {
+        const sl = tag==='<C>'?1:tag==='<D>'?3:tag==='<P>'?1:1;
+        s += sl; r += tag.length; found = true; break;
+      }
+    }
+    if(!found){ s++; r++; }
+  }
+  return r;
 }
 
 // ── ROLES ──
@@ -715,7 +697,7 @@ window.collectClue = async function(el){
   if(el.classList.contains('found')) return;
   const type=el.dataset.t,label=el.dataset.l,id=el.id;
   if(type==='fake'){
-    showNotif(`🚫 ${label} \u2014 זו לא ראיה`);
+    showNotif(`🚫 ${label} — זו לא ראיה`);
     el.style.opacity='.12';el.style.pointerEvents='none';
     return;
   }
