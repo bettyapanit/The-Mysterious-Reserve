@@ -9,42 +9,37 @@
 <style>
 :root{--jd:#0a1508;--gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#8a6820;--cream:#f5edd8;--dim:#a8c4aa;--gs:#00ff41;--gd:#00a82a;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;background:#000;color:var(--cream);}
-.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .6s;z-index:10;overflow-y:auto;}
+html,body{height:100%;font-family:'Assistant',sans-serif;background:#000;color:var(--cream);}
+
+/* ── SCREENS ── */
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .6s;z-index:10;}
 .screen.active{opacity:1;pointer-events:all;}
 
-/* FULLSCREEN */
-.fs-btn{position:fixed;top:.6rem;left:2.8rem;background:rgba(0,0,0,.35);border:1px solid rgba(201,168,76,.3);color:rgba(201,168,76,.7);font-size:1rem;width:32px;height:32px;border-radius:6px;cursor:pointer;z-index:500;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(4px);}
+/* ── FIXED UI ELEMENTS ── */
+/* Dev btn — far left */
+.dev-btn-f{position:fixed;top:.6rem;left:.5rem;width:28px;height:28px;background:transparent;border:none;cursor:pointer;z-index:500;opacity:.08;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.dev-btn-f:hover{opacity:.4;}
+/* Fullscreen btn — next to dev */
+.fs-btn{position:fixed;top:.6rem;left:2.5rem;background:rgba(0,0,0,.35);border:1px solid rgba(201,168,76,.3);color:rgba(201,168,76,.7);font-size:1rem;width:28px;height:28px;border-radius:6px;cursor:pointer;z-index:500;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(4px);}
 .fs-btn:hover{border-color:var(--gold);color:var(--gold);}
+/* Back btn */
+.back-btn{position:fixed;bottom:.8rem;right:.8rem;background:rgba(18,38,18,.9);border:1px solid rgba(45,106,48,.4);color:var(--dim);font-size:.8rem;padding:.35rem .85rem;border-radius:20px;cursor:pointer;z-index:100;font-family:'Secular One',sans-serif;display:none;}
+.back-btn.vis{display:block;}
+.back-btn:hover{border-color:var(--gold);color:var(--gold);}
 
-/* LOADING */
-#s-load{background:#000;text-align:center;gap:.9rem;z-index:10;}
+/* ── LOADING ── */
+#s-load{background:#000;text-align:center;gap:.9rem;}
 .spinner{width:40px;height:40px;border:2px solid #142014;border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .load-txt{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.9rem;}
 
-/* FLOATING TITLE — always on top, positioned via JS */
-.ftitle{
-  position:fixed;
-  left:50%;
-  transform:translateX(-50%) translateY(-50%);
-  z-index:60;
-  text-align:center;
-  pointer-events:none;
-  transition:top .9s cubic-bezier(.4,0,.2,1), transform .9s cubic-bezier(.4,0,.2,1);
-  display:none;
-}
-.ftitle h1{
-  font-family:'Secular One',sans-serif;
-  font-size:clamp(2.4rem,8vw,5rem);
-  white-space:nowrap;
-  color:var(--cream);
-  text-shadow:0 0 60px rgba(201,168,76,.95),0 0 120px rgba(201,168,76,.5),0 2px 30px rgba(0,0,0,.98);
-}
-.ftitle.centered{top:50%;}
-.ftitle.top{top:3.8rem;transform:translateX(-50%);}
+/* ── FLOATING TITLE ── */
+.ftitle{position:fixed;left:50%;z-index:60;text-align:center;pointer-events:none;transition:top .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1);display:none;}
+.ftitle h1{font-family:'Secular One',sans-serif;font-size:clamp(2rem,7vw,4.8rem);white-space:nowrap;color:var(--cream);text-shadow:0 0 60px rgba(201,168,76,.95),0 0 120px rgba(201,168,76,.5),0 2px 30px rgba(0,0,0,.98);}
+.ftitle.centered{top:50%;transform:translate(-50%,-50%);}
+.ftitle.top{top:1.8rem;transform:translateX(-50%);}
 
-/* CURTAIN */
+/* ── CURTAIN ── */
 #s-curtain{z-index:50;overflow:hidden;cursor:pointer;}
 .curt-bg{position:absolute;inset:0;background:url('jungle.jpg') center/cover no-repeat;filter:brightness(.32) saturate(.6);transition:filter 1.8s ease;}
 .curt-bg.reveal{filter:brightness(.95) saturate(1);}
@@ -55,103 +50,59 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 .curt-l img,.curt-r img{position:absolute;width:100%;height:100%;object-fit:cover;}
 .curt-l img{object-position:left center;}
 .curt-r img{object-position:right center;}
-.tap-hint{position:absolute;bottom:11%;left:50%;transform:translateX(-50%);z-index:35;font-family:'Assistant',sans-serif;font-size:clamp(.9rem,2.5vw,1.1rem);color:rgba(240,210,140,.8);letter-spacing:.2em;pointer-events:none;animation:phint 2.2s ease-in-out infinite;transition:opacity .4s;}
+.tap-hint{position:absolute;bottom:10%;left:50%;transform:translateX(-50%);z-index:35;font-family:'Assistant',sans-serif;font-size:clamp(.85rem,2.5vw,1.1rem);color:rgba(240,210,140,.8);letter-spacing:.2em;pointer-events:none;animation:phint 2.2s ease-in-out infinite;transition:opacity .4s;}
 @keyframes phint{0%,100%{opacity:.4}50%{opacity:1}}
 
-/* FIREFLIES */
+/* ── FIREFLIES ── */
 .ff{position:absolute;border-radius:50%;background:var(--gold-l);box-shadow:0 0 5px 2px rgba(240,204,110,.4);animation:ffloat linear infinite;pointer-events:none;}
 @keyframes ffloat{0%{opacity:0;transform:translate(0,0)}15%{opacity:1}85%{opacity:.6}100%{opacity:0;transform:translate(var(--tx),var(--ty))}}
 
-/* INTRO */
-#s-intro{background:url('jungle.jpg') center/cover no-repeat;overflow:hidden;}
-#s-intro::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 10%,rgba(201,168,76,.15) 0%,transparent 50%);pointer-events:none;z-index:1;}
-
-.intro-inner{
-  position:relative;z-index:5;
-  text-align:center;
-  /* top padding = space for floating title (~3.8rem top + ~5rem h1 height) */
-  padding:9rem 1.5rem 1.5rem;
-  max-width:720px;width:100%;
-  display:flex;flex-direction:column;align-items:center;
-}
-
-.intro-story{
-  font-family:'Special Elite',serif;
-  font-size:clamp(1.3rem,3.2vw,1.65rem);
-  color:#fff;
-  text-shadow:0 1px 14px rgba(0,0,0,.99),0 0 35px rgba(0,0,0,.95),0 0 70px rgba(0,0,0,.8);
-  line-height:1.78;
-  margin-bottom:2rem;
-  text-align:center;
-  min-height:8em;
-  width:100%;
-}
+/* ── INTRO ── */
+#s-intro{background:url('jungle.jpg') center/cover no-repeat;overflow-y:auto;justify-content:flex-start;align-items:center;}
+#s-intro::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 8%,rgba(201,168,76,.15) 0%,transparent 50%);pointer-events:none;z-index:1;}
+.intro-inner{position:relative;z-index:5;text-align:center;padding:5rem 1.2rem 2rem;max-width:680px;width:100%;display:flex;flex-direction:column;align-items:center;}
+.intro-story{font-family:'Special Elite',serif;font-size:clamp(1rem,2.4vw,1.4rem);color:#fff;text-shadow:0 1px 14px rgba(0,0,0,.99),0 0 35px rgba(0,0,0,.95);line-height:1.85;margin-bottom:2rem;text-align:center;width:100%;}
 .intro-story .sm{font-size:.75em;vertical-align:.06em;}
 .tw-cursor{display:inline-block;width:2px;height:1em;background:var(--gold-l);vertical-align:middle;animation:blink .65s ease infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-
-.btn-gold{font-family:'Secular One',sans-serif;font-size:1.35rem;padding:1rem 2.8rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--jd);border:none;border-radius:8px;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 24px rgba(201,168,76,.45);}
+.btn-gold{font-family:'Secular One',sans-serif;font-size:1.3rem;padding:1rem 2.5rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--jd);border:none;border-radius:8px;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 24px rgba(201,168,76,.45);}
 .btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,.65);}
 .btn-start{opacity:0;transition:opacity .6s;}
 .btn-start.show{opacity:1;}
 
-/* POLICE TERMINAL */
+/* ── BRIEFING (welcome screen between roles and game) ── */
+#s-brief{background:url('jungle.jpg') center/cover no-repeat;overflow:hidden;}
+#s-brief::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.78);}
+.brief-inner{position:relative;z-index:5;max-width:600px;padding:2rem 1.5rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1.2rem;}
+.brief-title{font-family:'Secular One',sans-serif;font-size:clamp(1.3rem,4vw,1.8rem);color:var(--gold);text-shadow:0 0 20px rgba(201,168,76,.4);}
+.brief-names{font-family:'Secular One',sans-serif;font-size:clamp(1.1rem,3.5vw,1.5rem);color:var(--cream);}
+.brief-body{font-family:'Special Elite',serif;font-size:clamp(.95rem,2.3vw,1.15rem);color:#e8dcc8;line-height:1.85;text-align:center;}
+.brief-cta{font-family:'Special Elite',serif;font-size:clamp(.95rem,2.3vw,1.1rem);color:var(--dim);margin-top:.5rem;}
+
+/* ── POLICE ROLES ── */
 #s-roles{background:url('jungle.jpg') center/cover no-repeat;font-family:'Special Elite',serif;overflow:hidden;}
-#s-roles::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.72);pointer-events:none;}
-
-.police-frame{
-  position:relative;z-index:5;
-  width:100%;max-width:500px;
-  padding:1.8rem 1.8rem;
-  margin:0 1rem;
-  /* Monitor look: darker bg, scanlines inside, rounded corners, bezel shadow */
-  background:rgba(4,12,4,.8);
-  border:2px solid rgba(0,255,65,.35);
-  border-radius:14px;
-  backdrop-filter:blur(16px);
-  box-shadow:
-    0 0 0 4px rgba(0,20,0,.6),
-    0 0 0 6px rgba(0,255,65,.08),
-    0 0 40px rgba(0,255,65,.12),
-    inset 0 0 60px rgba(0,0,0,.4);
-  overflow:hidden;
-}
-/* Scanlines inside frame */
-.police-frame::before{
-  content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.028) 2px,rgba(0,255,65,.028) 4px);
-  pointer-events:none;z-index:0;border-radius:14px;
-}
-/* Screen glare top */
-.police-frame::after{
-  content:'';position:absolute;top:0;left:0;right:0;height:40%;
-  background:linear-gradient(180deg,rgba(0,255,65,.04) 0%,transparent 100%);
-  pointer-events:none;z-index:0;
-}
+#s-roles::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.72);}
+.police-frame{position:relative;z-index:5;width:100%;max-width:500px;padding:1.8rem;margin:0 1rem;background:rgba(4,12,4,.8);border:2px solid rgba(0,255,65,.35);border-radius:14px;backdrop-filter:blur(16px);box-shadow:0 0 0 4px rgba(0,20,0,.6),0 0 40px rgba(0,255,65,.12),inset 0 0 60px rgba(0,0,0,.4);overflow:hidden;}
+.police-frame::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.028) 2px,rgba(0,255,65,.028) 4px);pointer-events:none;z-index:0;border-radius:14px;}
 .police-inner{position:relative;z-index:2;}
-
 .police-hdr{text-align:center;margin-bottom:1.3rem;}
 .police-logo{font-size:clamp(1.05rem,3.5vw,1.4rem);letter-spacing:.06em;color:var(--gs);text-shadow:0 0 14px rgba(0,255,65,.6);margin-bottom:.5rem;line-height:1.5;}
 .police-sub2{font-size:clamp(.9rem,2.8vw,1.1rem);color:var(--gd);letter-spacing:.04em;}
 .pdiv{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gs),transparent);margin:.75rem 0;opacity:.35;}
-
 .role-btn{width:100%;background:rgba(3,14,3,.7);border:1px solid var(--gd);color:var(--gs);font-family:'Special Elite',serif;font-size:clamp(1.25rem,4.5vw,1.6rem);padding:1rem 1.3rem;border-radius:6px;cursor:pointer;transition:all .2s;margin-bottom:.85rem;text-align:center;letter-spacing:.04em;text-shadow:0 0 10px rgba(0,255,65,.4);}
 .role-btn::before{content:'> ';opacity:.35;font-size:.82em;}
 .role-btn:hover,.role-btn.sel{background:rgba(0,255,65,.08);border-color:var(--gs);box-shadow:0 0 18px rgba(0,255,65,.2);}
-.role-btn.taken{opacity:.28;cursor:not-allowed;color:var(--gd);}
-
 .partner-wrap{display:none;margin-bottom:.85rem;border:1px solid var(--gd);border-radius:6px;background:rgba(3,14,3,.7);padding:.75rem 1rem;}
 .partner-wrap.show{display:block;}
-.partner-lbl{font-size:.9rem;color:var(--gd);letter-spacing:.08em;margin-bottom:.4rem;display:block;}
+.partner-lbl{font-size:.9rem;color:var(--gd);letter-spacing:.06em;margin-bottom:.4rem;display:block;}
 .partner-input{width:100%;background:transparent;border:none;color:var(--gs);font-family:'Special Elite',serif;font-size:1.45rem;outline:none;letter-spacing:.04em;text-shadow:0 0 8px rgba(0,255,65,.35);caret-color:var(--gs);}
 .partner-input::placeholder{color:rgba(0,255,65,.2);}
-
 .police-confirm{width:100%;margin-top:.35rem;background:transparent;border:1px solid var(--gs);color:var(--gs);font-family:'Special Elite',serif;font-size:1rem;padding:.75rem;border-radius:6px;cursor:pointer;letter-spacing:.09em;transition:all .2s;opacity:0;pointer-events:none;text-shadow:0 0 8px rgba(0,255,65,.35);}
 .police-confirm.vis{opacity:1;pointer-events:all;}
-.police-confirm:hover{background:rgba(0,255,65,.08);box-shadow:0 0 14px rgba(0,255,65,.18);}
+.police-confirm:hover{background:rgba(0,255,65,.08);}
 .pcursor{display:inline-block;width:8px;height:1em;background:var(--gs);vertical-align:middle;animation:blink .8s ease infinite;margin-right:.12rem;}
 
-/* WAITING */
+/* ── WAITING ── */
 #s-wait{background:url('jungle.jpg') center/cover no-repeat;font-family:'Special Elite',serif;}
 #s-wait::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.8);}
 #s-wait::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.02) 2px,rgba(0,255,65,.02) 4px);pointer-events:none;}
@@ -161,42 +112,64 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 .players-row{display:flex;gap:1.4rem;justify-content:center;flex-wrap:wrap;}
 .p-card{background:rgba(10,20,10,.75);border:1px solid var(--gd);border-radius:6px;padding:.9rem 1.4rem;min-width:130px;text-align:center;transition:all .3s;backdrop-filter:blur(4px);}
 .p-card.on{border-color:var(--gs);box-shadow:0 0 12px rgba(0,255,65,.18);}
-.p-card-name{font-size:1.1rem;color:var(--gs);margin-bottom:.45rem;letter-spacing:.04em;}
+.p-card-name{font-size:1.1rem;color:var(--gs);margin-bottom:.45rem;}
 .dot{width:9px;height:9px;border-radius:50%;background:#1a2a1a;margin:0 auto;transition:all .3s;}
 .dot.on{background:var(--gs);box-shadow:0 0 8px var(--gs);}
 
-/* GAME */
-#s-game{background:var(--jd);flex-direction:column;align-items:stretch;justify-content:flex-start;}
-.g-header{background:rgba(6,12,6,.93);border-bottom:1px solid rgba(45,106,48,.4);padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:80;flex-shrink:0;gap:.4rem;backdrop-filter:blur(4px);}
-.g-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.8rem;white-space:nowrap;}
-.phase-pill{background:rgba(30,64,32,.8);color:var(--cream);font-size:.63rem;padding:.15rem .52rem;border-radius:20px;font-family:'Secular One',sans-serif;white-space:nowrap;}
-.timer-disp{font-family:'Special Elite',serif;color:var(--gold-l);font-size:.88rem;min-width:50px;text-align:center;}
-.ev-count{font-size:.73rem;color:var(--dim);white-space:nowrap;}
-.ev-count span{color:var(--gold-l);font-weight:bold;}
-.scene-wrap{flex:1;position:relative;overflow:hidden;min-height:52vh;}
-.scene{position:relative;width:100%;height:100%;min-height:52vh;background:url('jungle.jpg') center/cover no-repeat;cursor:crosshair;overflow:hidden;}
-.scene::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.2);pointer-events:none;z-index:1;}
+/* ── GAME ── */
+#s-game{background:var(--jd);flex-direction:column;align-items:stretch;justify-content:flex-start;overflow:hidden;}
+
+/* Game header: app name | phase centered | timer | evidence count */
+.g-header{background:rgba(6,12,6,.95);border-bottom:1px solid rgba(45,106,48,.4);padding:.55rem .9rem;display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:.6rem;position:sticky;top:0;z-index:80;flex-shrink:0;backdrop-filter:blur(4px);}
+.g-app-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.95rem;white-space:nowrap;}
+.phase-pill{font-family:'Secular One',sans-serif;color:var(--cream);font-size:.85rem;text-align:center;font-weight:bold;}
+.timer-disp{font-family:'Special Elite',serif;color:var(--gold-l);font-size:1.1rem;min-width:60px;text-align:center;font-weight:bold;}
+.ev-count{font-size:.85rem;color:var(--dim);white-space:nowrap;text-align:left;}
+.ev-count span{color:var(--gold-l);font-weight:bold;font-size:1rem;}
+
+.scene-wrap{flex:1;position:relative;overflow:hidden;}
+.scene{position:relative;width:100%;height:100%;background:url('jungle.jpg') center/cover no-repeat;cursor:crosshair;overflow:hidden;}
+.scene::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.18);pointer-events:none;z-index:1;}
 .scene-fog{position:absolute;bottom:0;left:0;right:0;height:70px;z-index:2;background:linear-gradient(180deg,transparent,rgba(4,10,4,.65));pointer-events:none;}
 .scene-ff-wrap{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;}
-.clue{position:absolute;cursor:pointer;user-select:none;z-index:20;transition:transform .15s,filter .15s;font-size:1.5rem;}
-.clue:hover{transform:scale(1.5)!important;filter:drop-shadow(0 0 10px rgba(240,204,110,1)) drop-shadow(0 0 4px #fff);}
+
+/* Clues — NO hover effects */
+.clue{position:absolute;cursor:pointer;user-select:none;z-index:20;font-size:1.5rem;transition:none;}
 .clue.found{animation:cfound .5s ease forwards;pointer-events:none;}
-@keyframes cfound{0%{transform:scale(1.5)}50%{transform:scale(2.2);filter:drop-shadow(0 0 20px gold)}100%{opacity:0;transform:scale(0)}}
-.clue-track,.clue-ev{animation:hpulse 5s ease-in-out infinite;}
-@keyframes hpulse{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 5px rgba(201,168,76,.45))}}
-.clue:hover{animation:none!important;}
-.clue-fake{opacity:.75;}
-.ev-panel{background:rgba(6,12,6,.95);border-top:1px solid rgba(45,106,48,.35);padding:.65rem .9rem;flex-shrink:0;}
-.ev-panel-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.72rem;margin-bottom:.5rem;letter-spacing:.04em;}
-.ev-grid{display:flex;gap:.45rem;flex-wrap:wrap;}
-.ev-slot{width:46px;height:46px;border:1px dashed rgba(45,106,48,.45);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:rgba(0,0,0,.25);position:relative;transition:all .3s;}
+@keyframes cfound{0%{opacity:1}100%{opacity:0;transform:scale(0)}}
+.clue-track,.clue-ev{animation:hpulse 6s ease-in-out infinite;}
+@keyframes hpulse{0%,100%{opacity:.85}50%{opacity:1}}
+
+/* Evidence bottom bar */
+.ev-bar{background:rgba(6,12,6,.95);border-top:1px solid rgba(45,106,48,.35);padding:.5rem .9rem;flex-shrink:0;display:flex;align-items:center;gap:.8rem;}
+.ev-bar-label{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.78rem;white-space:nowrap;}
+.ev-grid{display:flex;gap:.4rem;flex-wrap:wrap;flex:1;}
+.ev-slot{width:44px;height:44px;border:1px dashed rgba(45,106,48,.4);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;background:rgba(0,0,0,.25);position:relative;transition:border-color .3s;}
 .ev-slot.filled{border-color:var(--gold);background:rgba(201,168,76,.07);animation:sfill .35s ease;}
 @keyframes sfill{from{transform:scale(.7)}to{transform:scale(1)}}
-.ev-slot .lbl{position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font-size:.48rem;color:var(--dim);white-space:nowrap;}
+.ev-slot-num{position:absolute;top:-8px;right:-6px;background:var(--gold-d);color:var(--cream);font-size:.5rem;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Secular One',sans-serif;}
 
-.notif{position:fixed;top:62px;left:50%;transform:translateX(-50%) translateY(-12px);background:rgba(25,55,25,.96);border:1px solid var(--gold);color:var(--cream);padding:.4rem .95rem;border-radius:30px;font-size:.78rem;z-index:300;opacity:0;transition:all .28s;pointer-events:none;white-space:nowrap;max-width:93vw;text-align:center;backdrop-filter:blur(4px);}
+/* ── POPUPS ── */
+/* Phase instructions popup */
+.popup{position:fixed;inset:0;background:rgba(5,12,5,.88);display:flex;align-items:center;justify-content:center;z-index:150;opacity:0;pointer-events:none;transition:opacity .4s;padding:1rem;}
+.popup.show{opacity:1;pointer-events:all;}
+.popup-box{background:rgba(10,25,10,.95);border:1px solid rgba(201,168,76,.4);border-radius:12px;padding:1.8rem 1.5rem;max-width:520px;width:100%;text-align:center;box-shadow:0 0 40px rgba(0,0,0,.6);}
+.popup-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:1.3rem;margin-bottom:1rem;}
+.popup-body{font-family:'Special Elite',serif;font-size:clamp(.9rem,2.2vw,1.05rem);color:var(--cream);line-height:1.85;margin-bottom:1.5rem;text-align:right;}
+
+/* Clue found popup */
+.clue-popup{position:fixed;inset:0;background:rgba(5,12,5,.82);display:flex;align-items:center;justify-content:center;z-index:160;opacity:0;pointer-events:none;transition:opacity .3s;padding:1rem;}
+.clue-popup.show{opacity:1;pointer-events:all;}
+.clue-popup-box{background:rgba(10,25,10,.96);border:1px solid rgba(201,168,76,.5);border-radius:12px;padding:1.5rem;max-width:380px;width:100%;display:flex;flex-direction:column;align-items:center;gap:1rem;box-shadow:0 0 40px rgba(0,0,0,.7);}
+.clue-popup-img{font-size:4rem;line-height:1;}
+.clue-popup-num{font-family:'Secular One',sans-serif;color:var(--gold);font-size:1.1rem;}
+.clue-popup-desc{font-family:'Special Elite',serif;font-size:1rem;color:var(--cream);text-align:center;line-height:1.6;}
+
+/* Fake clue notif */
+.notif{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-12px);background:rgba(60,15,15,.96);border:1px solid #c0392b;color:var(--cream);padding:.5rem 1.2rem;border-radius:30px;font-size:.95rem;z-index:300;opacity:0;transition:all .28s;pointer-events:none;white-space:nowrap;max-width:93vw;text-align:center;}
 .notif.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.ptag{position:fixed;bottom:160px;right:.7rem;background:rgba(25,55,25,.9);border:1px solid var(--gold);border-radius:20px;padding:.18rem .55rem;font-size:.68rem;color:var(--gold);font-family:'Secular One',sans-serif;z-index:50;}
+
+/* Phase complete overlay */
 .overlay{position:fixed;inset:0;background:rgba(4,9,4,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .5s;padding:2rem;text-align:center;}
 .overlay.show{opacity:1;pointer-events:all;}
 .ov-icon{font-size:2.8rem;margin-bottom:.55rem;}
@@ -205,8 +178,7 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 .ov-list{display:flex;gap:.45rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.4rem;max-width:460px;}
 .ov-item{background:rgba(25,55,25,.6);border:1px solid var(--gold);border-radius:7px;padding:.3rem .75rem;font-size:.73rem;color:var(--cream);}
 
-.dev-btn-f{position:fixed;top:8px;left:8px;width:18px;height:18px;background:transparent;border:none;cursor:pointer;z-index:500;opacity:.1;font-size:12px;}
-.dev-btn-f:hover{opacity:.4;}
+/* ── DEV PANEL ── */
 .dev-panel{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;opacity:0;pointer-events:none;transition:opacity .3s;padding:2rem;}
 .dev-panel.open{opacity:1;pointer-events:all;}
 .dev-ttl{font-family:'Special Elite',serif;color:#0f0;font-size:1.2rem;}
@@ -215,21 +187,25 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 .dev-bi:hover{background:#0a160a;border-color:#0f0;}
 .dev-close{background:transparent;border:1px solid #333;color:#555;font-size:.76rem;padding:.38rem 1.2rem;border-radius:5px;cursor:pointer;}
 .dev-ans{background:#080808;border:1px solid #1a1a1a;border-radius:6px;padding:.75rem;width:100%;max-width:290px;max-height:170px;overflow-y:auto;font-family:monospace;font-size:.68rem;color:#0f0;line-height:1.6;display:none;}
-.back-btn{position:fixed;bottom:.8rem;right:.8rem;background:rgba(18,38,18,.9);border:1px solid rgba(45,106,48,.4);color:var(--dim);font-size:.72rem;padding:.32rem .75rem;border-radius:20px;cursor:pointer;z-index:100;font-family:'Secular One',sans-serif;display:none;}
-.back-btn.vis{display:block;}
-.back-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+@media(max-width:600px){
+  .ftitle h1{font-size:clamp(1.7rem,7vw,3rem);}
+  .intro-story{font-size:.95rem;}
+  .g-app-title{font-size:.8rem;}
+  .phase-pill{font-size:.75rem;}
+  .timer-disp{font-size:.95rem;}
+}
 </style>
 </head>
 <body>
 
-<button class="fs-btn" onclick="toggleFS()">⛶</button>
+<!-- Fixed UI -->
 <button class="dev-btn-f" onclick="openDev()">🔧</button>
-<button class="back-btn" id="back-btn" onclick="goBack()">← חזרה</button>
+<button class="fs-btn" onclick="toggleFS()">⛶</button>
+<button class="back-btn" id="back-btn" onclick="goBack()">→ חזרה</button>
 
-<!-- FLOATING TITLE — always visible once shown, animates between screens -->
-<div class="ftitle centered" id="ftitle">
-  <h1>השמורה המסתורית</h1>
-</div>
+<!-- Floating title -->
+<div class="ftitle" id="ftitle"><h1>השמורה המסתורית</h1></div>
 
 <!-- LOADING -->
 <div class="screen active" id="s-load">
@@ -265,7 +241,7 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
       <div class="role-btn" id="rb-yuval" onclick="selectRole('yuval')">הבלשית יובל</div>
       <div class="role-btn" id="rb-itay" onclick="selectRole('itay')">בלש שותף</div>
       <div class="partner-wrap" id="partner-wrap">
-        <span class="partner-lbl">// הכנס את שם הבלש השותף:</span>
+        <span class="partner-lbl">הכנס את שם הבלש השותף:</span>
         <input class="partner-input" id="partner-name" type="text" placeholder="שם..." maxlength="20"
           oninput="onPartnerName()" autocomplete="off" autocorrect="off" spellcheck="false">
       </div>
@@ -287,49 +263,86 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   </div>
 </div>
 
+<!-- BRIEFING -->
+<div class="screen" id="s-brief">
+  <div class="brief-inner">
+    <div class="brief-title">ברוכים הבאים לשמורת עדן הסודית!</div>
+    <div class="brief-names" id="brief-names">יובל ושותף</div>
+    <div class="brief-body">השמורה ואוצרותיה בסכנה! הגנב עלול לפענח את המפה ולהגיע ממש בקרוב אל אוצרות השמורה ואפילו אל האבן הקסומה שמגינה עליה.<br><br>החקירה הזו תלויה בכם בלבד. אתם תזדקקו למוח חד ולשיתוף פעולה על-מנת לפענח את התעלומה ולפצח את החקירה בזמן הכי קצר שניתן.<br><br>יש לכם <strong style="color:var(--gold)">30 דקות</strong> כדי לתפוס את הגנב, להחזיר את מפת האוצרות העתיקה לפקח השמורה ולהשיב את הביטחון לכל דיירי השמורה.</div>
+    <div class="brief-cta">מוכנים לפתוח בחקירה? התחילו בביקור בזירת הפשע. הזמן שלכם מתחיל לרוץ.</div>
+    <button class="btn-gold" onclick="startPhase1()" style="margin-top:.5rem">אל זירת הפשע</button>
+  </div>
+</div>
+
 <!-- GAME -->
 <div class="screen" id="s-game">
   <div class="g-header">
-    <div class="g-title">🌿 שמורת עדן הסודית</div>
-    <div class="phase-pill" id="phase-pill">שלב 1 — זירת הפשע</div>
-    <div class="timer-disp" id="timer-disp">00:00</div>
-    <div class="ev-count">ראיות: <span id="ev-cnt">0</span>/14</div>
+    <div class="g-app-title">השמורה המסתורית</div>
+    <div class="phase-pill" id="phase-pill">שלב 1 - זירת הפשע</div>
+    <div class="timer-disp" id="timer-disp">30:00</div>
+    <div class="ev-count"><span id="ev-cnt">0</span>/14</div>
   </div>
   <div class="scene-wrap">
     <div class="scene" id="scene">
       <div class="scene-ff-wrap" id="scene-ff"></div>
-      <div class="clue clue-track" id="c1" style="left:6%;top:72%;" data-t="track" data-a="אריה" data-l="עקבת אריה" onclick="collectClue(this)">🐾</div>
-      <div class="clue clue-track" id="c2" style="left:19%;top:78%;" data-t="track" data-a="פיל" data-l="עקבת פיל" onclick="collectClue(this)">🦶</div>
-      <div class="clue clue-track" id="c3" style="left:31%;top:65%;" data-t="track" data-a="גורילה" data-l="עקבת גורילה" onclick="collectClue(this)">👣</div>
-      <div class="clue clue-track" id="c4" style="left:43%;top:80%;" data-t="track" data-a="תנין" data-l="עקבת תנין" onclick="collectClue(this)">🐾</div>
-      <div class="clue clue-track" id="c5" style="left:55%;top:62%;" data-t="track" data-a="נשר" data-l="עקבת נשר" onclick="collectClue(this)">🦅</div>
-      <div class="clue clue-track" id="c6" style="left:67%;top:75%;" data-t="track" data-a="גירית" data-l="עקבת גירית" onclick="collectClue(this)">🐾</div>
-      <div class="clue clue-track" id="c7" style="left:78%;top:68%;" data-t="track" data-a="חזיר בר" data-l="עקבת חזיר בר" onclick="collectClue(this)">🐗</div>
-      <div class="clue clue-track" id="c8" style="left:88%;top:77%;" data-t="track" data-a="נמר" data-l="עקבת נמר" onclick="collectClue(this)">🐾</div>
-      <div class="clue clue-track" id="c9" style="left:13%;top:55%;" data-t="track" data-a="דב" data-l="עקבת דב" onclick="collectClue(this)">🐻</div>
-      <div class="clue clue-track" id="c10" style="left:93%;top:60%;" data-t="track" data-a="רקון" data-l="עקבת רקון" onclick="collectClue(this)">🦝</div>
-      <div class="clue clue-ev" id="c11" style="left:24%;top:38%;" data-t="ev" data-l="נוצה שחורה" onclick="collectClue(this)">🪶</div>
-      <div class="clue clue-ev" id="c12" style="left:48%;top:42%;" data-t="ev" data-l="קרע בצמח" onclick="collectClue(this)">🌿</div>
-      <div class="clue clue-ev" id="c13" style="left:72%;top:35%;" data-t="ev" data-l="עצם לעוסה" onclick="collectClue(this)">🦴</div>
-      <div class="clue clue-ev" id="c14" style="left:60%;top:48%;" data-t="ev" data-l="פרווה בענף" onclick="collectClue(this)">🧶</div>
-      <div class="clue clue-fake" id="f1" style="left:3%;top:42%;" data-t="fake" data-l="עלה רגיל" onclick="collectClue(this)">🍂</div>
-      <div class="clue clue-fake" id="f2" style="left:36%;top:83%;" data-t="fake" data-l="אבן רגילה" onclick="collectClue(this)">🪨</div>
-      <div class="clue clue-fake" id="f3" style="left:52%;top:28%;" data-t="fake" data-l="ענף ישן" onclick="collectClue(this)">🪵</div>
-      <div class="clue clue-fake" id="f4" style="left:83%;top:85%;" data-t="fake" data-l="פרח בר" onclick="collectClue(this)">🌸</div>
-      <div class="clue clue-fake" id="f5" style="left:8%;top:25%;" data-t="fake" data-l="חרק" onclick="collectClue(this)">🐛</div>
-      <div class="clue clue-fake" id="f6" style="left:76%;top:22%;" data-t="fake" data-l="פטרייה" onclick="collectClue(this)">🍄</div>
-      <div class="clue clue-fake" id="f7" style="left:40%;top:20%;" data-t="fake" data-l="טל בוקר" onclick="collectClue(this)">💧</div>
-      <div class="clue clue-fake" id="f8" style="left:65%;top:88%;" data-t="fake" data-l="ברי יער" onclick="collectClue(this)">🫐</div>
+      <!-- Tracks -->
+      <div class="clue clue-track" id="c1" style="left:6%;top:72%;" data-t="track" data-a="אריה" data-l="עקבות של חיה לא מזוהה - גדולה" data-emoji="🐾" onclick="collectClue(this)">🐾</div>
+      <div class="clue clue-track" id="c2" style="left:19%;top:78%;" data-t="track" data-a="פיל" data-l="עקבות ענק - חיה כבדה מאוד" data-emoji="🦶" onclick="collectClue(this)">🦶</div>
+      <div class="clue clue-track" id="c3" style="left:31%;top:65%;" data-t="track" data-a="גורילה" data-l="עקבות יד וכף רגל - חיה דמויית אדם" data-emoji="👣" onclick="collectClue(this)">👣</div>
+      <div class="clue clue-track" id="c4" style="left:43%;top:80%;" data-t="track" data-a="תנין" data-l="עקבות טפרים עם שביל זנב בבוץ" data-emoji="🐾" onclick="collectClue(this)">🐾</div>
+      <div class="clue clue-track" id="c5" style="left:55%;top:62%;" data-t="track" data-a="נשר" data-l="עקבות ציפורן חדה - עוף גדול" data-emoji="🦅" onclick="collectClue(this)">🦅</div>
+      <div class="clue clue-track" id="c6" style="left:67%;top:75%;" data-t="track" data-a="גירית" data-l="עקבות חיה קטנה עם טפרים" data-emoji="🐾" onclick="collectClue(this)">🐾</div>
+      <div class="clue clue-track" id="c7" style="left:78%;top:68%;" data-t="track" data-a="חזיר בר" data-l="עקבות פרסה - חיית בר" data-emoji="🐗" onclick="collectClue(this)">🐗</div>
+      <div class="clue clue-track" id="c8" style="left:88%;top:77%;" data-t="track" data-a="נמר" data-l="עקבות חיה טורפת - כף רגל עגולה" data-emoji="🐾" onclick="collectClue(this)">🐾</div>
+      <div class="clue clue-track" id="c9" style="left:13%;top:55%;" data-t="track" data-a="דב" data-l="עקבות כף גדולה עם טפרים ארוכים" data-emoji="🐻" onclick="collectClue(this)">🐻</div>
+      <div class="clue clue-track" id="c10" style="left:93%;top:60%;" data-t="track" data-a="רקון" data-l="עקבות חיה קטנה עם אצבעות ארוכות" data-emoji="🦝" onclick="collectClue(this)">🦝</div>
+      <!-- Other evidence -->
+      <div class="clue clue-ev" id="c11" style="left:24%;top:38%;" data-t="ev" data-l="נוצה של חיה לא מזוהה" data-emoji="🪶" onclick="collectClue(this)">🪶</div>
+      <div class="clue clue-ev" id="c12" style="left:48%;top:42%;" data-t="ev" data-l="קרע בצמח - סימן של מעבר אלים" data-emoji="🌿" onclick="collectClue(this)">🌿</div>
+      <div class="clue clue-ev" id="c13" style="left:72%;top:35%;" data-t="ev" data-l="עצם לעוסה לאחרונה" data-emoji="🦴" onclick="collectClue(this)">🦴</div>
+      <div class="clue clue-ev" id="c14" style="left:60%;top:48%;" data-t="ev" data-l="פרווה תקועה בענף שבור" data-emoji="🧶" onclick="collectClue(this)">🧶</div>
+      <!-- Fakes -->
+      <div class="clue" id="f1" style="left:3%;top:42%;" data-t="fake" data-l="עלה שנפל מהעץ" onclick="collectClue(this)">🍂</div>
+      <div class="clue" id="f2" style="left:36%;top:83%;" data-t="fake" data-l="אבן רגילה" onclick="collectClue(this)">🪨</div>
+      <div class="clue" id="f3" style="left:52%;top:28%;" data-t="fake" data-l="ענף שבור ישן" onclick="collectClue(this)">🪵</div>
+      <div class="clue" id="f4" style="left:83%;top:85%;" data-t="fake" data-l="פרח בר" onclick="collectClue(this)">🌸</div>
+      <div class="clue" id="f5" style="left:8%;top:25%;" data-t="fake" data-l="חרק יער" onclick="collectClue(this)">🐛</div>
+      <div class="clue" id="f6" style="left:76%;top:22%;" data-t="fake" data-l="פטרייה" onclick="collectClue(this)">🍄</div>
+      <div class="clue" id="f7" style="left:40%;top:20%;" data-t="fake" data-l="טיפות טל" onclick="collectClue(this)">💧</div>
+      <div class="clue" id="f8" style="left:65%;top:88%;" data-t="fake" data-l="ברי יער" onclick="collectClue(this)">🫐</div>
       <div class="scene-fog"></div>
     </div>
   </div>
-  <div class="ev-panel">
-    <div class="ev-panel-title">🗂️ ראיות שנאספו</div>
+  <div class="ev-bar">
+    <div class="ev-bar-label">🗂️ ראיות:</div>
     <div class="ev-grid" id="ev-grid"></div>
   </div>
-  <div class="ptag" id="ptag">🦁 יובל</div>
 </div>
 
+<!-- Phase 1 instructions popup -->
+<div class="popup" id="popup-phase1">
+  <div class="popup-box">
+    <div class="popup-title">🔍 זירת הפשע</div>
+    <div class="popup-body">
+      בלשים יקרים, הגעתם לזירת הפשע. מכאן אתמול בלילה נגנבה המפה שהייתה קבורה בתוך תיבה באדמה. הגנב כנראה הוציא אותה וכיסה את הבור בחזרה.<br><br>
+      בזירה ישנם הרבה ממצאים - חלקם יכולים להוות ראיות וחלקם כנראה שלא. נקווה שהבוץ על הקרקע הקשה על הגנב לטשטש את עקבותיו...<br><br>
+      <strong style="color:var(--gold)">בשלב הראשון עליכם לאסוף 14 ראיות.</strong>
+    </div>
+    <button class="btn-gold" onclick="closePhase1Popup()">יוצאים לחקור! 🕵️</button>
+  </div>
+</div>
+
+<!-- Clue found popup -->
+<div class="clue-popup" id="clue-popup">
+  <div class="clue-popup-box">
+    <div class="clue-popup-img" id="cp-img">🐾</div>
+    <div class="clue-popup-num" id="cp-num">ראיה מס׳ 1</div>
+    <div class="clue-popup-desc" id="cp-desc">עקבות של חיה לא מזוהה</div>
+    <button class="btn-gold" onclick="closeCluePopup()" style="font-size:1rem;padding:.7rem 2rem;">המשך לחקור</button>
+  </div>
+</div>
+
+<!-- Phase complete -->
 <div class="overlay" id="ov-complete">
   <div class="ov-icon">🎉</div>
   <div class="ov-title">כל הראיות נאספו!</div>
@@ -337,14 +350,17 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   <div class="ov-list" id="ov-list"></div>
   <button class="btn-gold" onclick="nextPhase()">➡️ שלב 2</button>
 </div>
+
+<!-- Fake notif -->
 <div class="notif" id="notif"></div>
 
+<!-- Dev panel -->
 <div class="dev-panel" id="dev-panel">
   <div class="dev-ttl">⚙️ DEV MODE</div>
   <div class="dev-grid">
     <div class="dev-bi" onclick="devGoto(1)">שלב 1</div>
     <div class="dev-bi" onclick="devGoto(2)">שלב 2</div>
-    <div class="dev-bi" onclick="devGoto(3)">שלב 3</div>
+    <div class="dev-bi" onclick="devGoto('brief')">ברייפינג</div>
     <div class="dev-bi" onclick="devGoto(6)">סיום</div>
     <div class="dev-bi" onclick="devReset()">איפוס מלא</div>
     <div class="dev-bi" onclick="devSkip()">דלג ולידציות</div>
@@ -372,26 +388,24 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const SID = 'game1';
 const DEV_CODE = '7763';
+const GAME_DURATION = 30 * 60; // 30 min in seconds
 
 let myRole=null, partnerName='שותף';
 let state={phase:1,evidence:{},startTime:null,skipValidation:false};
-let timerInterval=null, screenHistory=[];
-let curtainOpened=false;
+let timerInterval=null, screenHistory=[], curtainOpened=false;
+let evidenceOrder={}; // clue id -> order number
 
 const save=()=>{localStorage.setItem('rm_state',JSON.stringify(state));localStorage.setItem('rm_role',myRole||'');localStorage.setItem('rm_partner',partnerName);};
 const load=()=>{try{const s=localStorage.getItem('rm_state'),r=localStorage.getItem('rm_role'),p=localStorage.getItem('rm_partner');if(s)state={...state,...JSON.parse(s)};if(r)myRole=r;if(p)partnerName=p;}catch(e){}};
 
 window.toggleFS=function(){if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});else document.exitFullscreen();};
 
-// FIREFLIES
-function spawnFF(container, count, sizePx=3){
+// ── FIREFLIES ──
+function spawnFF(container,count){
   for(let i=0;i<count;i++){
     const ff=document.createElement('div');
-    ff.className='ff';
-    ff.style.width=sizePx+'px';
-    ff.style.height=sizePx+'px';
-    ff.style.left=Math.random()*100+'%';
-    ff.style.top=Math.random()*90+'%';
+    ff.className='ff';ff.style.width='3px';ff.style.height='3px';
+    ff.style.left=Math.random()*100+'%';ff.style.top=Math.random()*90+'%';
     ff.style.setProperty('--tx',(Math.random()*100-50)+'px');
     ff.style.setProperty('--ty',(Math.random()*60-30)+'px');
     ff.style.animationDuration=(6+Math.random()*10)+'s';
@@ -400,10 +414,9 @@ function spawnFF(container, count, sizePx=3){
   }
 }
 
-// NAVIGATION
+// ── NAVIGATION ──
 const ftitle=document.getElementById('ftitle');
-
-window.goTo=function(id, hist=true){
+window.goTo=function(id,hist=true){
   if(hist&&!['s-load','s-curtain'].includes(id)){
     const cur=document.querySelector('.screen.active');
     if(cur&&cur.id!==id) screenHistory.push(cur.id);
@@ -411,239 +424,240 @@ window.goTo=function(id, hist=true){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.getElementById('back-btn').className='back-btn'+(screenHistory.length?' vis':'');
-
-  // Floating title behavior
-  if(id==='s-curtain'){
-    ftitle.style.display='block';
-    ftitle.className='ftitle centered';
-  } else if(id==='s-intro'){
-    ftitle.style.display='block';
-    // small delay so CSS transition fires
-    requestAnimationFrame(()=>requestAnimationFrame(()=>ftitle.className='ftitle top'));
-    setTimeout(startTypewriter, 900);
-  } else {
-    ftitle.style.display='none';
-  }
+  if(id==='s-curtain'){ftitle.style.display='block';ftitle.className='ftitle centered';}
+  else if(id==='s-intro'){ftitle.style.display='block';requestAnimationFrame(()=>requestAnimationFrame(()=>ftitle.className='ftitle top'));setTimeout(startTypewriter,900);}
+  else{ftitle.style.display='none';}
 };
+window.goBack=function(){if(!screenHistory.length)return;goTo(screenHistory.pop(),false);};
 
-window.goBack=function(){
-  if(!screenHistory.length) return;
-  goTo(screenHistory.pop(), false);
-};
-
-// CURTAIN OPEN
+// ── CURTAIN ──
 window.openCurtain=function(){
-  if(curtainOpened) return;
-  curtainOpened=true;
+  if(curtainOpened)return;curtainOpened=true;
   document.getElementById('tap-hint').style.opacity='0';
   document.getElementById('curt-bg').classList.add('reveal');
   document.getElementById('cr').classList.add('open');
-  setTimeout(()=>document.getElementById('cl').classList.add('open'), 320);
-  setTimeout(()=>goTo('s-intro'), 2500);
+  setTimeout(()=>document.getElementById('cl').classList.add('open'),320);
+  setTimeout(()=>goTo('s-intro'),2500);
 };
 
-// TYPEWRITER
+// ── TYPEWRITER ──
 const STORY_RAW='אתמול בלילה<C> תחת אור הירח<C> נגנבה מפת האוצרות העתיקה של שמורת עדן הסודית<P> המפה מובילה אל מיקומי האוצרות הטמונים ברחבי השמורה<C> ביניהם האבן הקסומה שמגינה על השמורה<P> מפת האוצרות הוסתרה במקום סודי בלב השמורה - מקום שרק פקח השמורה יודע עליו<P>\n\nהבוקר גילה הפקח שהמפה נגנבה<C> והוא צריך את עזרתם של שני בלשים צעירים ומבריקים כדי לפתור את התעלומה - להבין מי מהחיות גנב את המפה ואיך<C> ולהשיב אותה אל פקח השמורה<P>\n\nיובל<C> מוכנה לבחור בלש שותף כדי לעבוד איתך על החקירה המסתורית<Q>';
 
 function proc(r){return r.replace(/<C>/g,'<span class="sm">,</span>').replace(/<P>/g,'<span class="sm">.</span>').replace(/<Q>/g,'<span class="sm">?</span>');}
 function rawIdx(raw,ts){let s=0,r=0;const tags=['<C>','<P>','<Q>'];while(r<raw.length&&s<ts){let f=false;for(const t of tags){if(raw.startsWith(t,r)){s+=1;r+=t.length;f=true;break;}}if(!f){s++;r++;}}return r;}
 
 function startTypewriter(){
-  const el=document.getElementById('story-el');
-  el.innerHTML='';
+  const el=document.getElementById('story-el');el.innerHTML='';
   document.getElementById('btn-start').classList.remove('show');
   const stripped=STORY_RAW.replace(/<C>/g,',').replace(/<P>/g,'.').replace(/<Q>/g,'?');
-  const chars=stripped.split('');
-  let i=0;
+  const chars=stripped.split('');let i=0;
   function next(){
     if(i>=chars.length){el.innerHTML=proc(STORY_RAW).replace(/\n/g,'<br>');setTimeout(()=>document.getElementById('btn-start').classList.add('show'),400);return;}
     const ch=chars[i];
     el.innerHTML=proc(STORY_RAW.slice(0,rawIdx(STORY_RAW,i+1))).replace(/\n/g,'<br>')+'<span class="tw-cursor"></span>';
     i++;
-    const d=ch==='.'||ch==='?'?220:ch===','?95:ch==='—'?130:ch==='\n'?380:ch===' '?28:18+Math.random()*13;
+    // Slower: doubled delays
+    const d=ch==='.'||ch==='?'?420:ch===','?180:ch==='\n'?700:ch===' '?55:38+Math.random()*22;
     setTimeout(next,d);
   }
   setTimeout(next,200);
 }
 
-// ROLES
+// ── ROLES ──
 window.selectRole=function(role){
   document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('sel'));
   document.getElementById(`rb-${role}`).classList.add('sel');
   myRole=role;
-
   const wrap=document.getElementById('partner-wrap');
-  const confirmBtn=document.getElementById('btn-confirm');
-
-  if(role==='itay'){
-    wrap.classList.add('show');
-    confirmBtn.classList.remove('vis');
-    setTimeout(()=>document.getElementById('partner-name').focus(),150);
-  } else {
-    wrap.classList.remove('show');
-    confirmBtn.classList.add('vis');
-  }
+  if(role==='itay'){wrap.classList.add('show');setTimeout(()=>document.getElementById('partner-name').focus(),150);}
+  else{wrap.classList.remove('show');document.getElementById('btn-confirm').classList.add('vis');}
 };
-
 window.onPartnerName=function(){
   const val=document.getElementById('partner-name').value.trim();
   document.getElementById('btn-confirm').className='police-confirm'+(val?' vis':'');
 };
 
 window.confirmRole=async function(){
-  if(!myRole){showNotif('⛔ נא לבחור תפקיד');return;}
-
-  const name=myRole==='yuval'?'יובל':partnerName;
-
+  if(!myRole){showNotif('נא לבחור תפקיד');return;}
   if(myRole==='itay'){
     const val=document.getElementById('partner-name').value.trim();
-    if(!val){showNotif('⛔ נא להכניס שם');return;}
+    if(!val){showNotif('נא להכניס שם');return;}
     partnerName=val;
   }
-
   showNotif('⏳ מתחבר...');
-
-  try {
-    if(myRole==='itay'){
-      await set(ref(db,`sessions/${SID}/partnerName`),partnerName);
-    }
-    await set(ref(db,`sessions/${SID}/players/${myRole}`),{
-      connected:true,
-      name:myRole==='yuval'?'יובל':partnerName
-    });
-    save();
-    goTo('s-wait');
-    listenForPlayers();
-  } catch(e) {
-    showNotif('⚠️ שגיאת חיבור - מנסה שוב...');
-    // Retry once
+  try{
+    if(myRole==='itay') await set(ref(db,`sessions/${SID}/partnerName`),partnerName);
+    await set(ref(db,`sessions/${SID}/players/${myRole}`),{connected:true,name:myRole==='yuval'?'יובל':partnerName});
+    save();goTo('s-wait');listenForPlayers();
+  }catch(e){
+    showNotif('שגיאת חיבור - מנסה שוב');
     setTimeout(async()=>{
-      try {
-        await set(ref(db,`sessions/${SID}/players/${myRole}`),{connected:true,name:myRole==='yuval'?'יובל':partnerName});
-        save();goTo('s-wait');listenForPlayers();
-      } catch(e2){
-        // Fallback: go directly to game as single player for testing
-        showNotif('⚠️ Firebase לא זמין - מעבר למצב בדיקה');
-        setTimeout(()=>startGame(),1500);
-      }
+      try{await set(ref(db,`sessions/${SID}/players/${myRole}`),{connected:true,name:myRole==='yuval'?'יובל':partnerName});save();goTo('s-wait');listenForPlayers();}
+      catch(e2){showBriefing();}
     },2000);
   }
 };
 
 function listenForPlayers(){
-  onValue(ref(db,`sessions/${SID}/partnerName`),snap=>{
-    if(snap.exists()){
-      partnerName=snap.val();
-      document.getElementById('pname-itay').textContent=partnerName;
-    }
-  });
+  onValue(ref(db,`sessions/${SID}/partnerName`),snap=>{if(snap.exists()){partnerName=snap.val();document.getElementById('pname-itay').textContent=partnerName;}});
   onValue(ref(db,`sessions/${SID}/players`),snap=>{
     const p=snap.val()||{};
     const yu=p.yuval?.connected,it=p.itay?.connected;
     setDot('yuval',yu);setDot('itay',it);
     if(p.yuval?.name)document.getElementById('pname-yuval').textContent=p.yuval.name;
     if(p.itay?.name)document.getElementById('pname-itay').textContent=p.itay.name;
-    if(yu&&it)setTimeout(startGame,800);
+    if(yu&&it)setTimeout(showBriefing,800);
   });
 }
-function setDot(role,on){document.getElementById(`dot-${role}`).className='dot'+(on?' on':'');document.getElementById(`pc-${role}`).className='p-card'+(on?' on':'');}
+function setDot(r,on){document.getElementById(`dot-${r}`).className='dot'+(on?' on':'');document.getElementById(`pc-${r}`).className='p-card'+(on?' on':'');}
 
-function startGame(){
-  document.getElementById('ptag').textContent=myRole==='yuval'?'🦁 יובל':`🦅 ${partnerName}`;
-  goTo('s-game');
-  spawnFF(document.getElementById('scene-ff'),18);
-  listenEvidence();listenTimer();
-  get(ref(db,`sessions/${SID}/startTime`)).then(snap=>{if(!snap.exists())set(ref(db,`sessions/${SID}/startTime`),Date.now());});
+// ── BRIEFING ──
+function showBriefing(){
+  const yuName='יובל', partName=partnerName;
+  document.getElementById('brief-names').textContent=`${yuName} ו${partName}`;
+  goTo('s-brief');
 }
 
+// ── PHASE 1 START (timer begins here) ──
+window.startPhase1=async function(){
+  goTo('s-game');
+  spawnFF(document.getElementById('scene-ff'),18);
+  listenEvidence();
+  // Start timer now
+  const now=Date.now();
+  try{
+    const snap=await get(ref(db,`sessions/${SID}/startTime`));
+    if(!snap.exists()) await set(ref(db,`sessions/${SID}/startTime`),now);
+    listenTimer();
+  }catch(e){
+    // Local timer fallback
+    state.startTime=now;save();
+    startLocalTimer(now);
+  }
+  // Show phase instructions popup
+  setTimeout(()=>document.getElementById('popup-phase1').classList.add('show'),400);
+};
+
+window.closePhase1Popup=function(){
+  document.getElementById('popup-phase1').classList.remove('show');
+};
+
+// ── TIMER — counts DOWN from 30min ──
 function listenTimer(){
   onValue(ref(db,`sessions/${SID}/startTime`),snap=>{
     if(!snap.exists())return;
-    const start=snap.val();state.startTime=start;
-    if(timerInterval)clearInterval(timerInterval);
-    timerInterval=setInterval(()=>{const e=Math.floor((Date.now()-start)/1000);document.getElementById('timer-disp').textContent=String(Math.floor(e/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0');},1000);
+    startLocalTimer(snap.val());
   });
 }
+function startLocalTimer(start){
+  state.startTime=start;
+  if(timerInterval)clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    const elapsed=Math.floor((Date.now()-start)/1000);
+    const remaining=Math.max(0,GAME_DURATION-elapsed);
+    const m=String(Math.floor(remaining/60)).padStart(2,'0');
+    const s=String(remaining%60).padStart(2,'0');
+    const el=document.getElementById('timer-disp');
+    el.textContent=`${m}:${s}`;
+    el.style.color=remaining<300?'#ff4444':remaining<600?'#ffaa00':'var(--gold-l)';
+    if(remaining===0){clearInterval(timerInterval);showNotif('⏰ הזמן נגמר!');}
+  },1000);
+}
 
+// ── CLUE COLLECTION ──
 window.collectClue=async function(el){
   if(el.classList.contains('found'))return;
   const type=el.dataset.t,label=el.dataset.l,id=el.id;
-  if(type==='fake'){showNotif(`🚫 ${label} — זו לא ראיה`);el.style.opacity='.12';el.style.pointerEvents='none';return;}
-  el.classList.add('found');showNotif(`✅ נמצא: ${label}!`);
-  await set(ref(db,`sessions/${SID}/evidence/${id}`),{id,label,type,animal:el.dataset.a||null,by:myRole,ts:Date.now()});
+  if(type==='fake'){
+    showNotif(`זה לא ראיה — ${label}`);
+    return; // fake stays visible, no effect
+  }
+  // Count order
+  const currentCount=Object.keys(evidenceOrder).length+1;
+  evidenceOrder[id]=currentCount;
+  el.classList.add('found');
+  // Show clue popup
+  document.getElementById('cp-img').textContent=el.dataset.emoji||el.textContent;
+  document.getElementById('cp-num').textContent=`ראיה מס׳ ${currentCount}`;
+  document.getElementById('cp-desc').textContent=label;
+  document.getElementById('clue-popup').classList.add('show');
+  // Save to Firebase
+  try{await set(ref(db,`sessions/${SID}/evidence/${id}`),{id,label,type,animal:el.dataset.a||null,by:myRole,ts:Date.now(),order:currentCount});}catch(e){}
+};
+
+window.closeCluePopup=function(){
+  document.getElementById('clue-popup').classList.remove('show');
 };
 
 function listenEvidence(){
   onValue(ref(db,`sessions/${SID}/evidence`),snap=>{
-    const ev=snap.val()||{},items=Object.values(ev);
+    const ev=snap.val()||{};
+    const items=Object.values(ev).sort((a,b)=>(a.order||a.ts)-(b.order||b.ts));
     state.evidence=ev;save();
+    // Rebuild local order map
+    items.forEach(item=>{if(item.order)evidenceOrder[item.id]=item.order;});
     document.getElementById('ev-cnt').textContent=items.length;
     renderGrid(items);
-    items.forEach(item=>{const el=document.getElementById(item.id);if(el&&!el.classList.contains('found')){el.classList.add('found');setTimeout(()=>{if(el)el.style.display='none';},500);}});
+    // Hide found clues on scene
+    items.forEach(item=>{
+      const el=document.getElementById(item.id);
+      if(el&&!el.classList.contains('found')){el.classList.add('found');setTimeout(()=>{if(el)el.style.display='none';},500);}
+    });
     if(items.length>=14)setTimeout(()=>showComplete(items),700);
   });
 }
 
 function renderGrid(items){
   const g=document.getElementById('ev-grid');g.innerHTML='';
-  items.forEach(item=>{const s=document.createElement('div');s.className='ev-slot filled';const em=item.type==='track'?'🐾':item.label?.includes('נוצה')?'🪶':item.label?.includes('עצם')?'🦴':item.label?.includes('פרווה')?'🧶':'🌿';s.innerHTML=`${em}<span class="lbl">${item.label}</span>`;g.appendChild(s);});
+  items.forEach((item,idx)=>{
+    const s=document.createElement('div');s.className='ev-slot filled';
+    const num=document.createElement('div');num.className='ev-slot-num';num.textContent=item.order||idx+1;
+    const emoji=item.type==='track'?'🐾':item.label?.includes('נוצה')?'🪶':item.label?.includes('עצם')?'🦴':item.label?.includes('פרווה')?'🧶':'🌿';
+    s.innerHTML=emoji;s.appendChild(num);
+    g.appendChild(s);
+  });
 }
 
 function showComplete(items){
   const list=document.getElementById('ov-list');list.innerHTML='';
-  items.forEach(i=>{const d=document.createElement('div');d.className='ov-item';d.textContent=(i.type==='track'?'🐾 ':'🔍 ')+i.label;list.appendChild(d);});
+  items.forEach(i=>{const d=document.createElement('div');d.className='ov-item';d.textContent=`${i.order||''}. ${i.label}`;list.appendChild(d);});
   document.getElementById('ov-complete').classList.add('show');
 }
 window.nextPhase=function(){document.getElementById('ov-complete').classList.remove('show');showNotif('🚧 שלב 2 בפיתוח');};
 
+// ── NOTIF ──
 let nt;
-window.showNotif=function(msg){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(nt);nt=setTimeout(()=>el.classList.remove('show'),2800);};
+window.showNotif=function(msg){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(nt);nt=setTimeout(()=>el.classList.remove('show'),3000);};
 
-window.openDev=function(){const c=prompt('קוד:');if(c===DEV_CODE)document.getElementById('dev-panel').classList.add('open');else if(c!==null)showNotif('❌ קוד שגוי');};
+// ── DEV ──
+window.openDev=function(){const c=prompt('קוד:');if(c===DEV_CODE)document.getElementById('dev-panel').classList.add('open');else if(c!==null)showNotif('קוד שגוי');};
 window.closeDev=()=>document.getElementById('dev-panel').classList.remove('open');
-window.devGoto=function(p){closeDev();if(p===1){spawnFF(document.getElementById('scene-ff'),18);goTo('s-game');}else if(p===6)showComplete(Object.values(state.evidence));else showNotif('🚧 שלב '+p+' בפיתוח');};
-window.devReset=async function(){if(!confirm('איפוס מלא?'))return;closeDev();await set(ref(db,`sessions/${SID}`),null);localStorage.clear();location.reload();};
-window.devSkip=function(){state.skipValidation=true;save();closeDev();showNotif('✅ ולידציות מבוטלות');};
-window.devAns=function(){const el=document.getElementById('dev-ans');el.style.display=el.style.display==='none'?'block':'none';el.innerHTML=`<strong>דיירות:</strong> אריה, פיל, גורילה, תנין, נשר, גירית, חזיר בר, ג'ירפה<br><strong>פולשות:</strong> נמר, דב, רקון, שועל`;};
+window.devGoto=function(p){
+  closeDev();
+  if(p===1){spawnFF(document.getElementById('scene-ff'),18);goTo('s-game');setTimeout(()=>document.getElementById('popup-phase1').classList.add('show'),400);}
+  else if(p==='brief')showBriefing();
+  else if(p===6)showComplete(Object.values(state.evidence));
+  else showNotif('שלב '+p+' בפיתוח');
+};
+window.devReset=async function(){if(!confirm('איפוס מלא?'))return;closeDev();try{await set(ref(db,`sessions/${SID}`),null);}catch(e){}localStorage.clear();location.reload();};
+window.devSkip=function(){state.skipValidation=true;save();closeDev();showNotif('ולידציות מבוטלות');};
+window.devAns=function(){const el=document.getElementById('dev-ans');el.style.display=el.style.display==='none'?'block':'none';el.innerHTML=`דיירות: אריה, פיל, גורילה, תנין, נשר, גירית, חזיר בר, ג'ירפה<br>פולשות: נמר, דב, רקון, שועל`;};
 
-// INIT
+// ── INIT ──
 load();
-
-// Spawn curtain fireflies (lots, especially center)
 setTimeout(()=>{
   const curtain=document.getElementById('s-curtain');
-  spawnFF(curtain, 35); // dense
-  // Extra cluster in center strip
-  for(let i=0;i<20;i++){
-    const ff=document.createElement('div');
-    ff.className='ff';
-    ff.style.width='3px';ff.style.height='3px';
-    ff.style.left=(25+Math.random()*50)+'%'; // center 50%
-    ff.style.top=(20+Math.random()*60)+'%';
-    ff.style.setProperty('--tx',(Math.random()*60-30)+'px');
-    ff.style.setProperty('--ty',(Math.random()*40-20)+'px');
-    ff.style.animationDuration=(5+Math.random()*8)+'s';
-    ff.style.animationDelay=(Math.random()*5)+'s';
-    curtain.appendChild(ff);
-  }
-
-  // Spawn intro fireflies
-  spawnFF(document.getElementById('s-intro'), 22);
+  spawnFF(curtain,35);
+  for(let i=0;i<20;i++){const ff=document.createElement('div');ff.className='ff';ff.style.width='3px';ff.style.height='3px';ff.style.left=(25+Math.random()*50)+'%';ff.style.top=(20+Math.random()*60)+'%';ff.style.setProperty('--tx',(Math.random()*60-30)+'px');ff.style.setProperty('--ty',(Math.random()*40-20)+'px');ff.style.animationDuration=(5+Math.random()*8)+'s';ff.style.animationDelay=(Math.random()*5)+'s';curtain.appendChild(ff);}
+  spawnFF(document.getElementById('s-intro'),22);
 
   if(myRole&&state.startTime){
     ftitle.style.display='none';
-    document.getElementById('ptag').textContent=myRole==='yuval'?'🦁 יובל':`🦅 ${partnerName}`;
-    goTo('s-game',false);
-    spawnFF(document.getElementById('scene-ff'),18);
-    listenEvidence();listenTimer();listenForPlayers();
+    goTo('s-game',false);spawnFF(document.getElementById('scene-ff'),18);listenEvidence();listenTimer();
   } else if(myRole){
-    ftitle.style.display='none';
-    goTo('s-wait',false);listenForPlayers();
+    ftitle.style.display='none';goTo('s-wait',false);listenForPlayers();
   } else {
-    // Show curtain with title centered
-    goTo('s-curtain',false);
-    ftitle.style.display='block';
-    ftitle.className='ftitle centered';
+    goTo('s-curtain',false);ftitle.style.display='block';ftitle.className='ftitle centered';
   }
 },1000);
 </script>
