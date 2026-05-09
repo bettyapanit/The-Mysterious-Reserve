@@ -18,51 +18,38 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 .screen.active{opacity:1;pointer-events:all;}
 
 /* ══ CURTAIN ══ */
-#s-curtain{background:#000;z-index:50;overflow:hidden;}
-
-.curt-jungle{
-  position:absolute;inset:0;
+#s-curtain{
   background:url('jungle.jpg') center center/cover no-repeat;
-  filter:brightness(.35) saturate(.7);
-  opacity:0;transition:opacity 1.4s ease;
-}
-.curt-jungle.show{opacity:1;}
-
-/* Branch image panels */
-.curt-l,.curt-r{
-  position:absolute;top:0;bottom:0;z-index:20;overflow:hidden;
-  transition:transform 2s cubic-bezier(.77,0,.18,1);
+  z-index:50;overflow:hidden;cursor:pointer;
 }
 
-/* Left branch — anchored left, takes ~60% width */
-.curt-l{
-  left:0;width:62%;
-  transform:translateX(0);
-}
-.curt-l.open{transform:translateX(-105%);}
-
-/* Right branch — anchored right, takes ~62% width, overlaps left */
+/* Right branch — on top (z-index higher) */
 .curt-r{
-  right:0;width:62%;
+  position:absolute;top:0;right:0;bottom:0;
+  width:65%;z-index:22;
   transform:translateX(0);
-  transition-delay:.08s;
+  transition:transform 1.8s cubic-bezier(.77,0,.18,1);
 }
-.curt-r.open{transform:translateX(105%);}
+.curt-r.open{transform:translateX(102%);}
 
-.curt-l-img{
-  position:absolute;top:0;left:0;
-  width:100%;height:100%;
-  object-fit:cover;object-position:left center;
-  mix-blend-mode:screen;
+/* Left branch — slightly behind right */
+.curt-l{
+  position:absolute;top:0;left:0;bottom:0;
+  width:65%;z-index:21;
+  transform:translateX(0);
+  transition:transform 1.8s cubic-bezier(.77,0,.18,1) .35s;
 }
-.curt-r-img{
-  position:absolute;top:0;right:0;
-  width:100%;height:100%;
-  object-fit:cover;object-position:right center;
-  mix-blend-mode:screen;
-}
+.curt-l.open{transform:translateX(-102%);}
 
-/* Title */
+.curt-l img,.curt-r img{
+  position:absolute;
+  width:100%;height:100%;
+  object-fit:cover;
+}
+.curt-l img{object-position:left center;}
+.curt-r img{object-position:right center;}
+
+/* Title over curtain */
 .curt-title{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
@@ -74,22 +61,29 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   font-size:clamp(2rem,7vw,4.2rem);
   white-space:nowrap;
   color:var(--cream);
-  text-shadow:0 0 40px rgba(201,168,76,.7),0 2px 30px rgba(0,0,0,.98);
-  opacity:0;transition:opacity 1s ease .3s;
+  text-shadow:0 0 40px rgba(201,168,76,.8),0 2px 30px rgba(0,0,0,.95),0 0 80px rgba(0,0,0,.8);
+  margin-bottom:.6rem;
 }
-.curt-title h1.show{opacity:1;}
+.curt-tap-hint{
+  font-family:'Assistant',sans-serif;
+  font-size:clamp(.8rem,2.5vw,1rem);
+  color:rgba(240,210,140,.7);
+  letter-spacing:.15em;
+  animation:pulse-hint 2s ease-in-out infinite;
+}
+@keyframes pulse-hint{0%,100%{opacity:.5}50%{opacity:1}}
 
 /* Fireflies */
 .ff{position:absolute;width:3px;height:3px;background:var(--gold-l);border-radius:50%;
-  box-shadow:0 0 5px 2px rgba(240,204,110,.4);z-index:25;animation:ffloat linear infinite;}
+  box-shadow:0 0 5px 2px rgba(240,204,110,.4);z-index:25;animation:ffloat linear infinite;pointer-events:none;}
 @keyframes ffloat{0%{opacity:0;transform:translate(0,0)}15%{opacity:1}85%{opacity:.6}100%{opacity:0;transform:translate(var(--tx),var(--ty))}}
 
-/* ══ INTRO ══ */
+/* ══ INTRO — full color bg ══ */
 #s-intro{
   background:url('jungle.jpg') center center/cover no-repeat;
   overflow:hidden;
 }
-#s-intro::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.76);}
+/* No dark overlay — full colors show through */
 
 .intro-inner{
   position:relative;z-index:5;
@@ -101,21 +95,20 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   font-family:'Secular One',sans-serif;
   font-size:clamp(1.8rem,6vw,3.2rem);
   white-space:nowrap;
-  color:var(--cream);
-  text-shadow:0 0 30px rgba(201,168,76,.4);
+  color:#fff;
+  text-shadow:0 2px 20px rgba(0,0,0,.9),0 0 40px rgba(0,0,0,.8);
   margin-bottom:1.4rem;
 }
 
-/* Special Elite with smaller dashes/commas fix */
 .intro-story{
   font-family:'Special Elite',serif;
   font-size:clamp(1.08rem,2.7vw,1.24rem);
-  color:#e8dcc8;
+  color:#fff;
+  text-shadow:0 1px 8px rgba(0,0,0,.95),0 0 20px rgba(0,0,0,.8);
   line-height:1.72;
   margin-bottom:1.5rem;
   text-align:right;
   min-height:9em;
-  /* Scale down punctuation via font-size trick on spans */
 }
 .intro-story .sm{font-size:.78em;vertical-align:.05em;}
 
@@ -132,23 +125,18 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   background:linear-gradient(135deg,var(--gold-d),var(--gold));
   color:var(--jd);border:none;border-radius:6px;cursor:pointer;
   transition:transform .2s,box-shadow .2s;
-  box-shadow:0 4px 20px rgba(201,168,76,.25);
+  box-shadow:0 4px 20px rgba(201,168,76,.35);
 }
-.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,.45);}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,.55);}
 .btn-start{opacity:0;transition:opacity .6s;}
 .btn-start.show{opacity:1;}
 
 /* ══ POLICE TERMINAL ══ */
 #s-roles{
   background:url('jungle.jpg') center center/cover no-repeat;
-  font-family:'Special Elite',serif;
-  overflow:hidden;
+  font-family:'Special Elite',serif;overflow:hidden;
 }
-#s-roles::before{
-  content:'';position:absolute;inset:0;
-  background:rgba(0,0,0,.82);
-}
-/* Scanlines */
+#s-roles::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.82);}
 #s-roles::after{
   content:'';position:absolute;inset:0;
   background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.02) 2px,rgba(0,255,65,.02) 4px);
@@ -156,17 +144,23 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 }
 
 .police-wrap{position:relative;z-index:5;width:100%;max-width:480px;padding:0 1.4rem;}
-.police-hdr{text-align:center;margin-bottom:1.6rem;}
+.police-hdr{text-align:center;margin-bottom:1.4rem;}
 
 .police-logo{
-  font-size:clamp(1rem,3.5vw,1.4rem);
-  letter-spacing:.08em;color:var(--gs);
+  font-size:clamp(1.1rem,4vw,1.5rem);
+  letter-spacing:.06em;color:var(--gs);
   text-shadow:0 0 12px rgba(0,255,65,.5);
-  margin-bottom:.5rem;
+  margin-bottom:.6rem;
   line-height:1.4;
 }
+.police-sub2{
+  font-size:clamp(.85rem,2.8vw,1.05rem);
+  color:var(--gd);
+  letter-spacing:.04em;
+  margin-bottom:.2rem;
+}
 
-.pdiv{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gs),transparent);margin:.8rem 0;opacity:.35;}
+.pdiv{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gs),transparent);margin:.75rem 0;opacity:.35;}
 
 .role-btn{
   width:100%;background:rgba(10,20,10,.7);
@@ -186,7 +180,6 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 }
 .role-btn.taken{opacity:.3;cursor:not-allowed;color:var(--gd);}
 
-/* Partner name input */
 .partner-wrap{
   display:none;margin-bottom:.9rem;
   border:1px solid var(--gd);border-radius:4px;
@@ -215,19 +208,12 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 }
 .police-confirm.vis{opacity:1;pointer-events:all;}
 .police-confirm:hover{background:rgba(0,255,65,.09);box-shadow:0 0 14px rgba(0,255,65,.18);}
-.pcursor{display:inline-block;width:8px;height:1em;background:var(--gs);vertical-align:middle;animation:blink .8s ease infinite;margin-right:.2rem;}
+.pcursor{display:inline-block;width:8px;height:1em;background:var(--gs);vertical-align:middle;animation:blink .8s ease infinite;margin-right:.15rem;}
 
 /* ══ WAITING ══ */
-#s-wait{
-  background:url('jungle.jpg') center center/cover no-repeat;
-  font-family:'Special Elite',serif;
-}
+#s-wait{background:url('jungle.jpg') center center/cover no-repeat;font-family:'Special Elite',serif;}
 #s-wait::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.82);}
-#s-wait::after{
-  content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.02) 2px,rgba(0,255,65,.02) 4px);
-  pointer-events:none;
-}
+#s-wait::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.02) 2px,rgba(0,255,65,.02) 4px);pointer-events:none;}
 .wait-inner{position:relative;z-index:5;text-align:center;padding:2rem;}
 .wait-ttl{font-size:1.4rem;color:var(--gs);letter-spacing:.09em;margin-bottom:.25rem;text-shadow:0 0 10px rgba(0,255,65,.35);}
 .wait-sub{font-size:.65rem;color:var(--gd);letter-spacing:.14em;margin-bottom:1.8rem;}
@@ -240,26 +226,16 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 
 /* ══ GAME ══ */
 #s-game{background:var(--jd);flex-direction:column;align-items:stretch;justify-content:flex-start;}
-.g-header{
-  background:rgba(6,12,6,.93);border-bottom:1px solid rgba(45,106,48,.4);
-  padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:80;flex-shrink:0;gap:.4rem;backdrop-filter:blur(4px);
-}
+.g-header{background:rgba(6,12,6,.93);border-bottom:1px solid rgba(45,106,48,.4);padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:80;flex-shrink:0;gap:.4rem;backdrop-filter:blur(4px);}
 .g-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.8rem;white-space:nowrap;}
 .phase-pill{background:rgba(30,64,32,.8);color:var(--cream);font-size:.63rem;padding:.15rem .52rem;border-radius:20px;font-family:'Secular One',sans-serif;white-space:nowrap;}
 .timer-disp{font-family:'Special Elite',serif;color:var(--gold-l);font-size:.88rem;min-width:50px;text-align:center;}
 .ev-count{font-size:.73rem;color:var(--dim);white-space:nowrap;}
 .ev-count span{color:var(--gold-l);font-weight:bold;}
-
 .scene-wrap{flex:1;position:relative;overflow:hidden;min-height:52vh;}
-.scene{
-  position:relative;width:100%;height:100%;min-height:52vh;
-  background:url('jungle.jpg') center center/cover no-repeat;
-  cursor:crosshair;overflow:hidden;
-}
+.scene{position:relative;width:100%;height:100%;min-height:52vh;background:url('jungle.jpg') center center/cover no-repeat;cursor:crosshair;overflow:hidden;}
 .scene::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.22);pointer-events:none;z-index:1;}
 .scene-fog{position:absolute;bottom:0;left:0;right:0;height:70px;z-index:2;background:linear-gradient(180deg,transparent,rgba(4,10,4,.65));pointer-events:none;}
-
 .clue{position:absolute;cursor:pointer;user-select:none;z-index:20;transition:transform .15s,filter .15s;font-size:1.5rem;}
 .clue:hover{transform:scale(1.5)!important;filter:drop-shadow(0 0 10px rgba(240,204,110,1)) drop-shadow(0 0 4px #fff);}
 .clue.found{animation:cfound .5s ease forwards;pointer-events:none;}
@@ -268,7 +244,6 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 @keyframes hpulse{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 5px rgba(201,168,76,.45))}}
 .clue:hover{animation:none!important;}
 .clue-fake{opacity:.75;}
-
 .ev-panel{background:rgba(6,12,6,.95);border-top:1px solid rgba(45,106,48,.35);padding:.65rem .9rem;flex-shrink:0;}
 .ev-panel-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.72rem;margin-bottom:.5rem;letter-spacing:.04em;}
 .ev-grid{display:flex;gap:.45rem;flex-wrap:wrap;}
@@ -280,7 +255,6 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 .notif{position:fixed;top:62px;left:50%;transform:translateX(-50%) translateY(-12px);background:rgba(25,55,25,.96);border:1px solid var(--gold);color:var(--cream);padding:.4rem .95rem;border-radius:30px;font-size:.78rem;z-index:300;opacity:0;transition:all .28s;pointer-events:none;white-space:nowrap;max-width:93vw;text-align:center;backdrop-filter:blur(4px);}
 .notif.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .ptag{position:fixed;bottom:160px;right:.7rem;background:rgba(25,55,25,.9);border:1px solid var(--gold);border-radius:20px;padding:.18rem .55rem;font-size:.68rem;color:var(--gold);font-family:'Secular One',sans-serif;z-index:50;}
-
 .overlay{position:fixed;inset:0;background:rgba(4,9,4,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .5s;padding:2rem;text-align:center;}
 .overlay.show{opacity:1;pointer-events:all;}
 .ov-icon{font-size:2.8rem;margin-bottom:.55rem;}
@@ -288,7 +262,6 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 .ov-sub{color:var(--dim);margin-bottom:1.2rem;font-size:.88rem;}
 .ov-list{display:flex;gap:.45rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.4rem;max-width:460px;}
 .ov-item{background:rgba(25,55,25,.6);border:1px solid var(--gold);border-radius:7px;padding:.3rem .75rem;font-size:.73rem;color:var(--cream);}
-
 .dev-btn-f{position:fixed;top:8px;left:8px;width:18px;height:18px;background:transparent;border:none;cursor:pointer;z-index:500;opacity:.1;transition:opacity .2s;font-size:12px;}
 .dev-btn-f:hover{opacity:.4;}
 .dev-panel{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;opacity:0;pointer-events:none;transition:opacity .3s;padding:2rem;}
@@ -299,22 +272,14 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 .dev-bi:hover{background:#0a160a;border-color:#0f0;}
 .dev-close{background:transparent;border:1px solid #333;color:#555;font-size:.76rem;padding:.38rem 1.2rem;border-radius:5px;cursor:pointer;}
 .dev-ans{background:#080808;border:1px solid #1a1a1a;border-radius:6px;padding:.75rem;width:100%;max-width:290px;max-height:170px;overflow-y:auto;font-family:monospace;font-size:.68rem;color:#0f0;line-height:1.6;display:none;}
-
 .back-btn{position:fixed;bottom:.8rem;right:.8rem;background:rgba(18,38,18,.9);border:1px solid rgba(45,106,48,.4);color:var(--dim);font-size:.72rem;padding:.32rem .75rem;border-radius:20px;cursor:pointer;z-index:100;font-family:'Secular One',sans-serif;display:none;}
 .back-btn.vis{display:block;}
 .back-btn:hover{border-color:var(--gold);color:var(--gold);}
-
 #s-load{background:#000;text-align:center;gap:.9rem;}
 .spinner{width:40px;height:40px;border:2px solid #142014;border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .load-txt{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.9rem;}
-
-@media(max-width:480px){
-  .intro-title-main{font-size:1.6rem;}
-  .intro-story{font-size:1rem;}
-  .clue{font-size:1.25rem;}
-  .ev-slot{width:40px;height:40px;}
-}
+@media(max-width:480px){.intro-title-main{font-size:1.6rem;}.intro-story{font-size:1rem;}.clue{font-size:1.25rem;}.ev-slot{width:40px;height:40px;}}
 </style>
 </head>
 <body>
@@ -324,19 +289,22 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   <div class="load-txt">טוען את השמורה...</div>
 </div>
 
-<!-- ══ CURTAIN ══ -->
-<div class="screen" id="s-curtain">
-  <div class="curt-jungle" id="curt-jungle"></div>
+<!-- ══ CURTAIN — click to open ══ -->
+<div class="screen" id="s-curtain" onclick="openCurtain()">
 
-  <div class="curt-l" id="cl">
-    <img class="curt-l-img" src="branches_left.png" alt="">
-  </div>
+  <!-- Right branch — z-index 22, on top, opens first -->
   <div class="curt-r" id="cr">
-    <img class="curt-r-img" src="branches_right.png" alt="">
+    <img src="branches_right.png" alt="">
+  </div>
+
+  <!-- Left branch — z-index 21, opens second -->
+  <div class="curt-l" id="cl">
+    <img src="branches_left.png" alt="">
   </div>
 
   <div class="curt-title">
-    <h1 id="curt-h1">השמורה המסתורית</h1>
+    <h1>השמורה המסתורית</h1>
+    <div class="curt-tap-hint" id="tap-hint">לחצו להתחלה</div>
   </div>
 </div>
 
@@ -353,9 +321,8 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 <div class="screen" id="s-roles">
   <div class="police-wrap">
     <div class="police-hdr">
-      <div class="police-logo">
-        <span class="pcursor"></span>★ מערכת רישום בלשים לתיק חקירה ★
-      </div>
+      <div class="police-logo">מערכת רישום בלשים לתיק חקירה</div>
+      <div class="police-sub2">נא בחרו את זהותכם<span class="pcursor"></span></div>
       <div class="pdiv"></div>
     </div>
     <div class="role-btn" id="rb-yuval" onclick="selectRole('yuval')">הבלשית יובל</div>
@@ -376,14 +343,8 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
     <div class="wait-ttl">ממתינים לחיבור<span class="pcursor"></span></div>
     <div class="wait-sub">WAITING FOR ALL DETECTIVES TO CONNECT</div>
     <div class="players-row">
-      <div class="p-card" id="pc-yuval">
-        <div class="p-card-name" id="pname-yuval">יובל</div>
-        <div class="dot" id="dot-yuval"></div>
-      </div>
-      <div class="p-card" id="pc-itay">
-        <div class="p-card-name" id="pname-itay">שותף</div>
-        <div class="dot" id="dot-itay"></div>
-      </div>
+      <div class="p-card" id="pc-yuval"><div class="p-card-name" id="pname-yuval">יובל</div><div class="dot" id="dot-yuval"></div></div>
+      <div class="p-card" id="pc-itay"><div class="p-card-name" id="pname-itay">שותף</div><div class="dot" id="dot-itay"></div></div>
     </div>
   </div>
 </div>
@@ -461,7 +422,6 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getDatabase, ref, set, onValue, get } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-// ══ FIREBASE CONFIG ══
 const firebaseConfig = {
   apiKey: "AIzaSyDqw17hKg3P-oqRcyy-ETs3UBAC9w6tPwE",
   authDomain: "reserve-mystery.firebaseapp.com",
@@ -471,7 +431,6 @@ const firebaseConfig = {
   messagingSenderId: "583018945713",
   appId: "1:583018945713:web:eef1e6c80ab0e72aaad690"
 };
-// ══════════════════════
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -481,6 +440,7 @@ const DEV_CODE = '7763';
 let myRole = null, partnerName = 'שותף';
 let state = { phase:1, evidence:{}, startTime:null, skipValidation:false };
 let timerInterval = null, screenHistory = [];
+let curtainOpened = false;
 
 const save = () => {
   localStorage.setItem('rm_state', JSON.stringify(state));
@@ -515,102 +475,84 @@ window.goBack = function() {
   document.getElementById('back-btn').className='back-btn'+(screenHistory.length?' vis':'');
 };
 
-// ── CURTAIN ──
-function playCurtain() {
-  goTo('s-curtain', false);
-  for(let i=0;i<14;i++){
+// ── CURTAIN — open on click ──
+window.openCurtain = function() {
+  if(curtainOpened) return;
+  curtainOpened = true;
+
+  // Hide hint
+  const hint = document.getElementById('tap-hint');
+  if(hint) hint.style.opacity = '0';
+
+  // Right opens first
+  document.getElementById('cr').classList.add('open');
+  // Left opens after delay
+  setTimeout(()=>document.getElementById('cl').classList.add('open'), 350);
+  // Navigate to intro after animation
+  setTimeout(()=>goTo('s-intro'), 2400);
+};
+
+// Add fireflies to curtain
+function addFireflies() {
+  const curtain = document.getElementById('s-curtain');
+  for(let i=0;i<16;i++){
     const ff=document.createElement('div');
     ff.className='ff';
     ff.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*80}%;`;
     ff.style.setProperty('--tx',(Math.random()*80-40)+'px');
     ff.style.setProperty('--ty',(Math.random()*40-20)+'px');
     ff.style.animationDuration=(7+Math.random()*9)+'s';
-    ff.style.animationDelay=(Math.random()*4)+'s';
-    document.getElementById('s-curtain').appendChild(ff);
+    ff.style.animationDelay=(Math.random()*5)+'s';
+    curtain.appendChild(ff);
   }
-  setTimeout(()=>document.getElementById('curt-jungle').classList.add('show'), 400);
-  setTimeout(()=>document.getElementById('curt-h1').classList.add('show'), 800);
-  setTimeout(()=>{
-    document.getElementById('cl').classList.add('open');
-    document.getElementById('cr').classList.add('open');
-  }, 1800);
-  setTimeout(()=>goTo('s-intro'), 4200);
 }
 
-// ── TYPEWRITER — with small punctuation via innerHTML ──
-// We insert thin-space + small-caps span for em-dashes and commas
+// ── TYPEWRITER ──
 const STORY_RAW = 'אתמול בלילה<C> תחת אור הירח<C> נגנבה מפת האוצרות העתיקה של שמורת עדן הסודית<P>\n\nהמפה מובילה אל מיקומי האוצרות הטמונים ברחבי השמורה<C> ביניהם<D>האבן הקסומה שמגינה על השמורה<P>\n\nמפת האוצרות הוסתרה במקום סודי בלב השמורה<D>מקום שרק פקח השמורה יודע עליו<P>\n\nהבוקר גילה הפקח שהמפה נגנבה<C> והוא צריך את עזרתם של שני בלשים צעירים ומבריקים כדי לפתור את התעלומה<D>להבין מי מהחיות גנב את המפה ואיך<C> ולהשיב אותה אל פקח השמורה<P>\n\nיובל<C> מוכנה לבחור בלש שותף כדי לעבוד איתך על החקירה המסתורית<Q>';
 
-// C = comma, D = em-dash (small), P = period, Q = ?
 function processStory(raw) {
   return raw
-    .replace(/\<C\>/g, '<span class="sm">,</span>')
-    .replace(/\<D\>/g, ' <span class="sm">—</span> ')
-    .replace(/\<P\>/g, '<span class="sm">.</span>')
-    .replace(/\<Q\>/g, '<span class="sm">?</span>');
+    .replace(/<C>/g, '<span class="sm">,</span>')
+    .replace(/<D>/g, ' <span class="sm">—</span> ')
+    .replace(/<P>/g, '<span class="sm">.</span>')
+    .replace(/<Q>/g, '<span class="sm">?</span>');
+}
+
+function matchRawIndex(raw, targetStripped) {
+  let s=0,r=0;
+  const tags=['<C>','<D>','<P>','<Q>'];
+  while(r<raw.length && s<targetStripped){
+    let found=false;
+    for(const tag of tags){
+      if(raw.startsWith(tag,r)){
+        s += tag==='<D>'?3:1; r+=tag.length; found=true; break;
+      }
+    }
+    if(!found){s++;r++;}
+  }
+  return r;
 }
 
 function startTypewriter() {
-  const el = document.getElementById('story-el');
-  el.innerHTML = '';
+  const el=document.getElementById('story-el');
+  el.innerHTML='';
   document.getElementById('btn-start').classList.remove('show');
-
-  // Build array of tokens: {html, delay}
-  // We type char by char but track position in processed string
-  const processed = processStory(STORY_RAW);
-  // Strip HTML for typing simulation, keep HTML for final render
-  // Strategy: type into a temp div, reveal processed HTML progressively
-  const stripped = STORY_RAW
-    .replace(/<C>/g, ',')
-    .replace(/<D>/g, ' — ')
-    .replace(/<P>/g, '.')
-    .replace(/<Q>/g, '?');
-
-  const chars = stripped.split('');
-  let i = 0;
-
-  function next() {
-    if(i >= chars.length) {
-      // Final render with styled punctuation
-      el.innerHTML = processStory(STORY_RAW).replace(/\n/g, '<br>');
-      setTimeout(()=>document.getElementById('btn-start').classList.add('show'), 400);
+  const stripped=STORY_RAW.replace(/<C>/g,',').replace(/<D>/g,' — ').replace(/<P>/g,'.').replace(/<Q>/g,'?');
+  const chars=stripped.split('');
+  let i=0;
+  function next(){
+    if(i>=chars.length){
+      el.innerHTML=processStory(STORY_RAW).replace(/\n/g,'<br>');
+      setTimeout(()=>document.getElementById('btn-start').classList.add('show'),400);
       return;
     }
-    const ch = chars[i];
-    // Build current text, replace special chars with styled spans
-    const current = chars.slice(0, i+1).join('');
-    const html = processStory(
-      STORY_RAW.slice(0, matchRawIndex(STORY_RAW, i+1))
-    ).replace(/\n/g, '<br>');
-    el.innerHTML = html + '<span class="tw-cursor"></span>';
+    const ch=chars[i];
+    el.innerHTML=processStory(STORY_RAW.slice(0,matchRawIndex(STORY_RAW,i+1))).replace(/\n/g,'<br>')+'<span class="tw-cursor"></span>';
     i++;
-    const d = ch==='.' || ch==='?' ? 220 :
-              ch===',' ? 95 :
-              ch==='—' ? 130 :
-              ch==='\n' ? 380 :
-              ch===' ' ? 28 :
-              18 + Math.random()*13;
-    setTimeout(next, d);
+    const d=ch==='.'||ch==='?'?220:ch===','?95:ch==='—'?130:ch==='\n'?380:ch===' '?28:18+Math.random()*13;
+    setTimeout(next,d);
   }
-  setTimeout(next, 200);
-}
-
-// Map stripped index back to raw index
-function matchRawIndex(raw, targetStripped) {
-  let s = 0, r = 0;
-  const tags = ['<C>','<D>','<P>','<Q>'];
-  const lens = {'\<C\>':1,'\<D\>':3,'\<P\>':1,'\<Q\>':1}; // stripped lengths
-  while(r < raw.length && s < targetStripped) {
-    let found = false;
-    for(const tag of tags) {
-      if(raw.startsWith(tag, r)) {
-        const sl = tag==='<C>'?1:tag==='<D>'?3:tag==='<P>'?1:1;
-        s += sl; r += tag.length; found = true; break;
-      }
-    }
-    if(!found){ s++; r++; }
-  }
-  return r;
+  setTimeout(next,200);
 }
 
 // ── ROLES ──
@@ -621,13 +563,8 @@ window.selectRole = async function(role) {
   document.getElementById(`rb-${role}`).classList.add('sel');
   myRole=role;
   const wrap=document.getElementById('partner-wrap');
-  if(role==='itay'){
-    wrap.classList.add('show');
-    setTimeout(()=>document.getElementById('partner-name').focus(),100);
-  } else {
-    wrap.classList.remove('show');
-    document.getElementById('btn-confirm').classList.add('vis');
-  }
+  if(role==='itay'){wrap.classList.add('show');setTimeout(()=>document.getElementById('partner-name').focus(),100);}
+  else{wrap.classList.remove('show');document.getElementById('btn-confirm').classList.add('vis');}
 };
 
 window.onPartnerName = function() {
@@ -644,19 +581,13 @@ window.confirmRole = async function() {
     partnerName=val;
     await set(ref(db,`sessions/${SID}/partnerName`),val);
   }
-  await set(ref(db,`sessions/${SID}/players/${myRole}`),{
-    connected:true, name:myRole==='yuval'?'יובל':partnerName
-  });
-  save(); goTo('s-wait'); listenForPlayers();
+  await set(ref(db,`sessions/${SID}/players/${myRole}`),{connected:true,name:myRole==='yuval'?'יובל':partnerName});
+  save();goTo('s-wait');listenForPlayers();
 };
 
-function listenForPlayers() {
+function listenForPlayers(){
   onValue(ref(db,`sessions/${SID}/partnerName`),snap=>{
-    if(snap.exists()){
-      partnerName=snap.val();
-      document.getElementById('pname-itay').textContent=partnerName;
-      document.getElementById('rb-itay').textContent=partnerName;
-    }
+    if(snap.exists()){partnerName=snap.val();document.getElementById('pname-itay').textContent=partnerName;document.getElementById('rb-itay').textContent=partnerName;}
   });
   onValue(ref(db,`sessions/${SID}/players`),snap=>{
     const p=snap.val()||{};
@@ -675,9 +606,7 @@ function setDot(role,on){
 function startGame(){
   document.getElementById('ptag').textContent=myRole==='yuval'?'🦁 יובל':`🦅 ${partnerName}`;
   goTo('s-game');listenEvidence();listenTimer();
-  get(ref(db,`sessions/${SID}/startTime`)).then(snap=>{
-    if(!snap.exists()) set(ref(db,`sessions/${SID}/startTime`),Date.now());
-  });
+  get(ref(db,`sessions/${SID}/startTime`)).then(snap=>{if(!snap.exists())set(ref(db,`sessions/${SID}/startTime`),Date.now());});
 }
 
 function listenTimer(){
@@ -687,8 +616,7 @@ function listenTimer(){
     if(timerInterval) clearInterval(timerInterval);
     timerInterval=setInterval(()=>{
       const e=Math.floor((Date.now()-start)/1000);
-      document.getElementById('timer-disp').textContent=
-        String(Math.floor(e/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0');
+      document.getElementById('timer-disp').textContent=String(Math.floor(e/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0');
     },1000);
   });
 }
@@ -696,16 +624,9 @@ function listenTimer(){
 window.collectClue = async function(el){
   if(el.classList.contains('found')) return;
   const type=el.dataset.t,label=el.dataset.l,id=el.id;
-  if(type==='fake'){
-    showNotif(`🚫 ${label} — זו לא ראיה`);
-    el.style.opacity='.12';el.style.pointerEvents='none';
-    return;
-  }
-  el.classList.add('found');
-  showNotif(`✅ נמצא: ${label}!`);
-  await set(ref(db,`sessions/${SID}/evidence/${id}`),{
-    id,label,type,animal:el.dataset.a||null,by:myRole,ts:Date.now()
-  });
+  if(type==='fake'){showNotif(`🚫 ${label} — זו לא ראיה`);el.style.opacity='.12';el.style.pointerEvents='none';return;}
+  el.classList.add('found');showNotif(`✅ נמצא: ${label}!`);
+  await set(ref(db,`sessions/${SID}/evidence/${id}`),{id,label,type,animal:el.dataset.a||null,by:myRole,ts:Date.now()});
 };
 
 function listenEvidence(){
@@ -714,75 +635,39 @@ function listenEvidence(){
     state.evidence=ev;save();
     document.getElementById('ev-cnt').textContent=items.length;
     renderGrid(items);
-    items.forEach(item=>{
-      const el=document.getElementById(item.id);
-      if(el&&!el.classList.contains('found')){
-        el.classList.add('found');
-        setTimeout(()=>{if(el)el.style.display='none';},500);
-      }
-    });
+    items.forEach(item=>{const el=document.getElementById(item.id);if(el&&!el.classList.contains('found')){el.classList.add('found');setTimeout(()=>{if(el)el.style.display='none';},500);}});
     if(items.length>=14) setTimeout(()=>showComplete(items),700);
   });
 }
 
 function renderGrid(items){
-  const grid=document.getElementById('ev-grid');
-  grid.innerHTML='';
+  const grid=document.getElementById('ev-grid');grid.innerHTML='';
   items.forEach(item=>{
-    const s=document.createElement('div');
-    s.className='ev-slot filled';
+    const s=document.createElement('div');s.className='ev-slot filled';
     const em=item.type==='track'?'🐾':item.label?.includes('נוצה')?'🪶':item.label?.includes('עצם')?'🦴':item.label?.includes('פרווה')?'🧶':'🌿';
-    s.innerHTML=`${em}<span class="lbl">${item.label}</span>`;
-    grid.appendChild(s);
+    s.innerHTML=`${em}<span class="lbl">${item.label}</span>`;grid.appendChild(s);
   });
 }
 
 function showComplete(items){
-  const list=document.getElementById('ov-list');
-  list.innerHTML='';
-  items.forEach(i=>{
-    const d=document.createElement('div');
-    d.className='ov-item';
-    d.textContent=(i.type==='track'?'🐾 ':'🔍 ')+i.label;
-    list.appendChild(d);
-  });
+  const list=document.getElementById('ov-list');list.innerHTML='';
+  items.forEach(i=>{const d=document.createElement('div');d.className='ov-item';d.textContent=(i.type==='track'?'🐾 ':'🔍 ')+i.label;list.appendChild(d);});
   document.getElementById('ov-complete').classList.add('show');
 }
 window.nextPhase=function(){document.getElementById('ov-complete').classList.remove('show');showNotif('🚧 שלב 2 בפיתוח');};
 
 let nt;
-window.showNotif=function(msg){
-  const el=document.getElementById('notif');
-  el.textContent=msg;el.classList.add('show');
-  clearTimeout(nt);nt=setTimeout(()=>el.classList.remove('show'),2800);
-};
+window.showNotif=function(msg){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(nt);nt=setTimeout(()=>el.classList.remove('show'),2800);};
 
-window.openDev=function(){
-  const c=prompt('קוד:');
-  if(c===DEV_CODE) document.getElementById('dev-panel').classList.add('open');
-  else if(c!==null) showNotif('❌ קוד שגוי');
-};
+window.openDev=function(){const c=prompt('קוד:');if(c===DEV_CODE)document.getElementById('dev-panel').classList.add('open');else if(c!==null)showNotif('❌ קוד שגוי');};
 window.closeDev=()=>document.getElementById('dev-panel').classList.remove('open');
-window.devGoto=function(p){
-  closeDev();
-  if(p===1) goTo('s-game');
-  else if(p===6) showComplete(Object.values(state.evidence));
-  else showNotif('🚧 שלב '+p+' בפיתוח');
-};
-window.devReset=async function(){
-  if(!confirm('איפוס מלא?')) return;
-  closeDev();
-  await set(ref(db,`sessions/${SID}`),null);
-  localStorage.clear();location.reload();
-};
+window.devGoto=function(p){closeDev();if(p===1)goTo('s-game');else if(p===6)showComplete(Object.values(state.evidence));else showNotif('🚧 שלב '+p+' בפיתוח');};
+window.devReset=async function(){if(!confirm('איפוס מלא?'))return;closeDev();await set(ref(db,`sessions/${SID}`),null);localStorage.clear();location.reload();};
 window.devSkip=function(){state.skipValidation=true;save();closeDev();showNotif('✅ ולידציות מבוטלות');};
-window.devAns=function(){
-  const el=document.getElementById('dev-ans');
-  el.style.display=el.style.display==='none'?'block':'none';
-  el.innerHTML=`<strong>דיירות:</strong> אריה, פיל, גורילה, תנין, נשר, גירית, חזיר בר, ג'ירפה<br><strong>פולשות:</strong> נמר, דב, רקון, שועל<br><br>c1-c10: עקבות | c11-c14: ראיות`;
-};
+window.devAns=function(){const el=document.getElementById('dev-ans');el.style.display=el.style.display==='none'?'block':'none';el.innerHTML=`<strong>דיירות:</strong> אריה, פיל, גורילה, תנין, נשר, גירית, חזיר בר, ג'ירפה<br><strong>פולשות:</strong> נמר, דב, רקון, שועל<br><br>c1-c10: עקבות | c11-c14: ראיות`;};
 
 load();
+addFireflies();
 setTimeout(()=>{
   if(myRole&&state.startTime){
     document.getElementById('ptag').textContent=myRole==='yuval'?'🦁 יובל':`🦅 ${partnerName}`;
@@ -790,7 +675,7 @@ setTimeout(()=>{
   } else if(myRole){
     goTo('s-wait',false);listenForPlayers();
   } else {
-    playCurtain();
+    goTo('s-curtain',false);
   }
 },1000);
 </script>
