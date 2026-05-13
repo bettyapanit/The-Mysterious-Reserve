@@ -295,14 +295,14 @@ html,body{height:100%;font-family:'Special Elite',serif;background:#000;color:va
     <div class="brief-title">ברוכים הבאים לשמורת עדן הסודית!</div>
     <div class="brief-names" id="brief-names">יובל ושותף</div>
     <div class="brief-body">
-      השמורה ואוצרותיה בסכנה! הגנב עלול לפענח את המפה ולהגיע ממש בקרוב אל אוצרות השמורה ואפילו אל האבן הקסומה שמגינה עליה.<br><br>
-      החקירה הזו תלויה בכם בלבד. אתם תזדקקו למוח חד ולשיתוף פעולה על-מנת לפענח את התעלומה ולפצח את החקירה בזמן הכי קצר שניתן.<br><br>
-      יש לכם <strong>30 דקות</strong> כדי לתפוס את הגנב, להחזיר את מפת האוצרות העתיקה לפקח השמורה ולהשיב את הביטחון לכל דיירי השמורה.
+      השמורה ואוצרותיה בסכנה! הגנב כמעט יממה לפנינו - כל דקה שעוברת מקטינה את הסיכויים לתפוס אותו.<br><br>
+      תזדקקו למוח חד ולשיתוף פעולה מלא כדי לפענח את התעלומה ולהשיב את המפה לפקח השמורה בזמן.<br><br>
+      יש לכם <strong>30 דקות</strong> — פחות ממה שעבר מאז הגניבה. זה הזמן שלכם להוכיח שאתם הבלשים הטובים ביותר שהשמורה יכלה לבחור.
     </div>
     <div class="brief-cta">
-      מוכנים לפתוח בחקירה? התחילו בביקור בזירת הפשע.<br>הזמן שלכם מתחיל לרוץ.
+      מוכנים לפתוח בחקירה? התחילו בביקור במקום המחבוא הסודי שממנו נגנבה המפה.<br>הזמן שלכם מתחיל לרוץ.
     </div>
-    <button class="btn-gold" onclick="startPhase1()">אל זירת הפשע</button>
+    <button class="btn-gold" onclick="startPhase1()">אל מקום הגניבה</button>
   </div>
 </div>
 
@@ -311,55 +311,36 @@ html,body{height:100%;font-family:'Special Elite',serif;background:#000;color:va
   <div class="g-header">
     <div class="g-header-row1">
       <div class="g-app-title">השמורה המסתורית</div>
-      <div class="phase-center" id="phase-pill">שלב 1 - זירת הפשע</div>
+      <div class="phase-center" id="phase-pill">שלב 1 - מקום הגניבה</div>
       <div class="timer-disp" id="timer-disp">30:00</div>
     </div>
   </div>
 
   <div class="scene-wrap">
-    <div class="scene" id="scene">
+    <div class="scene" id="scene" style="background:url('crime_scene.jpg') center/cover no-repeat;">
       <div class="scene-ff-wrap" id="scene-ff"></div>
-      <!-- TRACKS — real images, mixed sizes & rotations to blend naturally -->
-      <!-- c1: lion paw — lower left path, medium -->
-      <div class="clue clue-track" id="c1" style="left:5%;top:74%;width:80px;" data-t="track" data-a="אריה" data-l="עקבות בבוץ" data-img="clues/c1.png" onclick="collectClue(this)"><img src="clues/c1.png" style="width:80px;transform:rotate(12deg);opacity:.82;mix-blend-mode:multiply;"></div>
-      <!-- c2: elephant footprint — large, center-left bottom -->
-      <div class="clue clue-track" id="c2" style="left:20%;top:76%;width:110px;" data-t="track" data-a="פיל" data-l="עקבות ענק בבוץ" data-img="clues/c2.png" onclick="collectClue(this)"><img src="clues/c2.png" style="width:110px;transform:rotate(-8deg);opacity:.8;mix-blend-mode:multiply;"></div>
-      <!-- c3: gorilla hand/foot — mid-left, slightly hidden -->
-      <div class="clue clue-track" id="c3" style="left:30%;top:67%;width:90px;" data-t="track" data-a="גורילה" data-l="עקבות יד ורגל" data-img="clues/c3.png" onclick="collectClue(this)"><img src="clues/c3.png" style="width:90px;transform:rotate(5deg);opacity:.78;mix-blend-mode:multiply;"></div>
-      <!-- c4: crocodile tracks — along bottom center, wide -->
-      <div class="clue clue-track" id="c4" style="left:42%;top:81%;width:120px;" data-t="track" data-a="תנין" data-l="עקבות טפרים ושביל זנב" data-img="clues/c4.png" onclick="collectClue(this)"><img src="clues/c4.png" style="width:120px;transform:rotate(-15deg);opacity:.76;mix-blend-mode:multiply;"></div>
-      <!-- c5: bird talon — mid scene, smaller -->
-      <div class="clue clue-track" id="c5" style="left:56%;top:63%;width:85px;" data-t="track" data-a="נשר" data-l="עקבות ציפורן" data-img="clues/c5.png" onclick="collectClue(this)"><img src="clues/c5.png" style="width:85px;transform:rotate(20deg);opacity:.8;mix-blend-mode:multiply;"></div>
-      <!-- c6: badger — small, right-center -->
-      <div class="clue clue-track" id="c6" style="left:68%;top:77%;width:70px;" data-t="track" data-a="גירית" data-l="עקבות קטנות" data-img="clues/c6.png" onclick="collectClue(this)"><img src="clues/c6.png" style="width:70px;transform:rotate(-6deg);opacity:.79;mix-blend-mode:multiply;"></div>
-      <!-- c7: wild boar hoof — right path -->
-      <div class="clue clue-track" id="c7" style="left:77%;top:70%;width:75px;" data-t="track" data-a="חזיר בר" data-l="עקבות פרסה" data-img="clues/c7.png" onclick="collectClue(this)"><img src="clues/c7.png" style="width:75px;transform:rotate(10deg);opacity:.81;mix-blend-mode:multiply;"></div>
-      <!-- c8: leopard — far right, partially hidden -->
-      <div class="clue clue-track" id="c8" style="left:87%;top:79%;width:80px;" data-t="track" data-a="נמר" data-l="עקבות כף עגולה" data-img="clues/c8.png" onclick="collectClue(this)"><img src="clues/c8.png" style="width:80px;transform:rotate(-18deg);opacity:.77;mix-blend-mode:multiply;"></div>
-      <!-- c9: bear — upper-left mid, larger -->
-      <div class="clue clue-track" id="c9" style="left:12%;top:56%;width:95px;" data-t="track" data-a="דב" data-l="עקבות כף גדולה" data-img="clues/c9.png" onclick="collectClue(this)"><img src="clues/c9.png" style="width:95px;transform:rotate(3deg);opacity:.78;mix-blend-mode:multiply;"></div>
-      <!-- c10: raccoon — far right upper -->
-      <div class="clue clue-track" id="c10" style="left:91%;top:62%;width:72px;" data-t="track" data-a="רקון" data-l="עקבות עם אצבעות" data-img="clues/c10.png" onclick="collectClue(this)"><img src="clues/c10.png" style="width:72px;transform:rotate(-12deg);opacity:.80;mix-blend-mode:multiply;"></div>
+      <!-- TRACKS — 10 clues positioned to blend with crime scene (pond, rock, mud) -->
+      <div class="clue clue-track" id="c1" style="left:5%;top:75%;" data-t="track" data-a="אריה" data-l="עקבות בבוץ" data-img="clues/c1.png" onclick="collectClue(this)"><img src="clues/c1.png" style="width:80px;transform:rotate(12deg);opacity:.82;mix-blend-mode:multiply;"></div>
+      <div class="clue clue-track" id="c2" style="left:18%;top:80%;" data-t="track" data-a="פיל" data-l="עקבות ענק בבוץ" data-img="clues/c2.png" onclick="collectClue(this)"><img src="clues/c2.png" style="width:110px;transform:rotate(-6deg);opacity:.80;mix-blend-mode:multiply;"></div>
+      <div class="clue clue-track" id="c3" style="left:72%;top:78%;" data-t="track" data-a="גורילה" data-l="עקבות יד ורגל" data-img="clues/c3.png" onclick="collectClue(this)"><img src="clues/c3.png" style="width:90px;transform:rotate(8deg);opacity:.78;mix-blend-mode:multiply;"></div>
+      <div class="clue clue-track" id="c4" style="left:40%;top:82%;" data-t="track" data-a="תנין" data-l="עקבות טפרים ושביל זנב" data-img="clues/c4.png" onclick="collectClue(this)"><img src="clues/c4.png" style="width:115px;transform:rotate(-12deg);opacity:.76;mix-blend-mode:multiply;"></div>
+      <div class="clue clue-track" id="c5" style="left:55%;top:65%;" data-t="track" data-a="נשר" data-l="עקבות ציפורן" data-img="clues/c5.png" onclick="collectClue(this)"><img src="clues/c5.png" style="width:85px;transform:rotate(18deg);opacity:.80;mix-blend-mode:multiply;"></div>
+      <div class="clue clue-track" id="c6" style="left:85%;top:72%;" data-t="track" data-a="גירית" data-l="עקבות קטנות" data-img="clues/c6.png" onclick="collectClue(this)"><img src="clues/c6.png" style="width:68px;transform:rotate(-5deg);opacity:.79;mix-blend-mode:multiply;"></div>
+      <div class="clue clue-track" id="c7" style="left:28%;top:70%;" data-t="track" data-a="חזיר בר" data-l="עקבות פרסה" data-img="clues/c7.png" onclick="collectClue(this)"><img src="clues/c7.png" style="width:72px;transform:rotate(9deg);opacity:.81;mix-blend-mode:multiply;"></div>
+      <div class="clue clue-track" id="c8" style="left:90%;top:80%;" data-t="track" data-a="נמר" data-l="עקבות כף עגולה" data-img="clues/c8.png" onclick="collectClue(this)"><img src="clues/c8.png" style="width:78px;transform:rotate(-16deg);opacity:.77;mix-blend-mode:multiply;"></div>
+      <div class="clue clue-track" id="c9" style="left:10%;top:60%;" data-t="track" data-a="דב" data-l="עקבות כף גדולה" data-img="clues/c9.png" onclick="collectClue(this)"><img src="clues/c9.png" style="width:92px;transform:rotate(4deg);opacity:.78;mix-blend-mode:multiply;"></div>
+      <div class="clue clue-track" id="c10" style="left:62%;top:82%;" data-t="track" data-a="רקון" data-l="עקבות עם אצבעות" data-img="clues/c10.png" onclick="collectClue(this)"><img src="clues/c10.png" style="width:70px;transform:rotate(-10deg);opacity:.80;mix-blend-mode:multiply;"></div>
 
-      <!-- OTHER EVIDENCE — no multiply, natural appearance -->
-      <!-- c11: dark feather — mid-upper left, vertical -->
-      <div class="clue clue-ev" id="c11" style="left:22%;top:35%;width:45px;" data-t="ev" data-l="נוצה שחורה" data-img="clues/c11.png" onclick="collectClue(this)"><img src="clues/c11.png" style="width:45px;transform:rotate(-30deg);opacity:.9;"></div>
-      <!-- c12: torn leaf — mid scene -->
-      <div class="clue clue-ev" id="c12" style="left:47%;top:40%;width:90px;" data-t="ev" data-l="קרע בצמח" data-img="clues/c12.png" onclick="collectClue(this)"><img src="clues/c12.png" style="width:90px;transform:rotate(8deg);opacity:.88;"></div>
-      <!-- c13: chewed bone — upper right -->
-      <div class="clue clue-ev" id="c13" style="left:70%;top:32%;width:85px;" data-t="ev" data-l="עצם לעוסה" data-img="clues/c13.png" onclick="collectClue(this)"><img src="clues/c13.png" style="width:85px;transform:rotate(-22deg);opacity:.85;"></div>
-      <!-- c14: fur on twig — mid-right -->
-      <div class="clue clue-ev" id="c14" style="left:59%;top:45%;width:80px;" data-t="ev" data-l="פרווה בענף" data-img="clues/c14.png" onclick="collectClue(this)"><img src="clues/c14.png" style="width:80px;transform:rotate(15deg);opacity:.87;"></div>
+      <!-- OTHER EVIDENCE — 2 clues for phase 1 -->
+      <div class="clue clue-ev" id="c11" style="left:3%;top:40%;" data-t="ev" data-l="נוצה שחורה" data-img="clues/c11.png" onclick="collectClue(this)"><img src="clues/c11.png" style="width:42px;transform:rotate(-25deg);opacity:.9;"></div>
+      <div class="clue clue-ev" id="c12" style="left:78%;top:45%;" data-t="ev" data-l="קרע בצמח" data-img="clues/c12.png" onclick="collectClue(this)"><img src="clues/c12.png" style="width:88px;transform:rotate(10deg);opacity:.88;"></div>
 
-      <!-- FAKES — just emoji, subtle -->
-      <div class="clue" id="f1" style="left:3%;top:42%;font-size:1.2rem;opacity:.6;" data-t="fake" data-l="עלה שנפל" onclick="collectClue(this)">🍂</div>
-      <div class="clue" id="f2" style="left:36%;top:84%;font-size:1.1rem;opacity:.55;" data-t="fake" data-l="אבן" onclick="collectClue(this)">🪨</div>
-      <div class="clue" id="f3" style="left:52%;top:28%;font-size:1rem;opacity:.5;" data-t="fake" data-l="ענף" onclick="collectClue(this)">🪵</div>
-      <div class="clue" id="f4" style="left:83%;top:86%;font-size:1rem;opacity:.55;" data-t="fake" data-l="פרח בר" onclick="collectClue(this)">🌸</div>
-      <div class="clue" id="f5" style="left:8%;top:24%;font-size:.9rem;opacity:.45;" data-t="fake" data-l="חרק" onclick="collectClue(this)">🐛</div>
-      <div class="clue" id="f6" style="left:76%;top:21%;font-size:.95rem;opacity:.5;" data-t="fake" data-l="פטרייה" onclick="collectClue(this)">🍄</div>
-      <div class="clue" id="f7" style="left:40%;top:19%;font-size:.85rem;opacity:.45;" data-t="fake" data-l="טל" onclick="collectClue(this)">💧</div>
-      <div class="clue" id="f8" style="left:65%;top:89%;font-size:1rem;opacity:.5;" data-t="fake" data-l="ברי יער" onclick="collectClue(this)">🫐</div>
+      <!-- FAKES -->
+      <div class="clue" id="f1" style="left:33%;top:42%;font-size:1.1rem;opacity:.55;" data-t="fake" data-l="עלה" onclick="collectClue(this)">🍂</div>
+      <div class="clue" id="f2" style="left:50%;top:58%;font-size:1rem;opacity:.5;" data-t="fake" data-l="ענף" onclick="collectClue(this)">🪵</div>
+      <div class="clue" id="f3" style="left:15%;top:30%;font-size:.9rem;opacity:.45;" data-t="fake" data-l="חרק" onclick="collectClue(this)">🐛</div>
+      <div class="clue" id="f4" style="left:67%;top:35%;font-size:.85rem;opacity:.4;" data-t="fake" data-l="טל" onclick="collectClue(this)">💧</div>
+      <div class="clue" id="f5" style="left:45%;top:35%;font-size:.9rem;opacity:.45;" data-t="fake" data-l="פטרייה" onclick="collectClue(this)">🍄</div>
       <div class="scene-fog"></div>
     </div>
   </div>
@@ -368,7 +349,7 @@ html,body{height:100%;font-family:'Special Elite',serif;background:#000;color:va
   <div class="ev-bar">
     <div class="ev-bar-label">ראיות:</div>
     <div class="ev-grid" id="ev-grid"></div>
-    <div class="ev-count-txt"><span id="ev-cnt">0</span>/14</div>
+    <div class="ev-count-txt"><span id="ev-cnt">0</span>/12</div>
   </div>
 </div>
 
@@ -377,9 +358,10 @@ html,body{height:100%;font-family:'Special Elite',serif;background:#000;color:va
   <div class="popup-box">
     <div class="popup-title">זירת הפשע</div>
     <div class="popup-body">
-      בלשים יקרים, הגעתם לזירת הפשע. מכאן אתמול בלילה נגנבה המפה שהייתה קבורה בתוך תיבה באדמה. הגנב כנראה הוציא אותה וכיסה את הבור בחזרה.<br><br>
-      בזירה ישנם הרבה ממצאים - חלקם יכולים להוות ראיות וחלקם כנראה שלא. נקווה שהבוץ על הקרקע הקשה על הגנב לטשטש את עקבותיו...<br><br>
-      <strong>בשלב הראשון עליכם לאסוף 14 ראיות.</strong>
+      בלשים יקרים, הגעתם למקום המחבוא הסודי של מפת האוצרות.<br><br>
+      הפקח הסתיר כאן את המפה — ליד הסלע המכוסה אצות, בסמוך לאגמון. לפנות בוקר, מישהו חפר את הבור וגנב את המפה.<br><br>
+      הבוץ הרטוב לא מסלח לעקבות. בדקו היטב את כל האזור — חלק מהממצאים הם ראיות חשובות, חלק לא.<br><br>
+      <strong>מצאו את 12 הראיות הנסתרות.</strong>
     </div>
     <button class="btn-gold" onclick="closePhase1Popup()">יוצאים לחקור!</button>
   </div>
@@ -407,12 +389,12 @@ html,body{height:100%;font-family:'Special Elite',serif;background:#000;color:va
   <div class="scene-wrap">
     <div class="scene" id="scene2" style="background:url('jungle.jpg') center/cover no-repeat;">
       <div class="scene-ff-wrap" id="scene2-ff"></div>
-      <!-- 5 clues for phase 2 -->
-      <div class="clue clue-track" id="c15" style="left:8%;top:68%;" data-t="track" data-a="שימפנזה" data-l="עקבות יד על אבן" data-img="clues/c15.png" onclick="collectClue2(this)"><img src="clues/c15.png" style="width:95px;transform:rotate(6deg);opacity:.80;mix-blend-mode:multiply;"></div>
-      <div class="clue clue-track" id="c16" style="left:44%;top:58%;" data-t="track" data-a="שקנאי" data-l="עקבות ציפור גדולה" data-img="clues/c16.png" onclick="collectClue2(this)"><img src="clues/c16.png" style="width:80px;transform:rotate(-14deg);opacity:.79;mix-blend-mode:multiply;"></div>
-      <div class="clue clue-ev" id="c17" style="left:72%;top:38%;" data-t="ev" data-l="ציפורן תלושה" data-img="clues/c17.png" onclick="collectClue2(this)"><img src="clues/c17.png" style="width:80px;transform:rotate(20deg);opacity:.88;"></div>
-      <div class="clue clue-track" id="c18" style="left:26%;top:73%;" data-t="track" data-a="נשר" data-l="עקבות ציפורן" data-img="clues/c5.png" onclick="collectClue2(this)"><img src="clues/c5.png" style="width:75px;transform:rotate(-8deg);opacity:.77;mix-blend-mode:multiply;"></div>
-      <div class="clue clue-ev" id="c19" style="left:58%;top:46%;" data-t="ev" data-l="קרע בצמח" data-img="clues/c12.png" onclick="collectClue2(this)"><img src="clues/c12.png" style="width:85px;transform:rotate(12deg);opacity:.85;"></div>
+      <!-- 5 clues for phase 2 — escape path through jungle -->
+      <div class="clue clue-ev" id="c13" style="left:8%;top:40%;" data-t="ev" data-a="" data-l="עצם לעוסה" data-img="clues/c13.png" onclick="collectClue2(this)"><img src="clues/c13.png" style="width:85px;transform:rotate(-18deg);opacity:.86;"></div>
+      <div class="clue clue-ev" id="c14" style="left:58%;top:50%;" data-t="ev" data-a="" data-l="פרווה בענף" data-img="clues/c14.png" onclick="collectClue2(this)"><img src="clues/c14.png" style="width:80px;transform:rotate(14deg);opacity:.87;"></div>
+      <div class="clue clue-track" id="c15" style="left:22%;top:70%;" data-t="track" data-a="שימפנזה" data-l="עקבות יד על אבן" data-img="clues/c15.png" onclick="collectClue2(this)"><img src="clues/c15.png" style="width:90px;transform:rotate(6deg);opacity:.80;mix-blend-mode:multiply;"></div>
+      <div class="clue clue-track" id="c16" style="left:55%;top:68%;" data-t="track" data-a="שקנאי" data-l="עקבות ציפור גדולה" data-img="clues/c16.png" onclick="collectClue2(this)"><img src="clues/c16.png" style="width:78px;transform:rotate(-12deg);opacity:.79;mix-blend-mode:multiply;"></div>
+      <div class="clue clue-ev" id="c17" style="left:82%;top:38%;" data-t="ev" data-a="" data-l="ציפורן תלושה" data-img="clues/c17.png" onclick="collectClue2(this)"><img src="clues/c17.png" style="width:78px;transform:rotate(22deg);opacity:.88;"></div>
       <!-- Fakes -->
       <div class="clue" id="f9" style="left:15%;top:30%;font-size:1rem;opacity:.5;" data-t="fake" data-l="פטרייה" onclick="collectClue2(this)">🍄</div>
       <div class="clue" id="f10" style="left:60%;top:82%;font-size:.9rem;opacity:.45;" data-t="fake" data-l="עלה" onclick="collectClue2(this)">🍂</div>
@@ -524,7 +506,7 @@ window.openCurtain=function(){
 };
 
 // ── TYPEWRITER ──
-const STORY_RAW='אתמול בלילה<C> תחת אור הירח<C> נגנבה מפת האוצרות העתיקה של שמורת עדן הסודית<P> המפה מובילה אל מיקומי האוצרות הטמונים ברחבי השמורה<C> ביניהם האבן הקסומה שמגינה על השמורה<P> מפת האוצרות הוסתרה במקום סודי בלב השמורה - מקום שרק פקח השמורה יודע עליו<P>\n\nהבוקר גילה הפקח שהמפה נגנבה<C> והוא צריך את עזרתם של שני בלשים צעירים ומבריקים כדי לפתור את התעלומה - להבין מי מהחיות גנב את המפה ואיך<C> ולהשיב אותה אל פקח השמורה<P>\n\nיובל<C> מוכנה לבחור בלש שותף כדי לעבוד איתך על החקירה המסתורית<Q>';
+const STORY_RAW='אתמול בלילה<C> תחת אור הירח<C> נגנבה מפת האוצרות העתיקה של שמורת עדן הסודית<P> המפה מובילה אל מיקומי האוצרות הטמונים ברחבי השמורה<C> ביניהם האבן הקסומה שמגינה על השמורה<P> מפת האוצרות הוסתרה במקום סודי בלב השמורה - מקום שרק פקח השמורה ידע עליו<P>\n\nבבוקר יצא הפקח לסיור שגרתי בחלק המרוחק של השמורה וחזר רק עם רדת הערב<P> כחלק משגרת הערב שלו הוא עבר באזור מקום המחבוא הסודי וגילה שאחת החיות חפרה בור בדיוק במקום בו המפה הייתה טמונה וגנבה אותה<P>\n\nהפקח החליט להזעיק עוד הלילה את עזרתם של שני בלשים צעירים ומבריקים<P> ככל הנראה<C> עברו כמעט 24 שעות מאז שהגנב חמק עם המפה הסודית<P> כל דקה שעוברת נותנת לו יתרון ומקטינה את הסיכויים לתפוס אותו ולהציל את האוצרות ואת השמורה<P>\n\nהפקח חייב את עזרתכם הדחופה<P>\n\nהבלשית יובל<C> את מוכנה לבחור בלש שותף כדי לעבוד איתך על החקירה המסתורית<Q>';
 
 function proc(r){return r.replace(/<C>/g,'<span class="sm">,</span>').replace(/<P>/g,'<span class="sm">.</span>').replace(/<Q>/g,'<span class="sm">?</span>');}
 function rawIdx(raw,ts){let s=0,r=0;const tags=['<C>','<P>','<Q>'];while(r<raw.length&&s<ts){let f=false;for(const t of tags){if(raw.startsWith(t,r)){s+=1;r+=t.length;f=true;break;}}if(!f){s++;r++;}}return r;}
@@ -664,7 +646,7 @@ function listenEvidence(){
       const el=document.getElementById(item.id);
       if(el&&!el.classList.contains('found')){el.classList.add('found');setTimeout(()=>{if(el)el.style.display='none';},400);}
     });
-    if(items.length>=14)setTimeout(()=>showPhaseComplete(items),700);
+    if(items.length>=12)setTimeout(()=>showPhaseComplete(items),700);
   });
 }
 
@@ -682,7 +664,7 @@ function renderGrid(items){
 function showPhaseComplete(items){
   const yuName='יובל',pName=partnerName;
   document.getElementById('pc-title').textContent=`מצוין ${yuName} ו${pName}!`;
-  document.getElementById('pc-sub').textContent=`הצלחתם למצוא ${items.length} ראיות. זה חשוב מאוד ויעזור לכם בהמשך החקירה לפתרון התעלומה.`;
+  document.getElementById('pc-sub').textContent=`הצלחתם למצוא ${items.length} ראיות במקום הגניבה. עכשיו עקבו אחר נתיב הבריחה של הגנב!`;
   const g=document.getElementById('pc-ev-grid');g.innerHTML='';
   items.forEach(item=>{
     const div=document.createElement('div');div.className='pc-ev-item';
@@ -709,8 +691,8 @@ function showPhase2Popup(){
   // Reuse popup-phase1 with updated text
   document.getElementById('popup-phase1').querySelector('.popup-title').textContent='נתיב הבריחה';
   document.getElementById('popup-phase1').querySelector('.popup-body').innerHTML=
-    'בלשים, כעת עקבו אחר נתיב הבריחה של הגנב ביער.<br><br>'+
-    'הגנב עזב את מקום הקבורה בחפזון — ייתכן שהשאיר ראיות נוספות לאורך הדרך.<br><br>'+
+    'מצוין! עכשיו עקבו אחר נתיב הבריחה של הגנב ביער.<br><br>'+
+    'הגנב עזב את מקום הקבורה בחפזון ופנה לתוך הג\'ונגל — ייתכן שהשאיר עוד ראיות לאורך הדרך.<br><br>'+
     '<strong>מצאו את 5 הראיות הנוספות.</strong>';
   document.getElementById('popup-phase1').classList.add('show');
 }
