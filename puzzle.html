@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>פאזל מפת השמורה</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&family=Secular+One&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#7a5810;--dark:#07100a;--panel:#0b140d;--border:rgba(201,168,76,.3);--cream:#f5edd8;--dim:#7a9070;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;touch-action:none;}
+html,body{height:100%;overflow:hidden;background:var(--dark);font-family:'Rubik',sans-serif;color:var(--cream);}
+.app{display:flex;flex-direction:column;height:100vh;}
+
+/* HEADER */
+.hdr{background:rgba(5,10,6,.97);border-bottom:1px solid var(--border);padding:.55rem 1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hdr-t{font-family:'Secular One',sans-serif;font-size:1.15rem;color:var(--gold);text-align:center;}
+
+.body{flex:1;display:flex;min-height:0;}
+
+/* BOARD */
+.board-area{flex:1;display:flex;align-items:center;justify-content:center;padding:8px;min-width:0;}
+.board{position:relative;border:2px solid var(--border);border-radius:2px;box-shadow:0 0 40px rgba(0,0,0,.8);flex-shrink:0;}
+.dz{position:absolute;border:1px dashed rgba(201,168,76,.12);transition:background .1s;}
+.dz.over{background:rgba(201,168,76,.2);border-color:rgba(201,168,76,.55);}
+.bp{position:absolute;cursor:grab;z-index:10;display:block;image-rendering:crisp-edges;}
+.bp.dragging-now{opacity:0;}
+.bp.locked{cursor:default;pointer-events:none;}
+
+/* TRAY */
+.tray-wrap{width:40%;max-width:440px;flex-shrink:0;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.tray-hdr{font-family:'Secular One',sans-serif;font-size:.85rem;color:var(--gold);padding:.5rem .7rem;border-bottom:1px solid var(--border);text-align:center;flex-shrink:0;}
+.tray-grid{flex:1;display:grid;padding:5px;gap:3px;align-content:start;overflow:hidden;}
+.tray-foot{font-size:.78rem;color:var(--dim);text-align:center;padding:.5rem;border-top:1px solid var(--border);flex-shrink:0;line-height:1.7;}
+.tp{cursor:grab;border:1px solid rgba(201,168,76,.18);border-radius:1px;display:block;background:#060d08;transition:transform .1s,border-color .1s;}
+.tp:hover{border-color:rgba(201,168,76,.55);transform:scale(1.04);}
+.tp.used{visibility:hidden;pointer-events:none;}
+
+/* FLOAT piece */
+#float-piece{position:fixed;pointer-events:none;z-index:1000;display:none;image-rendering:crisp-edges;opacity:.92;}
+
+/* OVERLAYS */
+.ovl{position:fixed;inset:0;background:rgba(4,9,5,.9);display:flex;align-items:center;justify-content:center;z-index:500;opacity:0;pointer-events:none;transition:opacity .4s;padding:1rem;}
+.ovl.on{opacity:1;pointer-events:all;}
+.card{background:rgba(8,16,9,.97);border:1px solid rgba(201,168,76,.4);border-radius:12px;padding:1.6rem 1.5rem;max-width:480px;width:100%;text-align:center;}
+.card-t{font-family:'Secular One',sans-serif;font-size:1.4rem;color:var(--gold);margin-bottom:.65rem;}
+.card-b{font-size:.93rem;color:var(--cream);line-height:1.8;margin-bottom:1.2rem;}
+.btn{font-family:'Secular One',sans-serif;font-size:.95rem;padding:.7rem 1.8rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#060d07;border:none;border-radius:8px;cursor:pointer;transition:transform .15s;}
+.btn:hover{transform:translateY(-2px);}
+
+/* MEMO popup — removed, using standard card */
+
+/* CIPHER panel (replaces tray) */
+.cipher-panel{
+  width:40%;max-width:440px;flex-shrink:0;
+  background:var(--panel);border-left:1px solid var(--border);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:1.4rem;padding:2rem 1.2rem;text-align:center;
+}
+.cipher-panel.on{display:flex;}
+.cipher-inst{font-family:'Rubik',sans-serif;font-size:.95rem;color:var(--cream);line-height:1.85;max-width:220px;}
+.cipher-inst b{color:var(--gold-l);}
+#x-marker{
+  font-size:3rem;color:#c0392b;font-weight:900;cursor:grab;
+  text-shadow:0 0 16px rgba(192,57,43,.7);
+  display:inline-block;transition:transform .1s;
+}
+#x-marker:hover{transform:scale(1.12);}
+#x-marker:active{cursor:grabbing;}
+#x-marker.placed{display:none;}
+
+/* Float X */
+#float-x{position:fixed;display:none;pointer-events:none;z-index:1001;font-size:3rem;color:#c0392b;font-weight:900;text-shadow:0 0 16px rgba(192,57,43,.8);transform:translate(-50%,-50%);}
+
+/* X on board */
+#x-on-board{
+  position:absolute;font-size:2.2rem;color:#c0392b;font-weight:900;
+  display:none;pointer-events:none;z-index:60;
+  text-shadow:0 0 12px rgba(192,57,43,.9);
+  transform:translate(-50%,-50%);
+  animation:xpop .4s cubic-bezier(.17,.67,.4,1.4);
+}
+@keyframes xpop{from{transform:translate(-50%,-50%) scale(0)}to{transform:translate(-50%,-50%) scale(1)}}
+
+/* bottom hint bar */
+.hint-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  text-align:center;padding:.5rem;
+  font-size:.82rem;color:var(--dim);
+  background:rgba(5,10,6,.7);
+  pointer-events:none;z-index:20;
+  border-top:1px solid rgba(201,168,76,.1);
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hdr">
+    <div class="hdr-t">שלב 5 — פאזל מפת השמורה</div>
+  </div>
+  <div class="body">
+    <div class="board-area"><div class="board" id="board"><div id="x-on-board">✕</div></div></div>
+    <div class="tray-wrap" id="tray-wrap">
+      <div class="tray-hdr">חלקי הפאזל</div>
+      <div class="tray-grid" id="tray"></div>
+      <div class="tray-foot" id="tray-foot"></div>
+    </div>
+    <div class="cipher-panel" id="cipher-panel">
+      <div style="background:rgba(8,16,9,.97);border:1px solid rgba(201,168,76,.4);border-radius:12px;padding:1.4rem 1.2rem;text-align:center;width:90%;">
+        <div style="font-family:'Secular One',sans-serif;font-size:1rem;color:var(--gold);margin-bottom:.8rem;">פיענוח כתב הסתרים</div>
+        <div style="font-size:.9rem;color:var(--cream);line-height:1.85;margin-bottom:1.2rem;">
+          פענחו את כתב הסתרים שמצאתם על המפה.<br><br>
+          לאחר שפיענחתם, <strong style="color:var(--gold-l);">גררו את ה-✕</strong> אל מיקום המחבוא שגיליתם.
+        </div>
+        <div id="x-marker">✕</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- hint bar at bottom -->
+<div class="hint-bar">לחיצה ארוכה = גרירת חלק &nbsp;|&nbsp; לחיצה קצרה = סיבוב ב-90 מעלות</div>
+
+<canvas id="float-piece"></canvas>
+<div id="float-x">✕</div>
+
+<!-- Puzzle complete popup — standard style -->
+<div class="ovl" id="ovl-done">
+  <div class="card">
+    <div class="card-t">הפאזל הושלם!</div>
+    <div class="card-b">הצלחתם להרכיב מחדש את מפת השמורה, בה סימנו הגנבים בכתב סתרים את המקום בו החביאו את התיבה עם המפה העתיקה. חפשו במפה את כתב הסתרים ופענחו אותו על-מנת לגלות איפה הוחבאה התיבה.</div>
+    <button class="btn" onclick="enterCipherMode()">לפיענוח כתב הסתרים</button>
+  </div>
+</div>
+
+<!-- Cipher success -->
+<div class="ovl" id="ovl-cipher" style="z-index:600;">
+  <div class="card" style="max-width:420px;">
+    <div class="card-t">כל הכבוד!</div>
+    <div class="card-b">פיענחתם את כתב הסתרים וגיליתם היכן החביאו הגנבים את התיבה עם המפה העתיקה!</div>
+    <button class="btn" onclick="goStage6()">המשיכו לשלב הבא</button>
+  </div>
+</div>
+
+<!-- Stage 6 -->
+<div class="ovl" id="ovl-s6" style="z-index:700;">
+  <div class="card">
+    <div class="card-t" style="font-size:1.15rem;">התיבה נמצאה... אבל נעולה!</div>
+    <div class="card-b">הפקח מודה לכם שאיתרתם את התיבה עם המפה העתיקה.<br><br>אבל... התיבה נעולה! הגנבים ככל הנראה גילו את הקוד של הפקח והחליפו אותו בקוד חדש!<br><br>כדי להחזיר את המפה לפקח ולסיים את החקירה עליכם לחקור את הגנבים שוב ולחלץ מהם את ספרות הקוד.</div>
+    <button class="btn" onclick="document.getElementById('ovl-s6').classList.remove('on')">הבנו — נתחיל לחקור!</button>
+  </div>
+</div>
+
+<script>
+const COLS=7, ROWS=4, TOTAL=28;
+const SW=4956, SH=2704;
+const SPW=SW/COLS, SPH=SH/ROWS;
+
+let mapImg=null, pieces=[], drag=null;
+let DW,DH,BW,BH;
+let puzzleLocked=false;
+let pointerDownTime=0, pointerDownX=0, pointerDownY=0;
+
+function init(){
+  const bodyEl=document.querySelector('.body');
+  const tw=document.getElementById('tray-wrap').offsetWidth;
+  const baw=bodyEl.clientWidth-tw-16;
+  const bah=bodyEl.clientHeight-36; // leave room for hint bar
+  const sc=Math.min(baw/SW, bah/SH)*0.68;
+  DW=Math.floor(SPW*sc); DH=Math.floor(SPH*sc);
+  BW=DW*COLS; BH=DH*ROWS;
+
+  // Tray thumbnail size — 4 cols, fill available height
+  const availW=tw-10-9; // padding+gaps
+  const availH=bah-60;
+  const tpwByW=Math.floor(availW/4);
+  const tphByW=Math.round(tpwByW*SPH/SPW);
+  let TPW=tpwByW, TPH=tphByW;
+  if(TPH*ROWS+3*(ROWS-1)>availH){TPH=Math.floor((availH-3*(ROWS-1))/ROWS);TPW=Math.round(TPH*SPW/SPH);}
+  const trayEl=document.getElementById('tray');
+  trayEl.style.gridTemplateColumns=`repeat(4,${TPW}px)`;
+
+  // Board
+  const board=document.getElementById('board');
+  board.style.width=BW+'px'; board.style.height=BH+'px';
+  // Clear only dz elements, preserve x-on-board
+  board.querySelectorAll('.dz,.bp').forEach(e=>e.remove());
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+    const dz=document.createElement('div');
+    dz.className='dz';
+    dz.style.cssText=`left:${c*DW}px;top:${r*DH}px;width:${DW}px;height:${DH}px;`;
+    dz.dataset.c=c; dz.dataset.r=r;
+    board.appendChild(dz);
+  }
+
+  trayEl.innerHTML='';
+  pieces=new Array(TOTAL);
+  const ids=[...Array(TOTAL).keys()];
+  for(let i=ids.length-1;i>0;i--){const j=0|Math.random()*(i+1);[ids[i],ids[j]]=[ids[j],ids[i]];}
+
+  for(let id=0;id<TOTAL;id++){
+    const sc2=id%COLS, sr=0|id/COLS;
+    const rots=[0,0,0,90,180,270];
+    const rot=rots[0|Math.random()*rots.length];
+    pieces[id]={id,sc:sc2,sr,rot,location:'tray',boardC:-1,boardR:-1,tEl:null,bEl:null};
+  }
+
+  ids.forEach(id=>{
+    const p=pieces[id];
+    const tc=document.createElement('canvas');
+    tc.className='tp'; tc.width=TPW; tc.height=TPH;
+    tc.style.width=TPW+'px'; tc.style.height=TPH+'px';
+    tc.dataset.id=id;
+    p.tEl=tc;
+    trayEl.appendChild(tc);
+    tc.addEventListener('pointerdown',e=>onPointerDown(e,id));
+  });
+
+  mapImg=new Image();
+  mapImg.onload=()=>pieces.forEach(p=>renderTray(p));
+  mapImg.src='map_puzzle_final.jpg';
+}
+
+function renderPiece(canvas,p,cw,ch){
+  if(!mapImg) return;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,cw,ch);
+  ctx.save(); ctx.translate(cw/2,ch/2); ctx.rotate(p.rot*Math.PI/180);
+  if(p.rot===90||p.rot===270) ctx.drawImage(mapImg,p.sc*SPW,p.sr*SPH,SPW,SPH,-ch/2,-cw/2,ch,cw);
+  else ctx.drawImage(mapImg,p.sc*SPW,p.sr*SPH,SPW,SPH,-cw/2,-ch/2,cw,ch);
+  ctx.restore();
+}
+function renderTray(p){if(p.tEl) renderPiece(p.tEl,p,p.tEl.width,p.tEl.height);}
+function renderBoard(p){if(p.bEl) renderPiece(p.bEl,p,DW,DH);}
+function renderFloat(p){
+  const fc=document.getElementById('float-piece');
+  fc.width=DW; fc.height=DH;
+  fc.style.width=DW+'px'; fc.style.height=DH+'px';
+  renderPiece(fc,p,DW,DH);
+}
+
+function createBoardEl(p){
+  if(p.bEl) p.bEl.remove();
+  const c=document.createElement('canvas');
+  c.className='bp'; c.width=DW; c.height=DH;
+  c.style.width=DW+'px'; c.style.height=DH+'px';
+  c.dataset.id=p.id;
+  p.bEl=c;
+  renderBoard(p);
+  c.addEventListener('pointerdown',e=>onPointerDown(e,p.id));
+  return c;
+}
+
+function placeBoardEl(p,col,row){
+  const el=p.bEl;
+  el.style.left=(col*DW)+'px'; el.style.top=(row*DH)+'px';
+  el.style.zIndex=10;
+  el.classList.remove('dragging-now');
+  document.getElementById('board').appendChild(el);
+  p.boardC=col; p.boardR=row; p.location='board';
+}
+
+let pointerDownId=-1;
+function onPointerDown(e,id){
+  if(puzzleLocked) return;
+  e.preventDefault(); e.stopPropagation();
+  const p=pieces[id];
+  pointerDownTime=Date.now();
+  pointerDownX=e.clientX; pointerDownY=e.clientY;
+  pointerDownId=id;
+
+  let fromTray=p.location==='tray';
+  if(!fromTray){
+    // Don't hide yet — wait for actual movement
+    p.location='floating';
+  }
+  renderFloat(p);
+  const fc=document.getElementById('float-piece');
+  fc.style.left=(e.clientX-DW/2)+'px';
+  fc.style.top=(e.clientY-DH/2)+'px';
+  if(fromTray) p.tEl.classList.add('used');
+  drag={id,fromTray,moved:false,showing:false,ox:DW/2,oy:DH/2};
+}
+
+document.addEventListener('pointermove',e=>{
+  if(!drag) return;
+  const dx=e.clientX-pointerDownX, dy=e.clientY-pointerDownY;
+  if(Math.sqrt(dx*dx+dy*dy)>6){
+    drag.moved=true;
+    if(!drag.showing){
+      drag.showing=true;
+      if(!drag.fromTray && pieces[drag.id].bEl)
+        pieces[drag.id].bEl.classList.add('dragging-now');
+      document.getElementById('float-piece').style.display='block';
+    }
+    const fc=document.getElementById('float-piece');
+    fc.style.left=(e.clientX-drag.ox)+'px';
+    fc.style.top=(e.clientY-drag.oy)+'px';
+    document.querySelectorAll('.dz').forEach(d=>d.classList.remove('over'));
+    const dz=getDZAt(e.clientX,e.clientY);
+    if(dz) dz.classList.add('over');
+  }
+});
+
+document.addEventListener('pointerup',e=>{
+  if(!drag) return;
+  document.querySelectorAll('.dz').forEach(d=>d.classList.remove('over'));
+  document.getElementById('float-piece').style.display='none';
+  const p=pieces[drag.id];
+  const wasTap=!drag.moved&&(Date.now()-pointerDownTime)<280;
+
+  if(wasTap && !drag.fromTray){
+    // Tap on board = rotate
+    p.bEl.classList.remove('dragging-now');
+    p.location='board';
+    p.rot=(p.rot+90)%360;
+    renderBoard(p); renderTray(p);
+    drag=null; checkAll(); return;
+  }
+  if(wasTap && drag.fromTray){
+    p.tEl.classList.remove('used');
+    drag=null; return;
+  }
+
+  const dz=getDZAt(e.clientX,e.clientY);
+  if(dz){
+    const dc=+dz.dataset.c, dr=+dz.dataset.r;
+    const occ=pieces.find(q=>q.location==='board'&&q.boardC===dc&&q.boardR===dr);
+    if(occ&&occ.id!==p.id){occ.bEl&&occ.bEl.remove();occ.bEl=null;occ.location='tray';occ.boardC=-1;occ.boardR=-1;occ.tEl.classList.remove('used');}
+    if(!drag.fromTray) p.bEl&&p.bEl.classList.remove('dragging-now');
+    if(!p.bEl) createBoardEl(p);
+    placeBoardEl(p,dc,dr);
+    p.tEl.classList.add('used');
+  } else {
+    if(!drag.fromTray&&p.bEl){p.bEl.remove();p.bEl=null;}
+    p.location='tray'; p.boardC=-1; p.boardR=-1;
+    p.tEl.classList.remove('used');
+    if(p.bEl){p.bEl.remove();p.bEl=null;}
+  }
+  drag=null; checkAll();
+});
+
+function getDZAt(x,y){
+  const board=document.getElementById('board');
+  const r=board.getBoundingClientRect();
+  if(x<r.left||x>r.right||y<r.top||y>r.bottom) return null;
+  const c=0|(x-r.left)/DW, row=0|(y-r.top)/DH;
+  if(c<0||c>=COLS||row<0||row>=ROWS) return null;
+  return document.querySelector(`.dz[data-c="${c}"][data-r="${row}"]`);
+}
+
+function checkAll(){
+  let ok=0;
+  pieces.forEach(p=>{if(p.location==='board'&&p.boardC===p.sc&&p.boardR===p.sr&&p.rot===0)ok++;});
+  if(ok===TOTAL){
+    puzzleLocked=true;
+    // Lock all board pieces
+    document.querySelectorAll('.bp').forEach(el=>el.classList.add('locked'));
+    setTimeout(()=>document.getElementById('ovl-done').classList.add('on'),500);
+  }
+}
+
+// ══ CIPHER MODE ══
+let xDrag=null;
+
+window.enterCipherMode=function(){
+  document.getElementById('ovl-done').classList.remove('on');
+  document.getElementById('tray-wrap').style.display='none';
+  document.getElementById('cipher-panel').classList.add('on');
+  document.getElementById('x-marker').addEventListener('pointerdown',startXDrag);
+};
+
+function startXDrag(e){
+  e.preventDefault();
+  const fx=document.getElementById('float-x');
+  fx.style.left=e.clientX+'px'; fx.style.top=e.clientY+'px';
+  fx.style.display='block';
+  document.getElementById('x-marker').style.opacity='.25';
+  xDrag=true;
+}
+
+document.addEventListener('pointermove',e=>{
+  if(!xDrag) return;
+  const fx=document.getElementById('float-x');
+  fx.style.left=e.clientX+'px'; fx.style.top=e.clientY+'px';
+  // Highlight oak zone
+  const board=document.getElementById('board');
+  board.style.outline=isOakZone(e.clientX,e.clientY)?'3px solid rgba(192,57,43,.55)':'';
+},{capture:false});
+
+document.addEventListener('pointerup',e=>{
+  if(!xDrag) return;
+  xDrag=false;
+  document.getElementById('float-x').style.display='none';
+  document.getElementById('board').style.outline='';
+  if(isOakZone(e.clientX,e.clientY)){
+    const board=document.getElementById('board');
+    const r=board.getBoundingClientRect();
+    const xob=document.getElementById('x-on-board');
+    xob.style.left=(e.clientX-r.left)+'px';
+    xob.style.top=(e.clientY-r.top)+'px';
+    xob.style.display='block';
+    document.getElementById('x-marker').classList.add('placed');
+    setTimeout(()=>document.getElementById('ovl-cipher').classList.add('on'),600);
+  } else {
+    document.getElementById('x-marker').style.opacity='1';
+  }
+},{capture:false});
+
+function isOakZone(x,y){
+  const board=document.getElementById('board');
+  const r=board.getBoundingClientRect();
+  // Oak tree: ~38-58% from left, 52-82% from top
+  return x>=r.left+r.width*0.38 && x<=r.left+r.width*0.58 &&
+         y>=r.top+r.height*0.52 && y<=r.top+r.height*0.82;
+}
+
+window.goStage6=function(){
+  document.getElementById('ovl-cipher').classList.remove('on');
+  document.getElementById('ovl-s6').classList.add('on');
+};
+
+window.addEventListener('load',init);
+</script>
+</body>
+</html>
