@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>שלב 6 — פתיחת התיבה</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600;700&family=Secular+One&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#7a5810;--dark:#070a04;--border:rgba(201,168,76,.3);--cream:#f5edd8;--dim:#7a9070;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--dark);font-family:'Rubik',sans-serif;color:var(--cream);}
+
+/* BACKGROUND — dark jungle atmosphere */
+.bg{
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(0,0,0,.8) 100%),
+    radial-gradient(ellipse at 50% 40%, rgba(201,168,76,.055) 0%, transparent 60%),
+    linear-gradient(160deg,#182510 0%,#0d1a08 45%,#060f04 100%);
+}
+
+.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh;}
+.hdr{background:rgba(5,10,4,.95);border-bottom:1px solid var(--border);padding:.55rem 1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;backdrop-filter:blur(4px);}
+.hdr-t{font-family:'Secular One',sans-serif;font-size:1.15rem;color:var(--gold);}
+.body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;gap:.9rem;overflow:hidden;}
+
+/* INTRO */
+.intro-box{background:rgba(8,18,6,.88);border:1px solid var(--border);border-radius:10px;padding:.8rem 1.3rem;max-width:620px;width:100%;text-align:center;font-size:.92rem;line-height:1.8;color:var(--cream);backdrop-filter:blur(6px);}
+
+/* NOTE WRAPPER — contains the real torn paper image + content on top */
+.note-wrap{
+  position:relative;
+  max-width:640px;width:100%;
+  /* The note image is 1890x2480 (portrait). We show it cropped to just the paper part.
+     Approx the paper occupies top ~55% of the image */
+  aspect-ratio:1890/1364; /* top 55% of 2480 */
+  flex-shrink:0;
+}
+.note-bg{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:top center;
+  border-radius:4px;
+  /* Use multiply to let the black bg become transparent */
+  mix-blend-mode:multiply;
+}
+/* White backing so multiply works */
+.note-backing{
+  position:absolute;inset:0;
+  background:white;
+  border-radius:4px;
+}
+.note-content{
+  position:absolute;inset:0;
+  padding:1.4rem 1.8rem 1.2rem;
+  display:flex;flex-direction:column;
+  z-index:2;
+}
+.note-title{
+  font-family:'Caveat',cursive;font-size:clamp(1rem,2.5vw,1.45rem);font-weight:600;
+  color:#1a1060;text-align:center;margin-bottom:.9rem;
+  text-shadow:none;
+}
+.cards-row{display:flex;gap:clamp(.4rem,1.2vw,.9rem);justify-content:center;flex:1;align-items:center;}
+.clue-card{display:flex;flex-direction:column;align-items:center;gap:.35rem;flex:1;max-width:130px;}
+.card-img-wrap{
+  width:clamp(60px,9vw,100px);height:clamp(60px,9vw,100px);
+  border:1.5px solid rgba(60,40,15,.35);border-radius:4px;
+  background:rgba(245,235,210,.7);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:1px 1px 4px rgba(0,0,0,.18);
+  font-size:clamp(2rem,4vw,2.8rem);
+}
+.card-name{font-family:'Caveat',cursive;font-size:clamp(.85rem,1.8vw,1.1rem);color:#2a1800;text-align:center;line-height:1.2;}
+
+/* CODE INPUTS */
+.code-section{display:flex;flex-direction:column;align-items:center;gap:.65rem;max-width:620px;width:100%;}
+.code-inputs{display:flex;gap:.5rem;justify-content:center;}
+.digit-input{
+  width:clamp(44px,5vw,56px);height:clamp(50px,6vw,60px);
+  background:rgba(5,15,5,.88);border:2px solid var(--border);border-radius:8px;
+  text-align:center;font-family:'Secular One',sans-serif;font-size:clamp(1.3rem,2.5vw,1.8rem);
+  color:var(--gold-l);outline:none;transition:border-color .2s;
+  caret-color:var(--gold-l);user-select:auto;-webkit-user-select:auto;touch-action:auto;
+}
+.digit-input:focus{border-color:var(--gold);box-shadow:0 0 12px rgba(201,168,76,.2);}
+.digit-input.correct-d{border-color:#2ecc71;color:#2ecc71;}
+.digit-input.wrong-d{border-color:#c0392b;animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+.check-btn{font-family:'Secular One',sans-serif;font-size:1rem;padding:.7rem 2rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#060d07;border:none;border-radius:8px;cursor:pointer;transition:transform .15s;box-shadow:0 4px 18px rgba(201,168,76,.3);}
+.check-btn:hover{transform:translateY(-2px);}
+
+.hint-row{display:flex;align-items:center;gap:.6rem;}
+.attempts-txt{font-size:.75rem;color:var(--dim);}
+.hint-btn{font-size:.72rem;color:var(--dim);background:transparent;border:1px solid rgba(201,168,76,.22);border-radius:20px;padding:.22rem .7rem;cursor:pointer;transition:all .2s;display:none;}
+.hint-btn.show{display:inline-block;}
+.hint-btn:hover{border-color:var(--gold);color:var(--cream);}
+.hint-text{font-size:.82rem;color:var(--gold-l);background:rgba(10,25,10,.92);border:1px solid rgba(201,168,76,.3);border-radius:6px;padding:.35rem .85rem;display:none;animation:fi .4s ease;}
+.hint-text.show{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+/* OVERLAYS */
+.ovl{position:fixed;inset:0;background:rgba(4,9,3,.9);display:flex;align-items:center;justify-content:center;z-index:500;opacity:0;pointer-events:none;transition:opacity .4s;padding:1rem;}
+.ovl.on{opacity:1;pointer-events:all;}
+.card-box{background:rgba(8,18,6,.97);border:1px solid rgba(201,168,76,.4);border-radius:12px;padding:1.6rem 1.5rem;max-width:500px;width:100%;text-align:center;}
+.card-t{font-family:'Secular One',sans-serif;font-size:1.4rem;color:var(--gold);margin-bottom:.7rem;}
+.card-b{font-size:.93rem;color:var(--cream);line-height:1.88;margin-bottom:1.3rem;}
+.btn{font-family:'Secular One',sans-serif;font-size:.95rem;padding:.7rem 1.8rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#060d07;border:none;border-radius:8px;cursor:pointer;transition:transform .15s;}
+.btn:hover{transform:translateY(-2px);}
+
+/* DEV */
+.dev-btn{position:fixed;top:.4rem;left:.4rem;background:transparent;border:none;cursor:pointer;z-index:600;opacity:.1;font-size:1.1rem;padding:.2rem;}
+.dev-btn:hover{opacity:.45;}
+.dev-panel{position:fixed;top:2rem;left:.4rem;background:rgba(5,12,5,.97);border:1px solid rgba(0,255,65,.3);border-radius:8px;padding:.8rem;z-index:601;display:none;flex-direction:column;gap:.4rem;min-width:150px;}
+.dev-panel.open{display:flex;}
+.dev-item{background:transparent;border:1px solid rgba(0,255,65,.25);color:#00ff41;font-family:monospace;font-size:.72rem;padding:.3rem .6rem;border-radius:4px;cursor:pointer;text-align:right;}
+.dev-item:hover{background:rgba(0,255,65,.08);}
+.dev-close{color:#3a5a3a;font-size:.65rem;text-align:center;cursor:pointer;margin-top:.2rem;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="app">
+  <div class="hdr"><div class="hdr-t">שלב 6 — פתיחת התיבה</div></div>
+  <div class="body">
+
+    <div class="intro-box">
+      כדי שהם בעצמם לא ישכחו את הקוד שהחליפו, הגנבים השאירו ליד התיבה פתק עם רמזים לספרות הקוד.<br>
+      <strong style="color:var(--gold-l);">נסו לפענח את הספרות.</strong>
+    </div>
+
+    <!-- Real torn note image as background, content on top -->
+    <div class="note-wrap">
+      <div class="note-backing"></div>
+      <img class="note-bg" src="note_bg.png" alt="">
+      <div class="note-content">
+        <div class="note-title">רמזים לקוד לתיבה</div>
+        <div class="cards-row">
+
+          <!-- RTL: rightmost = first digit -->
+          <!-- גירית = 5, חזיר בר = 6, רקון = 4, אבן קסומה = 8 → code 5648 -->
+
+          <div class="clue-card">
+            <div class="card-img-wrap">🦡</div>
+            <div class="card-name">גירית</div>
+          </div>
+          <div class="clue-card">
+            <div class="card-img-wrap">🐗</div>
+            <div class="card-name">חזיר בר</div>
+          </div>
+          <div class="clue-card">
+            <div class="card-img-wrap">🦝</div>
+            <div class="card-name">רקון</div>
+          </div>
+          <div class="clue-card">
+            <div class="card-img-wrap">🪨✨</div>
+            <div class="card-name">אבן קסומה</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Code inputs below note -->
+    <div class="code-section">
+      <div class="code-inputs">
+        <input class="digit-input" id="d0" type="tel" maxlength="1" placeholder="?" oninput="onDigit(0)" onkeydown="onKey(event,0)" autocomplete="off">
+        <input class="digit-input" id="d1" type="tel" maxlength="1" placeholder="?" oninput="onDigit(1)" onkeydown="onKey(event,1)" autocomplete="off">
+        <input class="digit-input" id="d2" type="tel" maxlength="1" placeholder="?" oninput="onDigit(2)" onkeydown="onKey(event,2)" autocomplete="off">
+        <input class="digit-input" id="d3" type="tel" maxlength="1" placeholder="?" oninput="onDigit(3)" onkeydown="onKey(event,3)" autocomplete="off">
+      </div>
+      <button class="check-btn" onclick="checkCode()">בדקו את הקוד</button>
+      <div class="hint-row">
+        <div class="attempts-txt" id="atxt"></div>
+        <button class="hint-btn" id="hbtn" onclick="showHint()">רמז ←</button>
+      </div>
+      <div class="hint-text" id="htxt">הפיתרון הוא בשמות</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Win popup -->
+<div class="ovl" id="ovl-win">
+  <div class="card-box">
+    <div class="card-t">התיבה נפתחה!</div>
+    <div class="card-b">
+      פיצחתם את הקוד! התיבה נפתחה ובתוכה — מפת האוצרות העתיקה שלמה ובשלמותה.<br><br>
+      הפקח מחזיר את המפה לכספת השמורה. הגנבים נתפסו, שמורת עדן הסודית בטוחה שוב.<br><br>
+      <strong style="color:var(--gold-l);">תודה לבלשים יובל ושותף — החקירה הסתיימה בהצלחה!</strong>
+    </div>
+    <button class="btn" onclick="window.parent.postMessage('nextStage','*')">🎉 סיום החקירה!</button>
+  </div>
+</div>
+
+<button class="dev-btn" onclick="toggleDev()">🔧</button>
+<div class="dev-panel" id="dev-panel">
+  <div style="font-size:.65rem;color:#00a82a;margin-bottom:.2rem;">⚙ DEV</div>
+  <button class="dev-item" onclick="devSolve()">פתור אוטומטית</button>
+  <button class="dev-item" onclick="devWin()">דלג לניצחון</button>
+  <div class="dev-close" onclick="toggleDev()">סגור ✕</div>
+</div>
+
+<script>
+// Code 5648: גירית(5) | חזיר בר(6) | רקון(4) | אבן קסומה(8)
+const CORRECT=[5,6,4,8];
+let attempts=0;
+
+function onDigit(i){
+  const inp=document.getElementById(`d${i}`);
+  inp.value=inp.value.replace(/[^0-9]/g,'').slice(-1);
+  inp.classList.remove('correct-d','wrong-d');
+  if(inp.value&&i<3) document.getElementById(`d${i+1}`).focus();
+}
+function onKey(e,i){
+  if(e.key==='Backspace'&&!document.getElementById(`d${i}`).value&&i>0)
+    document.getElementById(`d${i-1}`).focus();
+  if(e.key==='Enter') checkCode();
+}
+function checkCode(){
+  const vals=CORRECT.map((_,i)=>{const v=parseInt(document.getElementById(`d${i}`).value);return isNaN(v)?null:v;});
+  if(vals.some(v=>v===null)){
+    vals.forEach((v,i)=>{if(v===null){const inp=document.getElementById(`d${i}`);inp.classList.add('wrong-d');setTimeout(()=>inp.classList.remove('wrong-d'),400);}});
+    return;
+  }
+  attempts++;
+  let ok=true;
+  vals.forEach((v,i)=>{
+    const inp=document.getElementById(`d${i}`);
+    if(v===CORRECT[i]) inp.classList.add('correct-d');
+    else{inp.classList.add('wrong-d');setTimeout(()=>inp.classList.remove('wrong-d'),500);ok=false;}
+  });
+  if(ok){setTimeout(()=>document.getElementById('ovl-win').classList.add('on'),600);return;}
+  document.getElementById('atxt').textContent=`ניסיון ${attempts} — נסו שוב`;
+  if(attempts>=3) document.getElementById('hbtn').classList.add('show');
+}
+function showHint(){document.getElementById('htxt').classList.add('show');document.getElementById('hbtn').style.display='none';}
+function toggleDev(){document.getElementById('dev-panel').classList.toggle('open');}
+function devSolve(){toggleDev();CORRECT.forEach((v,i)=>{document.getElementById(`d${i}`).value=v;});}
+function devWin(){toggleDev();document.getElementById('ovl-win').classList.add('on');}
+</script>
+</body>
+</html>

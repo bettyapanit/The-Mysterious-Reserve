@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>שלב 4 — ההאשמה</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600&family=Secular+One&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#7a5810;--dark:#07100a;--border:rgba(201,168,76,.28);--cream:#f5edd8;--dim:#7a9070;--red:#c0392b;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;}
+html,body{height:100%;overflow:hidden;background:var(--dark);font-family:'Rubik',sans-serif;color:var(--cream);}
+.bg{position:fixed;inset:0;z-index:0;background:url('crime_scene.jpg') center/cover no-repeat;filter:brightness(.25) saturate(.5);}
+.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh;align-items:center;justify-content:center;padding:1rem;gap:1rem;}
+
+.stage-label{font-family:'Secular One',sans-serif;font-size:1.1rem;color:var(--gold);text-align:center;}
+.subtitle{font-size:.9rem;color:var(--dim);text-align:center;max-width:560px;line-height:1.7;}
+
+/* Selection grid */
+.suspects-wrap{display:flex;flex-direction:column;align-items:center;gap:.8rem;width:100%;max-width:800px;}
+.suspects-row{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;}
+
+/* Suspect card */
+.scard{
+  width:140px;display:flex;flex-direction:column;align-items:center;gap:.4rem;
+  cursor:pointer;transition:transform .15s;
+}
+.scard:hover{transform:translateY(-3px);}
+.scard-img{
+  width:130px;height:130px;
+  object-fit:cover;object-position:top center;
+  border:2px solid rgba(201,168,76,.2);border-radius:6px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.scard.selected .scard-img{
+  border-color:var(--red);
+  box-shadow:0 0 16px rgba(192,57,43,.5);
+}
+.scard-name{font-size:.78rem;color:var(--dim);text-align:center;font-family:'Secular One',sans-serif;}
+.scard.selected .scard-name{color:var(--gold-l);}
+
+/* Badge count */
+.badge{
+  font-size:.72rem;color:var(--dim);
+  background:rgba(8,18,6,.85);border:1px solid var(--border);
+  padding:.3rem .8rem;border-radius:20px;
+}
+.badge b{color:var(--gold-l);}
+
+/* Buttons */
+.btn-row{display:flex;gap:.8rem;}
+.btn{font-family:'Secular One',sans-serif;font-size:.95rem;padding:.72rem 2rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#060d07;border:none;border-radius:8px;cursor:pointer;transition:transform .15s;box-shadow:0 4px 18px rgba(201,168,76,.3);}
+.btn:hover{transform:translateY(-2px);}
+.btn:disabled{opacity:.35;cursor:default;transform:none;}
+
+/* Overlays */
+.ovl{position:fixed;inset:0;background:rgba(4,9,3,.92);display:flex;align-items:center;justify-content:center;z-index:500;opacity:0;pointer-events:none;transition:opacity .4s;padding:1rem;}
+.ovl.on{opacity:1;pointer-events:all;}
+.cbox{background:rgba(8,18,6,.97);border:1px solid rgba(201,168,76,.4);border-radius:12px;padding:1.5rem 1.4rem;max-width:480px;width:100%;text-align:center;}
+.cbox.err{border-color:var(--red);animation:shake .4s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.ct{font-family:'Secular One',sans-serif;font-size:1.3rem;color:var(--gold);margin-bottom:.6rem;}
+.ct.r{color:var(--red);}
+.cb{font-size:.92rem;color:var(--cream);line-height:1.85;margin-bottom:1rem;}
+.suspect-imgs{display:flex;gap:.8rem;justify-content:center;margin-bottom:.8rem;}
+.suspect-imgs img{width:80px;height:80px;object-fit:cover;object-position:top;border-radius:5px;border:1px solid var(--border);}
+.btn2{font-family:'Secular One',sans-serif;font-size:.9rem;padding:.65rem 1.6rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#060d07;border:none;border-radius:8px;cursor:pointer;}
+
+/* Dev */
+.db{position:fixed;top:.4rem;left:.4rem;background:transparent;border:none;cursor:pointer;z-index:600;opacity:.1;font-size:1.1rem;}
+.db:hover{opacity:.45;}
+.dp{position:fixed;top:2rem;left:.4rem;background:rgba(5,12,5,.97);border:1px solid rgba(0,255,65,.3);border-radius:8px;padding:.8rem;z-index:601;display:none;flex-direction:column;gap:.4rem;min-width:140px;}
+.dp.open{display:flex;}
+.di{background:transparent;border:1px solid rgba(0,255,65,.25);color:#00ff41;font-family:monospace;font-size:.72rem;padding:.3rem .6rem;border-radius:4px;cursor:pointer;}
+.dc{color:#3a5a3a;font-size:.65rem;text-align:center;cursor:pointer;margin-top:.2rem;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="app">
+  <div class="stage-label">שלב 4 — ההאשמה</div>
+  <div class="subtitle">על סמך העקבות, העדות וספר הפרופילים — מי לדעתכם הגנבים?<br>בחרו את שלושת החשודים שאחראים לגניבה.</div>
+
+  <div class="suspects-wrap">
+    <!-- Row 1: current residents -->
+    <div class="suspects-row" id="suspects-row"></div>
+  </div>
+
+  <div class="badge">נבחרו: <b id="sel-count">0</b> / 3</div>
+
+  <div class="btn-row">
+    <button class="btn" id="accuse-btn" onclick="accuse()" disabled>האשימו!</button>
+  </div>
+</div>
+
+<!-- Wrong accusation -->
+<div class="ovl" id="ovl-wrong">
+  <div class="cbox err">
+    <div class="ct r">לא בדיוק...</div>
+    <div class="cb">אחד או יותר מהחשודים שבחרתם אינם הגנבים האמיתיים. חזרו לראיות ונסו שוב.</div>
+    <button class="btn2" onclick="document.getElementById('ovl-wrong').classList.remove('on')">נחזור לחקור</button>
+  </div>
+</div>
+
+<!-- Correct accusation -->
+<div class="ovl" id="ovl-correct">
+  <div class="cbox">
+    <div class="ct">פיצחתם את התעלומה!</div>
+    <div class="suspect-imgs">
+      <img src="animals/badger.jpg" alt="גירית">
+      <img src="animals/wild_boar.png" alt="חזיר בר">
+      <img src="animals/raccoon.png" alt="רקון">
+    </div>
+    <div class="cb">
+      <b style="color:var(--gold-l);">גירית, חזיר בר ורקון</b> — שלושה שותפים לפשע.<br><br>
+      הגירית חפרה את הבור בזריזות, חזיר הבר פרץ את הדרך, והרקון — הפולש שסולק מהשמורה לפני שנה — אחז בתיבה עם ידיו הזריזות.<br><br>
+      אך שאלה אחת נותרת: <b style="color:var(--gold-l);">איפה החביאו את התיבה?</b>
+    </div>
+    <button class="btn2" onclick="goNext()">המשיכו לחפש את התיבה</button>
+  </div>
+</div>
+
+<button class="db" onclick="toggleDev()">🔧</button>
+<div class="dp" id="dp">
+  <div style="font-size:.65rem;color:#00a82a;">⚙ DEV</div>
+  <button class="di" onclick="devCorrect()">בחר נכון</button>
+  <button class="di" onclick="goNext()">דלג</button>
+  <div class="dc" onclick="toggleDev()">סגור ✕</div>
+</div>
+
+<script>
+// All animals that can be accused (current + raccoon from past)
+const SUSPECTS=[
+  {id:'lion',    name:'אריה',    img:'animals/lion.png'},
+  {id:'elephant',name:'פיל',     img:'animals/elephant.png'},
+  {id:'gorilla', name:'גורילה',  img:'animals/gorilla.png'},
+  {id:'croc',    name:'תנין',    img:'animals/crocodile.png'},
+  {id:'eagle',   name:'נשר',     img:'animals/eagle.png'},
+  {id:'badger',  name:'גירית',   img:'animals/badger.jpg'},
+  {id:'boar',    name:'חזיר בר', img:'animals/wild_boar.png'},
+  {id:'tiger',   name:'טיגריס', img:'animals/tiger.png'},
+  {id:'bear',    name:'דב',      img:'animals/bear.png'},
+  {id:'chimp',   name:'שימפנזה',img:'animals/chimpanzee.png'},
+  {id:'pelican', name:'שקנאי',  img:'animals/pelican.png'},
+  {id:'zebra',   name:'זברה',   img:'animals/zebra.png'},
+  {id:'raccoon', name:'רקון',   img:'animals/raccoon.png'},
+];
+const CORRECT_IDS=new Set(['badger','boar','raccoon']);
+let selected=new Set();
+
+function build(){
+  const row=document.getElementById('suspects-row');
+  SUSPECTS.forEach(s=>{
+    const card=document.createElement('div');card.className='scard';card.dataset.id=s.id;
+    const img=document.createElement('img');img.className='scard-img';img.src=s.img;img.alt=s.name;
+    const name=document.createElement('div');name.className='scard-name';name.textContent=s.name;
+    card.appendChild(img);card.appendChild(name);
+    card.addEventListener('click',()=>toggleSuspect(s.id,card));
+    row.appendChild(card);
+  });
+}
+
+function toggleSuspect(id,card){
+  if(selected.has(id)){selected.delete(id);card.classList.remove('selected');}
+  else if(selected.size<3){selected.add(id);card.classList.add('selected');}
+  document.getElementById('sel-count').textContent=selected.size;
+  document.getElementById('accuse-btn').disabled=selected.size!==3;
+}
+
+function accuse(){
+  const ok=CORRECT_IDS.size===selected.size&&[...CORRECT_IDS].every(id=>selected.has(id));
+  if(ok) document.getElementById('ovl-correct').classList.add('on');
+  else{
+    const box=document.querySelector('#ovl-wrong .cbox');
+    box.classList.remove('err');void box.offsetWidth;box.classList.add('err');
+    document.getElementById('ovl-wrong').classList.add('on');
+  }
+}
+
+function goNext(){window.parent.postMessage('nextStage','*');}
+function toggleDev(){document.getElementById('dp').classList.toggle('open');}
+function devCorrect(){
+  toggleDev();selected.clear();
+  document.querySelectorAll('.scard.selected').forEach(c=>c.classList.remove('selected'));
+  CORRECT_IDS.forEach(id=>{
+    selected.add(id);
+    document.querySelector(`.scard[data-id="${id}"]`)?.classList.add('selected');
+  });
+  document.getElementById('sel-count').textContent=3;
+  document.getElementById('accuse-btn').disabled=false;
+}
+
+build();
+</script>
+</body>
+</html>

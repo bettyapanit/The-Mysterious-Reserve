@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>שלב 3 — ספר הפרופילים</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600&family=Secular+One&family=Frank+Ruhl+Libre:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#7a5810;--dark:#07100a;--border:rgba(201,168,76,.28);--cream:#f5edd8;--dim:#7a9070;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;}
+html,body{height:100%;overflow:hidden;background:var(--dark);font-family:'Rubik',sans-serif;color:var(--cream);}
+.bg{position:fixed;inset:0;z-index:0;background:url('jungle.jpg') center/cover no-repeat;filter:brightness(.28) saturate(.6);}
+.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh;}
+
+/* HEADER */
+.hdr{background:rgba(5,10,4,.96);border-bottom:1px solid var(--border);padding:.45rem 1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hdr-t{font-family:'Secular One',sans-serif;font-size:1.1rem;color:var(--gold);}
+
+/* BOOK LAYOUT */
+.book-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:.8rem;gap:1rem;min-height:0;overflow:hidden;}
+
+/* Book — two pages side by side */
+.book{
+  display:flex;flex-direction:row;
+  background:#f0e8d0;
+  border-radius:4px;
+  box-shadow:0 8px 40px rgba(0,0,0,.7), inset 0 0 30px rgba(140,100,50,.08);
+  max-width:1100px;width:100%;
+  height:100%;max-height:680px;
+  overflow:hidden;
+  position:relative;
+}
+/* Book spine */
+.book::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(to right,rgba(100,70,30,.4),rgba(180,140,80,.3),rgba(100,70,30,.4));z-index:10;}
+
+.page{flex:1;padding:1rem 1.2rem;overflow-y:auto;overflow-x:hidden;min-width:0;}
+.page::-webkit-scrollbar{width:4px;}
+.page::-webkit-scrollbar-thumb{background:rgba(140,100,50,.3);}
+
+.page-title{
+  font-family:'Frank Ruhl Libre',serif;font-size:1rem;font-weight:700;
+  color:#5a3010;text-align:center;margin-bottom:.8rem;
+  padding-bottom:.4rem;border-bottom:1px solid rgba(140,100,50,.3);
+}
+
+/* Profile card in book */
+.profile{
+  display:flex;gap:.7rem;padding:.55rem 0;
+  border-bottom:1px solid rgba(140,100,50,.15);
+}
+.profile:last-child{border-bottom:none;}
+.profile-img{
+  width:70px;height:70px;flex-shrink:0;
+  object-fit:cover;object-position:top center;
+  border:1px solid rgba(140,100,50,.3);border-radius:3px;
+}
+.profile-info{flex:1;min-width:0;}
+.profile-name{font-family:'Frank Ruhl Libre',serif;font-size:.88rem;font-weight:700;color:#3a1800;margin-bottom:.2rem;}
+.profile-row{font-size:.72rem;color:#4a2810;line-height:1.6;}
+.profile-row b{color:#5a3010;}
+.profile-row.suspect{color:#8a2010;}
+.profile-row.past{color:#6a5030;font-style:italic;}
+
+/* Navigation */
+.nav-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem 1rem;background:rgba(5,10,4,.92);border-top:1px solid var(--border);flex-shrink:0;}
+.nav-info{font-size:.75rem;color:var(--dim);}
+.nav-btn{font-family:'Secular One',sans-serif;font-size:.8rem;padding:.4rem 1rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#060d07;border:none;border-radius:6px;cursor:pointer;}
+.btn-main{font-family:'Secular One',sans-serif;font-size:.92rem;padding:.6rem 1.8rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#060d07;border:none;border-radius:8px;cursor:pointer;transition:transform .15s;}
+.btn-main:hover{transform:translateY(-1px);}
+
+/* Dev */
+.db{position:fixed;top:.4rem;left:.4rem;background:transparent;border:none;cursor:pointer;z-index:600;opacity:.1;font-size:1.1rem;}
+.db:hover{opacity:.45;}
+.dp{position:fixed;top:2rem;left:.4rem;background:rgba(5,12,5,.97);border:1px solid rgba(0,255,65,.3);border-radius:8px;padding:.8rem;z-index:601;display:none;flex-direction:column;gap:.4rem;min-width:140px;}
+.dp.open{display:flex;}
+.di{background:transparent;border:1px solid rgba(0,255,65,.25);color:#00ff41;font-family:monospace;font-size:.72rem;padding:.3rem .6rem;border-radius:4px;cursor:pointer;}
+.dc{color:#3a5a3a;font-size:.65rem;text-align:center;cursor:pointer;margin-top:.2rem;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="app">
+  <div class="hdr"><div class="hdr-t">שלב 3 — ספר הפרופילים</div></div>
+
+  <div class="book-wrap">
+    <div class="book">
+      <!-- LEFT PAGE — current residents -->
+      <div class="page" id="page-left">
+        <div class="page-title">דיירי השמורה — נוכחיים</div>
+        <!-- Profiles rendered by JS -->
+      </div>
+      <!-- RIGHT PAGE — past residents -->
+      <div class="page" id="page-right">
+        <div class="page-title">דיירי השמורה — לשעבר</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <div class="nav-info">קראו את הפרופילים וצלבו עם תיאורי העדות</div>
+    <button class="btn-main" onclick="goNext()">המשיכו לזיהוי החשודים</button>
+    <div class="nav-info">זכרו: שעת הפשע — קצת לפני חצות</div>
+  </div>
+</div>
+
+<button class="db" onclick="toggleDev()">🔧</button>
+<div class="dp" id="dp">
+  <div style="font-size:.65rem;color:#00a82a;">⚙ DEV</div>
+  <button class="di" onclick="goNext()">דלג</button>
+  <div class="dc" onclick="toggleDev()">סגור ✕</div>
+</div>
+
+<script>
+// Current residents (12)
+const CURRENT=[
+  {id:'lion',    name:'אריה',    img:'animals/lion.png',
+   phys:'גוף גדול ומרשים, רעמה עבה, צעדים כבדים',
+   char:'מלכותי, ישן עמוק בלילות בשמורה',
+   suspect:'לועס עצמות',
+   alibi:'נצפה ישן במאורתו בשעת חצות על ידי הנמר'},
+  {id:'elephant',name:'פיל',     img:'animals/elephant.png',
+   phys:'ענק, כבד, עקבות עמוקות מאוד',
+   char:'שקט, אוהב לשתות באגמון הסלע בלילה',
+   suspect:'עקבותיו נמצאו באגמון הסלע',
+   alibi:'עקבותיו לא נמצאו בנתיב הבריחה — רק באגמון'},
+  {id:'gorilla', name:'גורילה',  img:'animals/gorilla.png',
+   phys:'גוף כבד ומסיבי, ידיים חזקות, הולכת על ארבע',
+   char:'מגושמת, רועשת, שוברת ענפים בדרכה',
+   suspect:'גוף כבד ומסיבי',
+   alibi:'עקבותיה נמצאו רק באגמון הסלע, לא בנתיב הבריחה'},
+  {id:'croc',    name:'תנין',    img:'animals/crocodile.png',
+   phys:'גוף ארוך, רגליים קצרות ועבות, זנב גורר',
+   char:'איטי ביבשה, מעדיף להישאר במים',
+   suspect:'רגליים קצרות',
+   alibi:'שביל הזנב הייחודי לא נראה בנתיב. בלילה — נשאר במים'},
+  {id:'eagle',   name:'נשר',     img:'animals/eagle.png',
+   phys:'כנפיים גדולות, ציפורניים חדות, עקבות קלות',
+   char:'לילי חלקית, עף מעל הכל, רואה הכל',
+   suspect:'ייתכן שהוא העד האנונימי — ראה מלמעלה',
+   alibi:'לא יכול לחפור או לשאת תיבה'},
+  {id:'badger',  name:'גירית',   img:'animals/badger.jpg',
+   phys:'גוף קטן, רגליים קצרות, טפרים חזקים',
+   char:'מומחית חפירה, יוצאת בלילה, שקטה ומהירה',
+   suspect:'גוף קטן + רגליים קצרות + מומחית חפירה',
+   alibi:null},
+  {id:'boar',    name:'חזיר בר', img:'animals/wild_boar.png',
+   phys:'גוף כבד ומסיבי, ראש נמוך, בינוני-גדול',
+   char:'מגושם ואגרסיבי, פורץ דרך בכוח',
+   suspect:'גוף כבד ומסיבי + מגושם',
+   alibi:null},
+  {id:'tiger',   name:'טיגריס', img:'animals/tiger.png',
+   phys:'גוף בינוני-גדול, זריז, פסים בולטים',
+   char:'לילי, סייר, שומר שטח',
+   suspect:'לילי וזריז',
+   alibi:'הוא זה שראה את האריה ישן — היה בסיור לילי מרוחק'},
+  {id:'bear',    name:'דב',      img:'animals/bear.png',
+   phys:'גוף גדול וכבד, טפרים ארוכים, חופר לפעמים',
+   char:'אוהב לישון, פעיל בדמדומים',
+   suspect:'חופר לפעמים + גוף כבד',
+   alibi:'החפירה בזירה קטנה ומדויקת — לא של דב. נמצא ישן כל הלילה'},
+  {id:'chimp',   name:'שימפנזה',img:'animals/chimpanzee.png',
+   phys:'גוף בינוני, ידיים זריזות ומיומנות',
+   char:'סקרן, חכם, אוהב לפתוח דברים',
+   suspect:'ידיים זריזות',
+   alibi:'נצפה בצד הצפוני של השמורה כל הלילה'},
+  {id:'pelican', name:'שקנאי',  img:'animals/pelican.png',
+   phys:'ציפור גדולה, רגליים ארוכות ודקות',
+   char:'דייר חדש יחסית, שקט, מסתורי',
+   suspect:'עקבותיו נמצאו בנתיב הבריחה',
+   alibi:'עקבות ציפור ייחודיות — לא תואמות עדות. לא יכול לשאת תיבה'},
+  {id:'zebra',   name:'זברה',   img:'animals/zebra.png',
+   phys:'גוף בינוני, פרסות, פסים בולטים',
+   char:'עדרית, לא פועלת לבד, פחדנית בלילה',
+   suspect:'—',
+   alibi:'לעולם לא יוצאת לבד בלילה'},
+];
+
+// Past residents
+const PAST=[
+  {id:'raccoon', name:'רקון',   img:'animals/raccoon.png',
+   phys:'גוף בינוני-קטן, זנב ארוך עם טבעות שחור-לבן, פרצוף עם "מסכה" שחורה',
+   char:'ערמומי, גנב מושבע, ידיים זריזות במיוחד',
+   suspect:'זנב עם טבעות + ידיים זריזות',
+   note:'סולק מהשמורה לפני שנה בגלל גניבות מתמשכות. ביקש לחזור ונדחה'},
+  {id:'cheetah', name:"צ'יטה",  img:'animals/cheetah.png',
+   phys:'גוף רזה ומוארך, כתמים שחורים, מהיר מאוד',
+   char:'מהיר ביותר, עצבני, לא מסתדר עם אחרים',
+   note:'עזבה לפני שנתיים — לא הסתגלה לחיי השמורה'},
+  {id:'hyena',   name:'צבוע',   img:'animals/hyena.png',
+   phys:'גוף בינוני, מגושם, כתמים כהים',
+   char:'נוכלן, רועש, אוהב ללעוס עצמות',
+   note:'עזב לפני שלוש שנים לאחר סכסוכים עם דיירים אחרים'},
+  {id:'turtle',  name:'צב גדול',img:'animals/turtle.png',
+   phys:'גוף כבד, שריון, רגליים קצרות ועבות',
+   char:'איטי מאוד, שקט, חי שנים רבות',
+   note:'עזב לפני ארבע שנים — השמורה הפכה צפופה מדי עבורו'},
+  {id:'toucan',  name:'טוקאן',  img:'animals/toucan.png',
+   phys:'ציפור גדולה, מקור ענק ועז-צבעוני',
+   char:'שובב, רועש, אוהב פירות',
+   note:'עזב לפני שנה — הלך לחפש שמורה עם יותר פירות טרופיים'},
+];
+
+function renderProfiles(containerId, profiles, isPast){
+  const el=document.getElementById(containerId);
+  // keep title
+  const title=el.querySelector('.page-title');
+  el.innerHTML='';el.appendChild(title);
+  profiles.forEach(p=>{
+    const div=document.createElement('div');div.className='profile';
+    const img=document.createElement('img');
+    img.className='profile-img';img.src=p.img;img.alt=p.name;
+    img.onerror=()=>{img.style.display='none';};
+    const info=document.createElement('div');info.className='profile-info';
+    info.innerHTML=`<div class="profile-name">${p.name}</div>
+    <div class="profile-row"><b>פיזי:</b> ${p.phys}</div>
+    <div class="profile-row"><b>אופי:</b> ${p.char}</div>
+    ${p.suspect&&p.suspect!=='—'?`<div class="profile-row suspect"><b>מחשיד:</b> ${p.suspect}</div>`:''}
+    ${p.alibi?`<div class="profile-row"><b>אליבי:</b> ${p.alibi}</div>`:''}
+    ${p.note?`<div class="profile-row past"><b>הערה:</b> ${p.note}</div>`:''}`;
+    div.appendChild(img);div.appendChild(info);
+    el.appendChild(div);
+  });
+}
+
+renderProfiles('page-left',CURRENT,false);
+renderProfiles('page-right',PAST,true);
+
+function goNext(){window.parent.postMessage('nextStage','*');}
+function toggleDev(){document.getElementById('dp').classList.toggle('open');}
+</script>
+</body>
+</html>

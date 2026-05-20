@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>שלב 2 — העדות האנונימית</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600&family=Secular+One&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#7a5810;--dark:#07100a;--border:rgba(201,168,76,.28);--cream:#f5edd8;--dim:#7a9070;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;}
+html,body{height:100%;overflow:hidden;background:var(--dark);font-family:'Rubik',sans-serif;color:var(--cream);}
+.bg{position:fixed;inset:0;z-index:0;background:url('jungle.jpg') center/cover no-repeat;filter:brightness(.32) saturate(.7);}
+.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh;align-items:center;justify-content:center;padding:1rem;gap:1rem;}
+
+/* Stage label */
+.stage-label{font-family:'Secular One',sans-serif;font-size:1.1rem;color:var(--gold);text-align:center;}
+
+/* Leaf note — the anonymous testimony arrives on a torn leaf */
+.leaf-wrap{
+  position:relative;max-width:680px;width:100%;
+  filter:drop-shadow(0 8px 32px rgba(0,0,0,.7));
+}
+.leaf-img{width:100%;display:block;border-radius:4px;}
+.leaf-content{
+  position:absolute;
+  top:12%;left:8%;right:8%;bottom:14%;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:.8rem 1.2rem;
+}
+.leaf-title{
+  font-family:'Caveat',cursive;font-size:1.3rem;font-weight:600;
+  color:#1a3010;text-align:center;margin-bottom:.8rem;
+  text-shadow:0 1px 2px rgba(255,255,255,.3);
+}
+.leaf-text{
+  font-family:'Caveat',cursive;font-size:clamp(.95rem,1.8vw,1.15rem);
+  color:#1a2810;line-height:1.9;text-align:right;
+}
+.leaf-sig{
+  font-family:'Caveat',cursive;font-size:.9rem;color:#3a5030;
+  text-align:left;margin-top:.8rem;font-style:italic;
+}
+
+/* Fallback if no leaf image */
+.leaf-fallback{
+  max-width:680px;width:100%;
+  background:rgba(8,18,6,.92);border:1px solid var(--border);border-radius:12px;
+  padding:1.6rem;
+}
+
+/* Continue button */
+.btn{font-family:'Secular One',sans-serif;font-size:1rem;padding:.75rem 2.2rem;
+  background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#060d07;border:none;
+  border-radius:8px;cursor:pointer;transition:transform .15s;box-shadow:0 4px 20px rgba(201,168,76,.3);}
+.btn:hover{transform:translateY(-2px);}
+
+/* Dev */
+.db{position:fixed;top:.4rem;left:.4rem;background:transparent;border:none;cursor:pointer;z-index:600;opacity:.1;font-size:1.1rem;}
+.db:hover{opacity:.45;}
+.dp{position:fixed;top:2rem;left:.4rem;background:rgba(5,12,5,.97);border:1px solid rgba(0,255,65,.3);border-radius:8px;padding:.8rem;z-index:601;display:none;flex-direction:column;gap:.4rem;min-width:140px;}
+.dp.open{display:flex;}
+.di{background:transparent;border:1px solid rgba(0,255,65,.25);color:#00ff41;font-family:monospace;font-size:.72rem;padding:.3rem .6rem;border-radius:4px;cursor:pointer;}
+.di:hover{background:rgba(0,255,65,.08);}
+.dc{color:#3a5a3a;font-size:.65rem;text-align:center;cursor:pointer;margin-top:.2rem;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="app">
+  <div class="stage-label">שלב 2 — עדות אנונימית</div>
+
+  <!-- Testimony on torn leaf -->
+  <div class="leaf-wrap" id="leaf-wrap">
+    <!-- Try real leaf image, fallback to styled div -->
+    <img class="leaf-img" src="torn_leaf.jpg" alt="" 
+         onerror="this.style.display='none';document.getElementById('leaf-fallback').style.display='flex';">
+    <div class="leaf-content">
+      <div class="leaf-title">עדות שנמצאה ליד הזירה</div>
+      <div class="leaf-text">
+        ראיתי שלוש דמויות ליד גבול השמורה קצת לפני חצות.<br><br>
+        הראשונה — גוף קטן, רגליים קצרות. חפרה בקרקע בזריזות ובשקט.<br><br>
+        השנייה — גוף כבד ומסיבי. התקדמה בכוח, לא דאגה לרעש שעשתה.<br><br>
+        השלישית — זנב ארוך עם טבעות. ידיה הזריזות אחזו בתיבה.
+      </div>
+      <div class="leaf-sig">— עד אנונימי, מפחד לגלות את שמי —</div>
+    </div>
+  </div>
+
+  <!-- Fallback styled box -->
+  <div id="leaf-fallback" style="display:none;max-width:680px;width:100%;background:rgba(8,18,6,.92);border:1px solid var(--border);border-radius:12px;padding:1.6rem;flex-direction:column;gap:.8rem;">
+    <div style="font-family:'Secular One',sans-serif;font-size:1rem;color:var(--gold);text-align:center;">עדות שנמצאה ליד הזירה</div>
+    <div style="font-size:.95rem;line-height:1.9;color:var(--cream);">
+      ראיתי שלוש דמויות ליד גבול השמורה קצת לפני חצות.<br><br>
+      הראשונה — גוף קטן, רגליים קצרות. חפרה בקרקע בזריזות ובשקט.<br><br>
+      השנייה — גוף כבד ומסיבי. התקדמה בכוח, לא דאגה לרעש שעשתה.<br><br>
+      השלישית — זנב ארוך עם טבעות. ידיה הזריזות אחזו בתיבה.
+    </div>
+    <div style="font-size:.8rem;color:var(--dim);font-style:italic;text-align:left;">— עד אנונימי, מפחד לגלות את שמי —</div>
+  </div>
+
+  <button class="btn" onclick="goNext()">המשיכו לספר הפרופילים</button>
+</div>
+
+<button class="db" onclick="toggleDev()">🔧</button>
+<div class="dp" id="dp">
+  <div style="font-size:.65rem;color:#00a82a;">⚙ DEV</div>
+  <button class="di" onclick="goNext()">דלג</button>
+  <div class="dc" onclick="toggleDev()">סגור ✕</div>
+</div>
+<script>
+function goNext(){window.parent.postMessage('nextStage','*');}
+function toggleDev(){document.getElementById('dp').classList.toggle('open');}
+</script>
+</body>
+</html>

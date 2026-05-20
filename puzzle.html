@@ -81,15 +81,17 @@ html,body{height:100%;overflow:hidden;background:var(--dark);font-family:'Rubik'
 }
 @keyframes xpop{from{transform:translate(-50%,-50%) scale(0)}to{transform:translate(-50%,-50%) scale(1)}}
 
-/* bottom hint bar */
-.hint-bar{
-  position:fixed;bottom:0;left:0;right:0;
-  text-align:center;padding:.5rem;
-  font-size:.82rem;color:var(--dim);
-  background:rgba(5,10,6,.7);
-  pointer-events:none;z-index:20;
-  border-top:1px solid rgba(201,168,76,.1);
-}
+.hint-bar{position:fixed;bottom:0;left:0;right:0;text-align:center;padding:.5rem;font-size:.82rem;color:var(--dim);background:rgba(5,10,6,.7);pointer-events:none;z-index:20;border-top:1px solid rgba(201,168,76,.1);transition:opacity .3s;}
+.hint-bar.hidden{opacity:0;}
+
+/* DEV MODE */
+.dev-btn{position:fixed;top:.4rem;left:.4rem;background:transparent;border:none;cursor:pointer;z-index:600;opacity:.12;font-size:1.1rem;padding:.2rem;}
+.dev-btn:hover{opacity:.5;}
+.dev-panel{position:fixed;top:2rem;left:.4rem;background:rgba(5,12,5,.97);border:1px solid rgba(0,255,65,.3);border-radius:8px;padding:.8rem;z-index:601;display:none;flex-direction:column;gap:.4rem;min-width:160px;}
+.dev-panel.open{display:flex;}
+.dev-item{background:transparent;border:1px solid rgba(0,255,65,.25);color:#00ff41;font-family:monospace;font-size:.72rem;padding:.3rem .6rem;border-radius:4px;cursor:pointer;text-align:right;}
+.dev-item:hover{background:rgba(0,255,65,.08);}
+.dev-close{color:#3a5a3a;font-size:.65rem;text-align:center;cursor:pointer;margin-top:.2rem;}
 </style>
 </head>
 <body>
@@ -118,7 +120,17 @@ html,body{height:100%;overflow:hidden;background:var(--dark);font-family:'Rubik'
 </div>
 
 <!-- hint bar at bottom -->
-<div class="hint-bar">לחיצה ארוכה = גרירת חלק &nbsp;|&nbsp; לחיצה קצרה = סיבוב ב-90 מעלות</div>
+<div class="hint-bar" id="hint-bar">לחיצה ארוכה = גרירת חלק &nbsp;|&nbsp; לחיצה קצרה = סיבוב ב-90 מעלות</div>
+
+<!-- DEV MODE -->
+<button class="dev-btn" onclick="toggleDev()" title="Dev">🔧</button>
+<div class="dev-panel" id="dev-panel">
+  <div style="font-size:.65rem;color:#00a82a;margin-bottom:.2rem;">⚙ DEV MODE</div>
+  <button class="dev-item" onclick="devSkipPuzzle()">דלג: פאזל הושלם</button>
+  <button class="dev-item" onclick="devSkipCipher()">דלג: פיענוח X</button>
+  <button class="dev-item" onclick="devSkipStage6()">דלג: שלב 6</button>
+  <div class="dev-close" onclick="toggleDev()">סגור ✕</div>
+</div>
 
 <canvas id="float-piece"></canvas>
 <div id="float-x">✕</div>
@@ -366,6 +378,7 @@ window.enterCipherMode=function(){
   document.getElementById('ovl-done').classList.remove('on');
   document.getElementById('tray-wrap').style.display='none';
   document.getElementById('cipher-panel').classList.add('on');
+  document.getElementById('hint-bar').classList.add('hidden');
   document.getElementById('x-marker').addEventListener('pointerdown',startXDrag);
 };
 
@@ -409,12 +422,46 @@ document.addEventListener('pointerup',e=>{
 function isOakZone(x,y){
   const board=document.getElementById('board');
   const r=board.getBoundingClientRect();
-  // Oak tree: ~38-58% from left, 52-82% from top
-  return x>=r.left+r.width*0.38 && x<=r.left+r.width*0.58 &&
-         y>=r.top+r.height*0.52 && y<=r.top+r.height*0.82;
+  // Oak ROOTS only: ~41-55% from left, 68-82% from top (bottom of trunk)
+  return x>=r.left+r.width*0.41 && x<=r.left+r.width*0.55 &&
+         y>=r.top+r.height*0.68 && y<=r.top+r.height*0.82;
 }
 
-window.goStage6=function(){
+window.goStage6=function(){window.parent.postMessage('nextStage','*');
+  document.getElementById('ovl-cipher').classList.remove('on');
+  document.getElementById('ovl-s6').classList.add('on');
+};
+
+// DEV MODE
+window.toggleDev=function(){
+  const p=document.getElementById('dev-panel');
+  p.classList.toggle('open');
+};
+window.devSkipPuzzle=function(){
+  toggleDev();
+  puzzleLocked=true;
+  document.querySelectorAll('.bp').forEach(el=>el.classList.add('locked'));
+  document.getElementById('ovl-done').classList.add('on');
+};
+window.devSkipCipher=function(){
+  toggleDev();
+  // Enter cipher mode if not already
+  if(!document.getElementById('cipher-panel').classList.contains('on')){
+    enterCipherMode();
+  }
+  // Place X on oak center
+  const board=document.getElementById('board');
+  const r=board.getBoundingClientRect();
+  const cx=r.left+r.width*0.48, cy=r.top+r.height*0.75;
+  const xob=document.getElementById('x-on-board');
+  xob.style.left=(cx-r.left)+'px';
+  xob.style.top=(cy-r.top)+'px';
+  xob.style.display='block';
+  document.getElementById('x-marker').classList.add('placed');
+  setTimeout(()=>document.getElementById('ovl-cipher').classList.add('on'),300);
+};
+window.devSkipStage6=function(){
+  toggleDev();
   document.getElementById('ovl-cipher').classList.remove('on');
   document.getElementById('ovl-s6').classList.add('on');
 };
