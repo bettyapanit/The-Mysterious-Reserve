@@ -23,7 +23,7 @@ html,body{height:100%;overflow:hidden;background:var(--dark);font-family:'Rubik'
 .hdr-t{font-family:'Secular One',sans-serif;font-size:1.1rem;color:var(--gold);}
 
 /* MAIN — fills remaining height, no scroll, centers the 8-col layout */
-.main{flex:1;display:flex;align-items:center;justify-content:center;padding:6px;min-height:0;}
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:6px;min-height:0;overflow:hidden;}
 
 /* 
   8-column layout (RTL: right=animals, left=tracks):
@@ -210,7 +210,12 @@ function build(){
 
   // Calculate cell size to fit screen
   // Calculate cell size to fit both height and width
-  const avH=window.innerHeight-96; // header~46 + footer~50
+  // Measure actual header and footer heights after render
+  const hdr=document.querySelector('.hdr');
+  const ftr=document.querySelector('.footer');
+  const hdrH=hdr?hdr.offsetHeight:44;
+  const ftrH=ftr?ftr.offsetHeight:48;
+  const avH=window.innerHeight - hdrH - ftrH - 12; // 12px total padding
   const cellByH=Math.floor((avH - 5*4)/6); // 6 rows, 5 gaps of 4px
   // Width: 8 cols + 2 gaps(10px) + 2 answer-gaps(14px+10px) + answer panel padding(12px) + outer padding(12px)
   const avW=window.innerWidth-12-10-10-12-6-14-6; // subtract all fixed gaps
@@ -424,7 +429,7 @@ function showErr(){
   document.getElementById('ow').classList.add('on');
 }
 
-window.goNext=function(){document.getElementById('owi').classList.remove('on');window.parent.postMessage('nextStage','*');};
+window.goNext=function(){document.getElementById('owi').classList.remove('on');window.location.href='stage2.html';};
 function toggleDev(){document.getElementById('dp').classList.toggle('open');}
 function devSolve(){
   toggleDev();

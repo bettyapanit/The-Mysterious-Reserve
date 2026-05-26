@@ -176,7 +176,7 @@ function accuse(){
   }
 }
 
-function goNext(){window.parent.postMessage('nextStage','*');}
+function goNext(){window.location.href='puzzle.html';}
 function toggleDev(){document.getElementById('dp').classList.toggle('open');}
 function devCorrect(){
   toggleDev();selected.clear();
