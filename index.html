@@ -5,27 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>השמורה המסתורית</title>
 <link rel="manifest" href="manifest.json">
-<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Assistant:wght@300;400;600&family=Special+Elite&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Special+Elite&family=Rubik:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--jd:#0a1508;--gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#8a6820;--cream:#f5edd8;--dim:#a8c4aa;--gs:#00ff41;--gd:#00a82a;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;background:#000;color:var(--cream);}
-.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .6s;z-index:10;overflow:hidden;}
+html,body{height:100%;font-family:'Special Elite',serif;background:#000;color:var(--cream);}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .6s;z-index:10;}
 .screen.active{opacity:1;pointer-events:all;}
 
-/* FULLSCREEN */
-.fs-btn{position:fixed;top:.5rem;left:2.6rem;background:rgba(0,0,0,.35);border:1px solid rgba(201,168,76,.3);color:rgba(201,168,76,.7);font-size:.95rem;width:30px;height:30px;border-radius:6px;cursor:pointer;z-index:500;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(4px);}
+/* FIXED UI */
+.dev-btn-f{position:fixed;top:.6rem;left:.5rem;width:26px;height:26px;background:transparent;border:none;cursor:pointer;z-index:500;opacity:.08;font-size:13px;display:flex;align-items:center;justify-content:center;}
+.dev-btn-f:hover{opacity:.4;}
+.fs-btn{position:fixed;top:.6rem;left:2.2rem;background:rgba(0,0,0,.35);border:1px solid rgba(201,168,76,.3);color:rgba(201,168,76,.7);font-size:.9rem;width:26px;height:26px;border-radius:5px;cursor:pointer;z-index:500;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .fs-btn:hover{border-color:var(--gold);color:var(--gold);}
+.back-btn{position:fixed;bottom:.8rem;right:.8rem;background:rgba(18,38,18,.9);border:1px solid rgba(45,106,48,.4);color:var(--dim);font-size:.8rem;padding:.35rem .85rem;border-radius:20px;cursor:pointer;z-index:100;font-family:'Rubik',sans-serif;display:none;}
+.back-btn.vis{display:block;}
+.back-btn:hover{border-color:var(--gold);color:var(--gold);}
 
 /* LOADING */
-#s-load{background:#000;text-align:center;gap:.9rem;z-index:10;}
+#s-load{background:#000;text-align:center;gap:.9rem;}
 .spinner{width:40px;height:40px;border:2px solid #142014;border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .load-txt{font-family:'Secular One',sans-serif;color:var(--gold);font-size:.9rem;}
 
-/* CURTAIN — NO floating title */
+/* CURTAIN — title INSIDE curtain, fades out on open */
 #s-curtain{z-index:50;overflow:hidden;cursor:pointer;}
-.curt-bg{position:absolute;inset:0;background:url('jungle.jpg') center/cover no-repeat;filter:brightness(.28) saturate(.55);transition:filter 1.8s ease;}
+.curt-bg{position:absolute;inset:0;background:url('jungle.jpg') center/cover no-repeat;filter:brightness(.32) saturate(.6);transition:filter 1.8s ease;}
 .curt-bg.reveal{filter:brightness(.95) saturate(1);}
 .curt-r{position:absolute;top:0;right:0;bottom:0;width:65%;z-index:22;transform:translateX(0);transition:transform 1.9s cubic-bezier(.77,0,.18,1);}
 .curt-r.open{transform:translateX(102%);}
@@ -34,128 +39,95 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
 .curt-l img,.curt-r img{position:absolute;width:100%;height:100%;object-fit:cover;}
 .curt-l img{object-position:left center;}
 .curt-r img{object-position:right center;}
-.tap-hint{position:absolute;bottom:11%;left:50%;transform:translateX(-50%);z-index:35;font-family:'Assistant',sans-serif;font-size:clamp(.9rem,2.5vw,1.1rem);color:rgba(240,210,140,.85);letter-spacing:.2em;pointer-events:none;animation:phint 2.2s ease-in-out infinite;transition:opacity .4s;}
+/* Title sits on top of branches, fades out when curtain opens */
+.curt-title{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;text-align:center;pointer-events:none;transition:opacity 1s ease;}
+.curt-title h1{font-family:'Secular One',sans-serif;font-size:clamp(2.2rem,8vw,5rem);white-space:nowrap;color:var(--cream);text-shadow:0 0 60px rgba(201,168,76,.95),0 0 120px rgba(201,168,76,.5),0 2px 30px rgba(0,0,0,.98);}
+.curt-title.fadeout{opacity:0;}
+.tap-hint{position:absolute;bottom:10%;left:50%;transform:translateX(-50%);z-index:35;font-family:'Rubik',sans-serif;font-size:clamp(.85rem,2.5vw,1.1rem);color:rgba(240,210,140,.8);letter-spacing:.2em;pointer-events:none;animation:phint 2.2s ease-in-out infinite;transition:opacity .4s;}
 @keyframes phint{0%,100%{opacity:.4}50%{opacity:1}}
 
 /* FIREFLIES */
 .ff{position:absolute;border-radius:50%;background:var(--gold-l);box-shadow:0 0 5px 2px rgba(240,204,110,.4);animation:ffloat linear infinite;pointer-events:none;}
 @keyframes ffloat{0%{opacity:0;transform:translate(0,0)}15%{opacity:1}85%{opacity:.6}100%{opacity:0;transform:translate(var(--tx),var(--ty))}}
 
-/* INTRO — story appears, no title */
-#s-intro{background:url('jungle.jpg') center/cover no-repeat;overflow:hidden;}
-#s-intro::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(0,0,0,.3) 0%,rgba(0,0,0,.72) 100%);pointer-events:none;z-index:1;}
-
-.intro-inner{
-  position:relative;z-index:5;
-  text-align:center;
-  padding:3rem 2rem 2rem;
-  max-width:680px;width:100%;
-  display:flex;flex-direction:column;align-items:center;gap:1.5rem;
-}
-
-.intro-story{
-  font-family:'Special Elite',serif;
-  font-size:clamp(1.1rem,2.8vw,1.5rem);
-  color:#fff;
-  text-shadow:0 1px 14px rgba(0,0,0,.99),0 0 35px rgba(0,0,0,.95);
-  line-height:1.9;
-  text-align:center;
-  min-height:6em;
-  width:100%;
-}
-/* small punctuation — no giant dashes */
-.intro-story .sm{font-size:.8em;vertical-align:.05em;}
-.intro-story .dash{font-size:.85em;letter-spacing:-.02em;}
+/* INTRO — no title, story only */
+#s-intro{background:url('jungle.jpg') center/cover no-repeat;overflow-y:auto;justify-content:flex-start;align-items:center;}
+#s-intro::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 8%,rgba(201,168,76,.12) 0%,transparent 50%);pointer-events:none;z-index:1;}
+.intro-inner{position:relative;z-index:5;text-align:center;padding:2.5rem 1.4rem 2.5rem;max-width:740px;width:100%;display:flex;flex-direction:column;align-items:center;}
+.intro-story{font-family:'Special Elite',serif;font-size:clamp(1.1rem,2.8vw,1.55rem);color:#fff;text-shadow:0 1px 14px rgba(0,0,0,.99),0 0 35px rgba(0,0,0,.95);line-height:1.7;margin-bottom:2rem;text-align:center;width:100%;}
+.intro-story .sm{font-size:.75em;vertical-align:.06em;}
 .tw-cursor{display:inline-block;width:2px;height:1em;background:var(--gold-l);vertical-align:middle;animation:blink .65s ease infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-
-.btn-gold{font-family:'Secular One',sans-serif;font-size:1.25rem;padding:.9rem 2.5rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--jd);border:none;border-radius:8px;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 24px rgba(201,168,76,.45);}
+.btn-gold{font-family:'Rubik',sans-serif;font-weight:600;font-size:1.2rem;padding:.9rem 2.3rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--jd);border:none;border-radius:8px;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 24px rgba(201,168,76,.45);}
 .btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,.65);}
 .btn-start{opacity:0;transition:opacity .6s;}
 .btn-start.show{opacity:1;}
 
-/* POLICE TERMINAL */
-#s-roles{background:url('jungle.jpg') center/cover no-repeat;overflow:hidden;}
-#s-roles::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.75);pointer-events:none;}
-#s-roles::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.025) 2px,rgba(0,255,65,.025) 4px);pointer-events:none;z-index:1;}
-
-.police-frame{
-  position:relative;z-index:5;
-  width:100%;max-width:480px;
-  padding:1.8rem;margin:0 1rem;
-  background:rgba(4,12,4,.85);
-  border:2px solid rgba(0,255,65,.35);border-radius:14px;
-  backdrop-filter:blur(16px);
-  box-shadow:0 0 0 4px rgba(0,20,0,.6),0 0 40px rgba(0,255,65,.12),inset 0 0 60px rgba(0,0,0,.4);
-  overflow:hidden;
-}
-.police-frame::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.025) 2px,rgba(0,255,65,.025) 4px);pointer-events:none;z-index:0;border-radius:14px;}
-.police-frame::after{content:'';position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(0,255,65,.04) 0%,transparent 100%);pointer-events:none;z-index:0;}
+/* POLICE ROLES */
+#s-roles{background:url('jungle.jpg') center/cover no-repeat;font-family:'Special Elite',serif;overflow:hidden;}
+#s-roles::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.72);}
+.police-frame{position:relative;z-index:5;width:100%;max-width:500px;padding:1.8rem;margin:0 1rem;background:rgba(4,12,4,.8);border:2px solid rgba(0,255,65,.35);border-radius:14px;backdrop-filter:blur(16px);box-shadow:0 0 0 4px rgba(0,20,0,.6),0 0 40px rgba(0,255,65,.12),inset 0 0 60px rgba(0,0,0,.4);overflow:hidden;}
+.police-frame::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.028) 2px,rgba(0,255,65,.028) 4px);pointer-events:none;z-index:0;border-radius:14px;}
 .police-inner{position:relative;z-index:2;}
-.police-hdr{text-align:center;margin-bottom:1.2rem;}
-.police-logo{font-family:'Special Elite',serif;font-size:clamp(1rem,3vw,1.35rem);letter-spacing:.06em;color:var(--gs);text-shadow:0 0 14px rgba(0,255,65,.6);margin-bottom:.45rem;line-height:1.5;}
-.police-sub2{font-family:'Special Elite',serif;font-size:clamp(.85rem,2.5vw,1rem);color:var(--gd);letter-spacing:.04em;}
-.pdiv{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gs),transparent);margin:.7rem 0;opacity:.3;}
-.role-btn{width:100%;background:rgba(3,14,3,.75);border:1px solid var(--gd);color:var(--gs);font-family:'Special Elite',serif;font-size:clamp(1.15rem,4vw,1.5rem);padding:.95rem 1.2rem;border-radius:6px;cursor:pointer;transition:all .2s;margin-bottom:.8rem;text-align:center;letter-spacing:.04em;text-shadow:0 0 10px rgba(0,255,65,.4);}
+.police-hdr{text-align:center;margin-bottom:1.3rem;}
+.police-logo{font-size:clamp(1.05rem,3.5vw,1.4rem);letter-spacing:.06em;color:var(--gs);text-shadow:0 0 14px rgba(0,255,65,.6);margin-bottom:.5rem;line-height:1.5;}
+.police-sub2{font-size:clamp(.9rem,2.8vw,1.1rem);color:var(--gd);letter-spacing:.04em;}
+.pdiv{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gs),transparent);margin:.75rem 0;opacity:.35;}
+.role-btn{width:100%;background:rgba(3,14,3,.7);border:1px solid var(--gd);color:var(--gs);font-family:'Special Elite',serif;font-size:clamp(1.25rem,4.5vw,1.6rem);padding:1rem 1.3rem;border-radius:6px;cursor:pointer;transition:all .2s;margin-bottom:.85rem;text-align:center;letter-spacing:.04em;text-shadow:0 0 10px rgba(0,255,65,.4);}
 .role-btn::before{content:'> ';opacity:.35;font-size:.82em;}
 .role-btn:hover,.role-btn.sel{background:rgba(0,255,65,.08);border-color:var(--gs);box-shadow:0 0 18px rgba(0,255,65,.2);}
-.partner-wrap{display:none;margin-bottom:.8rem;border:1px solid var(--gd);border-radius:6px;background:rgba(3,14,3,.7);padding:.7rem 1rem;}
+.partner-wrap{display:none;margin-bottom:.85rem;border:1px solid var(--gd);border-radius:6px;background:rgba(3,14,3,.7);padding:.75rem 1rem;}
 .partner-wrap.show{display:block;}
-.partner-lbl{font-size:.65rem;color:var(--gd);letter-spacing:.14em;margin-bottom:.3rem;display:block;}
-.partner-input{width:100%;background:transparent;border:none;color:var(--gs);font-family:'Special Elite',serif;font-size:1.4rem;outline:none;letter-spacing:.04em;text-shadow:0 0 8px rgba(0,255,65,.35);caret-color:var(--gs);}
+.partner-lbl{font-size:.9rem;color:var(--gd);letter-spacing:.06em;margin-bottom:.4rem;display:block;}
+.partner-input{width:100%;background:transparent;border:none;color:var(--gs);font-family:'Special Elite',serif;font-size:1.45rem;outline:none;letter-spacing:.04em;text-shadow:0 0 8px rgba(0,255,65,.35);caret-color:var(--gs);}
 .partner-input::placeholder{color:rgba(0,255,65,.2);}
-.police-confirm{width:100%;margin-top:.3rem;background:transparent;border:1px solid var(--gs);color:var(--gs);font-family:'Special Elite',serif;font-size:1rem;padding:.7rem;border-radius:6px;cursor:pointer;letter-spacing:.09em;transition:all .2s;opacity:0;pointer-events:none;text-shadow:0 0 8px rgba(0,255,65,.35);}
+.police-confirm{width:100%;margin-top:.35rem;background:transparent;border:1px solid var(--gs);color:var(--gs);font-family:'Special Elite',serif;font-size:1rem;padding:.75rem;border-radius:6px;cursor:pointer;letter-spacing:.09em;transition:all .2s;opacity:0;pointer-events:none;}
 .police-confirm.vis{opacity:1;pointer-events:all;}
-.police-confirm:hover{background:rgba(0,255,65,.08);box-shadow:0 0 14px rgba(0,255,65,.18);}
-.pcursor{display:inline-block;width:7px;height:1em;background:var(--gs);vertical-align:middle;animation:blink .8s ease infinite;margin-right:.1rem;}
+.police-confirm:hover{background:rgba(0,255,65,.08);}
+.pcursor{display:inline-block;width:8px;height:1em;background:var(--gs);vertical-align:middle;animation:blink .8s ease infinite;margin-right:.12rem;}
 
 /* WAITING */
-#s-wait{background:url('jungle.jpg') center/cover no-repeat;}
-#s-wait::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.82);}
-#s-wait::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.02) 2px,rgba(0,255,65,.02) 4px);pointer-events:none;}
-.wait-inner{position:relative;z-index:5;text-align:center;padding:2rem;font-family:'Special Elite',serif;}
-.wait-ttl{font-size:1.35rem;color:var(--gs);letter-spacing:.09em;margin-bottom:.2rem;text-shadow:0 0 10px rgba(0,255,65,.35);}
-.wait-sub{font-size:.6rem;color:var(--gd);letter-spacing:.14em;margin-bottom:1.6rem;}
+#s-wait{background:url('jungle.jpg') center/cover no-repeat;font-family:'Rubik',sans-serif;}
+#s-wait::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.8);}
+.wait-inner{position:relative;z-index:5;text-align:center;padding:2rem;}
+.wait-ttl{font-size:1.4rem;color:var(--gs);letter-spacing:.06em;margin-bottom:.25rem;}
+.wait-sub{font-size:.65rem;color:var(--gd);letter-spacing:.14em;margin-bottom:1.8rem;}
 .players-row{display:flex;gap:1.4rem;justify-content:center;flex-wrap:wrap;}
-.p-card{background:rgba(10,20,10,.8);border:1px solid var(--gd);border-radius:6px;padding:.9rem 1.4rem;min-width:130px;text-align:center;transition:all .3s;backdrop-filter:blur(4px);}
+.p-card{background:rgba(10,20,10,.75);border:1px solid var(--gd);border-radius:6px;padding:.9rem 1.4rem;min-width:130px;text-align:center;transition:all .3s;}
 .p-card.on{border-color:var(--gs);box-shadow:0 0 12px rgba(0,255,65,.18);}
-.p-card-name{font-size:1.05rem;color:var(--gs);margin-bottom:.4rem;letter-spacing:.04em;}
+.p-card-name{font-size:1.1rem;color:var(--gs);margin-bottom:.45rem;}
 .dot{width:9px;height:9px;border-radius:50%;background:#1a2a1a;margin:0 auto;transition:all .3s;}
 .dot.on{background:var(--gs);box-shadow:0 0 8px var(--gs);}
 
-/* BRIEFING screen — after both connected */
-#s-brief{background:url('jungle.jpg') center/cover no-repeat;}
-#s-brief::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.78);pointer-events:none;}
-.brief-inner{position:relative;z-index:5;max-width:580px;width:100%;padding:2rem;text-align:center;display:flex;flex-direction:column;gap:1.2rem;}
-.brief-title{font-family:'Secular One',sans-serif;font-size:1.4rem;color:var(--gold);text-shadow:0 0 20px rgba(201,168,76,.5);}
-.brief-text{font-family:'Special Elite',serif;font-size:1.05rem;color:var(--cream);line-height:1.85;text-align:right;}
-.brief-names{display:flex;gap:1rem;justify-content:center;}
-.brief-name-pill{background:rgba(5,18,5,.8);border:1px solid var(--gs);border-radius:20px;padding:.3rem 1rem;font-family:'Special Elite',serif;font-size:.9rem;color:var(--gs);}
+/* BRIEFING */
+#s-brief{background:url('jungle.jpg') center/cover no-repeat;overflow-y:auto;justify-content:flex-start;align-items:center;}
+#s-brief::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,.78);pointer-events:none;z-index:1;}
+.brief-inner{position:relative;z-index:5;max-width:620px;width:100%;padding:2rem 1.5rem 2.5rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1.1rem;}
+.brief-title{font-family:'Rubik',sans-serif;font-weight:600;font-size:clamp(1.3rem,4vw,1.9rem);color:var(--gold);text-shadow:0 0 20px rgba(201,168,76,.4);}
+.brief-names{font-family:'Rubik',sans-serif;font-weight:500;font-size:clamp(1.1rem,3.5vw,1.5rem);color:var(--cream);}
+.brief-body{font-family:'Rubik',sans-serif;font-weight:300;font-size:clamp(1rem,2.4vw,1.2rem);color:#e8dcc8;line-height:1.9;text-align:center;}
+.brief-body strong{color:var(--gold);font-weight:600;}
+.brief-cta{font-family:'Rubik',sans-serif;font-size:clamp(.95rem,2.3vw,1.1rem);color:var(--dim);line-height:1.7;}
 
 /* NOTIF */
-.notif{position:fixed;top:56px;left:50%;transform:translateX(-50%) translateY(-12px);background:rgba(25,55,25,.96);border:1px solid var(--gold);color:var(--cream);padding:.4rem .95rem;border-radius:30px;font-size:.78rem;z-index:300;opacity:0;transition:all .28s;pointer-events:none;white-space:nowrap;max-width:93vw;text-align:center;backdrop-filter:blur(4px);}
+.notif{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-12px);background:rgba(50,10,10,.96);border:1px solid #c0392b;color:var(--cream);padding:.5rem 1.2rem;border-radius:30px;font-family:'Rubik',sans-serif;font-size:.95rem;z-index:300;opacity:0;transition:all .28s;pointer-events:none;white-space:nowrap;max-width:93vw;text-align:center;}
 .notif.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-/* BACK BTN */
-.back-btn{position:fixed;bottom:.8rem;right:.8rem;background:rgba(18,38,18,.9);border:1px solid rgba(45,106,48,.4);color:var(--dim);font-size:.72rem;padding:.32rem .75rem;border-radius:20px;cursor:pointer;z-index:100;font-family:'Secular One',sans-serif;display:none;transition:all .2s;}
-.back-btn.vis{display:block;}
-.back-btn:hover{border-color:var(--gold);color:var(--gold);}
-
-/* DEV */
-.dev-btn-f{position:fixed;top:6px;left:6px;width:18px;height:18px;background:transparent;border:none;cursor:pointer;z-index:500;opacity:.08;font-size:11px;}
-.dev-btn-f:hover{opacity:.4;}
-.dev-panel{position:fixed;top:1.8rem;left:.4rem;background:rgba(5,12,5,.97);border:1px solid rgba(0,255,65,.3);border-radius:8px;padding:.8rem;z-index:601;display:none;flex-direction:column;gap:.4rem;min-width:160px;}
-.dev-panel.open{display:flex;}
-.dev-item{background:transparent;border:1px solid rgba(0,255,65,.25);color:#00ff41;font-family:monospace;font-size:.72rem;padding:.3rem .6rem;border-radius:4px;cursor:pointer;text-align:right;}
-.dev-item:hover{background:rgba(0,255,65,.08);}
-.dev-close{color:#3a5a3a;font-size:.65rem;text-align:center;cursor:pointer;margin-top:.2rem;}
+/* DEV PANEL */
+.dev-panel{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;opacity:0;pointer-events:none;transition:opacity .3s;padding:2rem;}
+.dev-panel.open{opacity:1;pointer-events:all;}
+.dev-ttl{font-family:'Rubik',sans-serif;color:#0f0;font-size:1.2rem;}
+.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;width:100%;max-width:290px;}
+.dev-bi{background:#080808;border:1px solid #1a1a1a;color:#0f0;font-family:monospace;font-size:.76rem;padding:.55rem;border-radius:5px;cursor:pointer;text-align:center;}
+.dev-bi:hover{background:#0a160a;border-color:#0f0;}
+.dev-close{background:transparent;border:1px solid #333;color:#555;font-size:.76rem;padding:.38rem 1.2rem;border-radius:5px;cursor:pointer;}
 </style>
 </head>
 <body>
 
+<button class="dev-btn-f" onclick="openDev()">🔧</button>
 <button class="fs-btn" onclick="toggleFS()">⛶</button>
-<button class="dev-btn-f" onclick="toggleDev()">🔧</button>
-<button class="back-btn" id="back-btn" onclick="goBack()">← חזרה</button>
+<button class="back-btn" id="back-btn" onclick="goBack()">→ חזרה</button>
 
 <!-- LOADING -->
 <div class="screen active" id="s-load">
@@ -163,15 +135,16 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   <div class="load-txt">טוען את השמורה...</div>
 </div>
 
-<!-- CURTAIN — branches only, no title -->
+<!-- CURTAIN — title visible, fades out on open -->
 <div class="screen" id="s-curtain" onclick="openCurtain()">
   <div class="curt-bg" id="curt-bg"></div>
   <div class="curt-r" id="cr"><img src="branches_right.png" alt=""></div>
   <div class="curt-l" id="cl"><img src="branches_left.png" alt=""></div>
+  <div class="curt-title" id="curt-title"><h1>השמורה המסתורית</h1></div>
   <div class="tap-hint" id="tap-hint">לחצו להתחלה</div>
 </div>
 
-<!-- INTRO — typewriter story, no title -->
+<!-- INTRO — story only, no title -->
 <div class="screen" id="s-intro">
   <div class="intro-inner">
     <div class="intro-story" id="story-el"></div>
@@ -191,12 +164,12 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
       <div class="role-btn" id="rb-yuval" onclick="selectRole('yuval')">הבלשית יובל</div>
       <div class="role-btn" id="rb-itay" onclick="selectRole('itay')">בלש שותף</div>
       <div class="partner-wrap" id="partner-wrap">
-        <span class="partner-lbl">// הכנס את שם הבלש השותף:</span>
+        <span class="partner-lbl">הכנס את שם הבלש השותף:</span>
         <input class="partner-input" id="partner-name" type="text" placeholder="שם..." maxlength="20"
           oninput="onPartnerName()" autocomplete="off" autocorrect="off" spellcheck="false">
       </div>
       <div class="pdiv"></div>
-      <button class="police-confirm" id="btn-confirm" onclick="confirmRole()">[ אישור — כניסה למערכת ]</button>
+      <button class="police-confirm" id="btn-confirm" onclick="confirmRole()">[ אישור - כניסה למערכת ]</button>
     </div>
   </div>
 </div>
@@ -213,34 +186,35 @@ html,body{height:100%;overflow:hidden;font-family:'Assistant',sans-serif;backgro
   </div>
 </div>
 
-<!-- BRIEFING — shown after both connected, before stage1 -->
+<!-- BRIEFING -->
 <div class="screen" id="s-brief">
   <div class="brief-inner">
-    <div class="brief-title">ברוכים הבאים לתיק חקירה מס' 001</div>
-    <div class="brief-text" id="brief-text">
-      שני הבלשים התחברו למערכת. הפקח מחכה לכם בשמורה.<br><br>
-      לפניכם חקירה מורכבת הכוללת מספר שלבים, ראיות, עדויות ופאזלים.<br>
-      כדי לפתור את התעלומה תצטרכו לשתף פעולה ולחשוב יחד.<br><br>
-      <strong style="color:var(--gold-l);">מוכנים? נתחיל מזירת הפשע.</strong>
+    <div class="brief-title">ברוכים הבאים לשמורת עדן הסודית!</div>
+    <div class="brief-names" id="brief-names">יובל ושותף</div>
+    <div class="brief-body">
+      השמורה ואוצרותיה בסכנה! הגנב עלול לפענח את המפה ולהגיע ממש בקרוב אל אוצרות השמורה ואפילו אל האבן הקסומה שמגינה עליה.<br><br>
+      החקירה הזו תלויה בכם בלבד. אתם תזדקקו למוח חד ולשיתוף פעולה על-מנת לפענח את התעלומה ולפצח את החקירה בזמן הכי קצר שניתן.<br><br>
+      יש לכם <strong>30 דקות</strong> כדי לתפוס את הגנב, להחזיר את מפת האוצרות העתיקה לפקח השמורה ולהשיב את הביטחון לכל דיירי השמורה.
     </div>
-    <div class="brief-names">
-      <div class="brief-name-pill">🦁 <span id="brief-name1">יובל</span></div>
-      <div class="brief-name-pill">🦅 <span id="brief-name2">שותף</span></div>
+    <div class="brief-cta">
+      מוכנים לפתוח בחקירה? התחילו בביקור בזירת הפשע.<br>הזמן שלכם מתחיל לרוץ.
     </div>
-    <button class="btn-gold" onclick="goToStage1()">לזירת הפשע ←</button>
+    <button class="btn-gold" onclick="goToStage1()">אל זירת הפשע</button>
   </div>
 </div>
 
 <div class="notif" id="notif"></div>
 
 <div class="dev-panel" id="dev-panel">
-  <div style="font-size:.65rem;color:#00a82a;margin-bottom:.2rem;">⚙ DEV MODE</div>
-  <button class="dev-item" onclick="devSkipTo('s-intro')">דלג לסיפור</button>
-  <button class="dev-item" onclick="devSkipTo('s-roles')">דלג לרישום</button>
-  <button class="dev-item" onclick="devSkipTo('s-brief')">דלג לברייפינג</button>
-  <button class="dev-item" onclick="devSkipTo('stage1')">מעבר לשלב 1</button>
-  <button class="dev-item" onclick="devReset()">איפוס מלא</button>
-  <div class="dev-close" onclick="toggleDev()">סגור ✕</div>
+  <div class="dev-ttl">DEV MODE</div>
+  <div class="dev-grid">
+    <div class="dev-bi" onclick="devSkipTo('s-intro')">סיפור</div>
+    <div class="dev-bi" onclick="devSkipTo('s-roles')">רישום</div>
+    <div class="dev-bi" onclick="devSkipTo('s-brief')">ברייפינג</div>
+    <div class="dev-bi" onclick="devSkipTo('stage1')">שלב 1</div>
+    <div class="dev-bi" onclick="devReset()" style="grid-column:1/-1">איפוס מלא</div>
+  </div>
+  <button class="dev-close" onclick="closeDev()">סגור</button>
 </div>
 
 <script type="module">
@@ -264,20 +238,16 @@ const DEV_CODE = '7763';
 
 let myRole=null, partnerName='שותף';
 let state={phase:0,startTime:null};
-let screenHistory=[];
-let curtainOpened=false;
+let screenHistory=[], curtainOpened=false;
 
 const save=()=>{localStorage.setItem('rm_state',JSON.stringify(state));localStorage.setItem('rm_role',myRole||'');localStorage.setItem('rm_partner',partnerName);};
 const load=()=>{try{const s=localStorage.getItem('rm_state'),r=localStorage.getItem('rm_role'),p=localStorage.getItem('rm_partner');if(s)state={...state,...JSON.parse(s)};if(r)myRole=r;if(p)partnerName=p;}catch(e){}};
 
-// FULLSCREEN
 window.toggleFS=function(){if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});else document.exitFullscreen();};
 
-// FIREFLIES
-function spawnFF(container,count,sizePx=3){
+function spawnFF(container,count){
   for(let i=0;i<count;i++){
-    const ff=document.createElement('div');ff.className='ff';
-    ff.style.width=sizePx+'px';ff.style.height=sizePx+'px';
+    const ff=document.createElement('div');ff.className='ff';ff.style.width='3px';ff.style.height='3px';
     ff.style.left=Math.random()*100+'%';ff.style.top=Math.random()*90+'%';
     ff.style.setProperty('--tx',(Math.random()*100-50)+'px');
     ff.style.setProperty('--ty',(Math.random()*60-30)+'px');
@@ -296,70 +266,45 @@ window.goTo=function(id,hist=true){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.getElementById('back-btn').className='back-btn'+(screenHistory.length?' vis':'');
-
-  if(id==='s-intro') setTimeout(startTypewriter,600);
+  if(id==='s-intro') setTimeout(startTypewriter,400);
 };
+window.goBack=function(){if(!screenHistory.length)return;goTo(screenHistory.pop(),false);};
 
-window.goBack=function(){
-  if(!screenHistory.length) return;
-  goTo(screenHistory.pop(),false);
-};
-
-// CURTAIN
+// CURTAIN — title fades, then transition to story
 window.openCurtain=function(){
-  if(curtainOpened) return;
-  curtainOpened=true;
+  if(curtainOpened)return;curtainOpened=true;
   document.getElementById('tap-hint').style.opacity='0';
   document.getElementById('curt-bg').classList.add('reveal');
   document.getElementById('cr').classList.add('open');
   setTimeout(()=>document.getElementById('cl').classList.add('open'),320);
-  setTimeout(()=>goTo('s-intro'),2500);
+  // Title fades out as branches open
+  setTimeout(()=>document.getElementById('curt-title').classList.add('fadeout'),300);
+  setTimeout(()=>goTo('s-intro'),2600);
 };
 
-// TYPEWRITER — no <D> tags, use <K> for small comma-dash
-// Format: <C>=comma, <P>=period, <Q>=?, <N>=newline, <K>=small dash (–)
-const STORY_RAW='אתמול בלילה<C> תחת אור הירח<C> נגנבה מפת האוצרות העתיקה של שמורת עדן הסודית<P><N>המפה מובילה אל מיקומי האוצרות הטמונים ברחבי השמורה<C> ביניהם האבן הקסומה השומרת על כל יצורי השמורה<P> המפה הוסתרה בסוד ליד אגמון הסלע<K> מקום שרק פקח השמורה ידע עליו<P><N>הבוקר גילה הפקח שהמפה נגנבה<C> ועם המפה<K> גם האבן הקסומה בסכנה<P> הוא צריך את עזרתכם<K> שני בלשים צעירים ומבריקים<K> כדי לפתור את התעלומה ולהשיב את המפה לפני שיהיה מאוחר מדי<P><N>יובל<C> מוכנה לבחור בלש שותף כדי לעבוד איתך על החקירה המסתורית<Q>';
+// TYPEWRITER — approved final text (reserve-v13)
+const STORY_RAW='אתמול בלילה<C> תחת אור הירח<C> נגנבה מפת האוצרות העתיקה של שמורת עדן הסודית<P> המפה מובילה אל מיקומי האוצרות הטמונים ברחבי השמורה<C> ביניהם האבן הקסומה שמגינה על השמורה<P> מפת האוצרות הוסתרה במקום סודי בלב השמורה - מקום שרק פקח השמורה יודע עליו<P>\n\nהבוקר גילה הפקח שהמפה נגנבה<C> והוא צריך את עזרתם של שני בלשים צעירים ומבריקים כדי לפתור את התעלומה - להבין מי מהחיות גנב את המפה ואיך<C> ולהשיב אותה אל פקח השמורה<P>\n\nיובל<C> מוכנה לבחור בלש שותף כדי לעבוד איתך על החקירה המסתורית<Q>';
 
-function proc(r){
-  return r
-    .replace(/<C>/g,'<span class="sm">,</span>')
-    .replace(/<P>/g,'<span class="sm">.</span>')
-    .replace(/<Q>/g,'<span class="sm">?</span>')
-    .replace(/<K>/g,' <span class="dash">–</span> ')
-    .replace(/<N>/g,'\n');
-}
-function rawIdx(raw,ts){
-  let s=0,r=0;
-  const tags=['<C>','<P>','<Q>','<K>','<N>'];
-  while(r<raw.length&&s<ts){
-    let f=false;
-    for(const t of tags){
-      if(raw.startsWith(t,r)){
-        s+=(t==='<K>'?3:t==='<N>'?1:1);r+=t.length;f=true;break;
-      }
-    }
-    if(!f){s++;r++;}
-  }
-  return r;
-}
+function proc(r){return r.replace(/<C>/g,'<span class="sm">,</span>').replace(/<P>/g,'<span class="sm">.</span>').replace(/<Q>/g,'<span class="sm">?</span>');}
+function rawIdx(raw,ts){let s=0,r=0;const tags=['<C>','<P>','<Q>'];while(r<raw.length&&s<ts){let f=false;for(const t of tags){if(raw.startsWith(t,r)){s+=1;r+=t.length;f=true;break;}}if(!f){s++;r++;}}return r;}
 
 function startTypewriter(){
-  const el=document.getElementById('story-el');
-  el.innerHTML='';
+  const el=document.getElementById('story-el');el.innerHTML='';
   document.getElementById('btn-start').classList.remove('show');
-  const stripped=STORY_RAW.replace(/<C>/g,',').replace(/<P>/g,'.').replace(/<Q>/g,'?').replace(/<K>/g,' – ').replace(/<N>/g,'\n');
-  const chars=stripped.split('');
-  let i=0;
+  const stripped=STORY_RAW.replace(/<C>/g,',').replace(/<P>/g,'.').replace(/<Q>/g,'?');
+  const chars=stripped.split('');let i=0;
   function next(){
     if(i>=chars.length){
       el.innerHTML=proc(STORY_RAW).replace(/\n/g,'<br>');
-      setTimeout(()=>document.getElementById('btn-start').classList.add('show'),500);
+      setTimeout(()=>document.getElementById('btn-start').classList.add('show'),400);
       return;
     }
     const ch=chars[i];
     el.innerHTML=proc(STORY_RAW.slice(0,rawIdx(STORY_RAW,i+1))).replace(/\n/g,'<br>')+'<span class="tw-cursor"></span>';
+    const intro=document.getElementById('s-intro');
+    intro.scrollTop=intro.scrollHeight;
     i++;
-    const d=ch==='.'||ch==='?'?210:ch===','?90:ch==='–'?110:ch==='\n'?350:ch===' '?25:16+Math.random()*12;
+    const d=ch==='.'||ch==='?'?420:ch===','?180:ch==='\n'?700:ch===' '?55:38+Math.random()*22;
     setTimeout(next,d);
   }
   setTimeout(next,200);
@@ -371,43 +316,31 @@ window.selectRole=function(role){
   document.getElementById(`rb-${role}`).classList.add('sel');
   myRole=role;
   const wrap=document.getElementById('partner-wrap');
-  const confirmBtn=document.getElementById('btn-confirm');
-  if(role==='itay'){
-    wrap.classList.add('show');
-    confirmBtn.classList.remove('vis');
-    setTimeout(()=>document.getElementById('partner-name').focus(),150);
-  } else {
-    wrap.classList.remove('show');
-    confirmBtn.classList.add('vis');
-  }
+  if(role==='itay'){wrap.classList.add('show');setTimeout(()=>document.getElementById('partner-name').focus(),150);}
+  else{wrap.classList.remove('show');document.getElementById('btn-confirm').classList.add('vis');}
 };
-
 window.onPartnerName=function(){
   const val=document.getElementById('partner-name').value.trim();
   document.getElementById('btn-confirm').className='police-confirm'+(val?' vis':'');
 };
-
 window.confirmRole=async function(){
-  if(!myRole){showNotif('⛔ נא לבחור תפקיד');return;}
-  if(myRole==='itay'){
-    const val=document.getElementById('partner-name').value.trim();
-    if(!val){showNotif('⛔ נא להכניס שם');return;}
-    partnerName=val;
-    try{await set(ref(db,`sessions/${SID}/partnerName`),val);}catch(e){}
-  }
+  if(!myRole){showNotif('נא לבחור תפקיד');return;}
+  if(myRole==='itay'){const val=document.getElementById('partner-name').value.trim();if(!val){showNotif('נא להכניס שם');return;}partnerName=val;}
+  showNotif('מתחבר...');
   try{
+    if(myRole==='itay')await set(ref(db,`sessions/${SID}/partnerName`),partnerName);
     await set(ref(db,`sessions/${SID}/players/${myRole}`),{connected:true,name:myRole==='yuval'?'יובל':partnerName});
     save();goTo('s-wait');listenForPlayers();
   }catch(e){
-    showNotif('⚠️ שגיאת חיבור, מנסה שוב...');
-    setTimeout(()=>window.confirmRole(),2000);
+    setTimeout(async()=>{
+      try{await set(ref(db,`sessions/${SID}/players/${myRole}`),{connected:true,name:myRole==='yuval'?'יובל':partnerName});save();goTo('s-wait');listenForPlayers();}
+      catch(e2){showBriefing();}
+    },2000);
   }
 };
 
 function listenForPlayers(){
-  onValue(ref(db,`sessions/${SID}/partnerName`),snap=>{
-    if(snap.exists()){partnerName=snap.val();document.getElementById('pname-itay').textContent=partnerName;}
-  });
+  onValue(ref(db,`sessions/${SID}/partnerName`),snap=>{if(snap.exists()){partnerName=snap.val();document.getElementById('pname-itay').textContent=partnerName;}});
   onValue(ref(db,`sessions/${SID}/players`),snap=>{
     const p=snap.val()||{};
     const yu=p.yuval?.connected,it=p.itay?.connected;
@@ -417,33 +350,31 @@ function listenForPlayers(){
     if(yu&&it)setTimeout(showBriefing,800);
   });
 }
-function setDot(role,on){document.getElementById(`dot-${role}`).className='dot'+(on?' on':'');document.getElementById(`pc-${role}`).className='p-card'+(on?' on':'');}
+function setDot(r,on){document.getElementById(`dot-${r}`).className='dot'+(on?' on':'');document.getElementById(`pc-${r}`).className='p-card'+(on?' on':'');}
 
 function showBriefing(){
-  const n1=myRole==='yuval'?'יובל':partnerName;
-  const n2=myRole==='yuval'?partnerName:'יובל';
-  document.getElementById('brief-name1').textContent=n1;
-  document.getElementById('brief-name2').textContent=n2;
+  document.getElementById('brief-names').textContent=`יובל ו${partnerName}`;
   goTo('s-brief');
 }
 
 window.goToStage1=function(){
+  state.phase=1;save();
   window.location.href='stage1.html';
 };
 
 let nt;
-window.showNotif=function(msg){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(nt);nt=setTimeout(()=>el.classList.remove('show'),2800);};
+window.showNotif=function(msg){const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');clearTimeout(nt);nt=setTimeout(()=>el.classList.remove('show'),3000);};
 
-window.toggleDev=function(){document.getElementById('dev-panel').classList.toggle('open');};
+window.openDev=function(){const c=prompt('קוד:');if(c===DEV_CODE)document.getElementById('dev-panel').classList.add('open');else if(c!==null)showNotif('קוד שגוי');};
+window.closeDev=()=>document.getElementById('dev-panel').classList.remove('open');
 window.devSkipTo=function(id){
-  document.getElementById('dev-panel').classList.remove('open');
+  closeDev();
   if(id==='stage1'){window.location.href='stage1.html';return;}
   if(id==='s-brief'){showBriefing();return;}
   goTo(id);
 };
 window.devReset=async function(){
-  if(!confirm('איפוס מלא?'))return;
-  document.getElementById('dev-panel').classList.remove('open');
+  if(!confirm('איפוס מלא?'))return;closeDev();
   try{await set(ref(db,`sessions/${SID}`),null);}catch(e){}
   localStorage.clear();location.reload();
 };
@@ -451,28 +382,20 @@ window.devReset=async function(){
 // INIT
 load();
 setTimeout(()=>{
-  spawnFF(document.getElementById('s-curtain'),45);
-  // Extra fireflies center strip
-  for(let i=0;i<18;i++){
-    const ff=document.createElement('div');ff.className='ff';
-    ff.style.width='3px';ff.style.height='3px';
-    ff.style.left=(20+Math.random()*60)+'%';ff.style.top=(15+Math.random()*70)+'%';
-    ff.style.setProperty('--tx',(Math.random()*50-25)+'px');
-    ff.style.setProperty('--ty',(Math.random()*35-17)+'px');
-    ff.style.animationDuration=(4+Math.random()*7)+'s';
-    ff.style.animationDelay=(Math.random()*4)+'s';
+  spawnFF(document.getElementById('s-curtain'),35);
+  for(let i=0;i<20;i++){
+    const ff=document.createElement('div');ff.className='ff';ff.style.width='3px';ff.style.height='3px';
+    ff.style.left=(25+Math.random()*50)+'%';ff.style.top=(20+Math.random()*60)+'%';
+    ff.style.setProperty('--tx',(Math.random()*60-30)+'px');
+    ff.style.setProperty('--ty',(Math.random()*40-20)+'px');
+    ff.style.animationDuration=(5+Math.random()*8)+'s';
+    ff.style.animationDelay=(Math.random()*5)+'s';
     document.getElementById('s-curtain').appendChild(ff);
   }
-  spawnFF(document.getElementById('s-intro'),20);
-
-  // Resume state
-  if(myRole&&state.phase>0){
-    window.location.href='stage1.html';
-  } else if(myRole){
-    goTo('s-wait',false);listenForPlayers();
-  } else {
-    goTo('s-curtain',false);
-  }
+  spawnFF(document.getElementById('s-intro'),22);
+  if(myRole&&state.phase>=1){window.location.href='stage1.html';}
+  else if(myRole){goTo('s-wait',false);listenForPlayers();}
+  else{goTo('s-curtain',false);}
 },1000);
 </script>
 </body>
