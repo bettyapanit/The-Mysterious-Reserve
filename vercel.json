@@ -1,6 +1,12 @@
 {
-  "rewrites": [
-    { "source": "/", "destination": "/index.html" },
-    { "source": "/(.*)", "destination": "/$1" }
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    }
   ]
 }
