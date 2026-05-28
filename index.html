@@ -135,7 +135,7 @@ html,body{height:100%;font-family:'Special Elite',serif;background:#000;color:va
 
 <script type="module">
 const DEV_CODE = '7763';
-let state={phase:0};
+let state={};
 let screenHistory=[], curtainOpened=false;
 const save=()=>localStorage.setItem('rm_state',JSON.stringify(state));
 const load=()=>{try{const s=localStorage.getItem('rm_state');if(s)state={...state,...JSON.parse(s)};}catch(e){}};
@@ -244,7 +244,7 @@ window.startBriefing=function(){
 };
 
 window.goToStage1=function(){
-  state.phase=1;save();
+  localStorage.removeItem('rm_state');
   window.location.href='stage1.html';
 };
 
@@ -265,6 +265,8 @@ window.devReset=function(){
 };
 
 // INIT
+// index.html always clears saved state — fresh start every time
+localStorage.removeItem('rm_state');
 load();
 setTimeout(()=>{
   spawnFF(document.getElementById('s-curtain'),35);
@@ -279,8 +281,7 @@ setTimeout(()=>{
   }
   spawnFF(document.getElementById('s-intro'),22);
   spawnFF(document.getElementById('s-brief'),22);
-  if(state.phase>=1){window.location.href='stage1.html';}
-  else{goTo('s-curtain',false);}
+  goTo('s-curtain',false);
 },1000);
 </script>
 </body>
