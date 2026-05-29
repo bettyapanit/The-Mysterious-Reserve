@@ -2,451 +2,455 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>שלב 1 — זיהוי עקבות</title>
-<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600&family=Secular+One&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>זירת הפשע</title>
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Special+Elite&family=Rubik:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-:root{
-  --gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#7a5810;
-  --dark:#07100a;--border:rgba(201,168,76,.28);
-  --cream:#f5edd8;--dim:#7a9070;--red:#c0392b;--green:#27ae60;
-  --C:150px; /* cell size */
-  --G:4px;   /* gap */
-}
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;touch-action:none;}
-html,body{height:100%;overflow:hidden;background:var(--dark);font-family:'Rubik',sans-serif;color:var(--cream);}
-.bg{position:fixed;inset:0;z-index:0;background:url('crime_scene.jpg') center/cover no-repeat;filter:brightness(.28) saturate(.55);}
-.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh;}
+:root{--gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#8a6820;--jd:#0a1508;--cream:#f5edd8;--dim:#a8c4aa;--dark:#060e06;--border:rgba(201,168,76,.22);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--dark);color:var(--cream);font-family:'Rubik',sans-serif;}
+
+/* LAYOUT */
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
 
 /* HEADER */
-.hdr{background:rgba(5,10,4,.96);border-bottom:1px solid var(--border);padding:.45rem 1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.hdr-t{font-family:'Secular One',sans-serif;font-size:1.1rem;color:var(--gold);}
+.hdr{background:rgba(4,10,4,.95);border-bottom:1px solid var(--border);padding:.4rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10;}
+.hdr-title{font-family:'Secular One',sans-serif;font-size:clamp(.95rem,2.5vw,1.3rem);color:var(--gold);letter-spacing:.04em;}
+.hdr-right{display:flex;gap:.5rem;align-items:center;}
+.hdr-btn{background:rgba(0,0,0,.3);border:1px solid var(--border);color:var(--dim);font-size:.72rem;padding:.25rem .6rem;border-radius:14px;cursor:pointer;font-family:'Rubik',sans-serif;transition:all .2s;}
+.hdr-btn:hover{border-color:var(--gold);color:var(--gold);}
+.hdr-left{display:flex;gap:.5rem;align-items:center;}
+.dev-btn{background:transparent;border:none;cursor:pointer;opacity:.08;font-size:13px;padding:.2rem;}
+.dev-btn:hover{opacity:.4;}
 
-/* MAIN — fills remaining height, no scroll, centers the 8-col layout */
-.main{flex:1;display:flex;align-items:center;justify-content:center;padding:6px;min-height:0;overflow:hidden;}
+/* MAIN */
+.main{flex:1;position:relative;overflow:hidden;}
+.bg-img{position:absolute;inset:0;background:url('crime_scene.jpg') center/cover no-repeat;filter:brightness(.35) saturate(.7);}
 
-/* 
-  8-column layout (RTL: right=animals, left=tracks):
-  col1=animal-store-R | col2=animal-store-L | GAP | col3=answer-animal-R | col4=answer-track-R | MID-GAP | col5=answer-animal-L | col6=answer-track-L | GAP | col7=track-store-R | col8=track-store-L
-  
-  Answer panel surrounds cols 3-6 with a border box.
-*/
-.layout{
-  display:flex;
-  flex-direction:row;
-  align-items:flex-start;
-  gap:0;
-}
-/* Each section */
-.col-pair{display:flex;flex-direction:row;gap:var(--G);}
-.gap-sm{width:var(--gap-sm,16px);flex-shrink:0;}
-.gap-md{width:18px;flex-shrink:0;}
+/* OVERLAY PANEL */
+.ov{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity .4s;padding:1rem;}
+.ov.show{opacity:1;pointer-events:all;}
+.ov-box{background:rgba(6,18,6,.96);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;padding:1.8rem 2rem;box-shadow:0 0 60px rgba(0,0,0,.8);position:relative;}
+.ov-title{font-family:'Secular One',sans-serif;font-size:clamp(1.1rem,3vw,1.5rem);color:var(--gold);margin-bottom:.9rem;text-align:center;}
+.ov-body{font-family:'Special Elite',serif;font-size:clamp(.95rem,2.2vw,1.15rem);color:var(--cream);line-height:1.85;text-align:center;}
+.ov-body p{margin-bottom:.7rem;}
+.ov-body strong{color:var(--gold-l);}
+.ov-close{margin-top:1.3rem;display:flex;justify-content:center;}
+.btn-gold{font-family:'Rubik',sans-serif;font-weight:600;font-size:1rem;padding:.75rem 2rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--jd);border:none;border-radius:8px;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 20px rgba(201,168,76,.4);}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 7px 28px rgba(201,168,76,.6);}
+.btn-outline{font-family:'Rubik',sans-serif;font-weight:400;font-size:.9rem;padding:.55rem 1.4rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:8px;cursor:pointer;transition:all .2s;margin-top:.5rem;}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
 
-/* Answer panel: wraps 4 cols with border */
-.answer-panel{
-  display:flex;flex-direction:row;gap:var(--G);
-  background:rgba(201,168,76,.05);
-  border:1px solid rgba(201,168,76,.35);
-  border-radius:8px;
-  padding:6px;
-}
-.answer-mid-gap{width:14px;flex-shrink:0;}
+/* EVIDENCE GRID */
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:.7rem;margin:1rem 0;}
+.ev-item{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.5rem;text-align:center;cursor:pointer;transition:all .2s;}
+.ev-item:hover{border-color:var(--gold);background:rgba(201,168,76,.08);}
+.ev-item img{width:100%;aspect-ratio:1;object-fit:contain;margin-bottom:.3rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));}
+.ev-item span{font-size:.72rem;color:var(--dim);display:block;line-height:1.3;}
 
-/* Each column = vertical stack of cells */
-.vcol{display:flex;flex-direction:column;gap:var(--G);}
+/* FOOTPRINT MATCH stage */
+.match-wrap{display:flex;flex:1;overflow:hidden;gap:0;}
+/* left: animals */
+.col-animals{width:52%;background:rgba(3,9,3,.9);border-left:1px solid var(--border);overflow-y:auto;padding:.5rem;}
+.col-clues{width:48%;background:rgba(6,14,6,.9);overflow-y:auto;padding:.5rem;}
+.col-hdr{font-family:'Secular One',sans-serif;font-size:.8rem;color:var(--gold);padding:.3rem .4rem .5rem;text-align:center;letter-spacing:.05em;border-bottom:1px solid var(--border);margin-bottom:.4rem;}
 
-/* ── STORE CELLS ── */
-.sc{ /* store animal cell */
-  width:var(--C);height:var(--C);flex-shrink:0;
-  border:1px solid rgba(201,168,76,.18);border-radius:5px;overflow:hidden;
-  background:rgba(8,18,6,.8);display:flex;align-items:center;justify-content:center;
-  cursor:grab;transition:border-color .18s,transform .1s,opacity .2s;
-}
-.sc:hover{border-color:rgba(201,168,76,.5);transform:scale(1.03);}
-.sc.used{opacity:0;pointer-events:none;}
-.sc img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}
+/* animal cards in match */
+.animal-row{display:flex;align-items:center;gap:.5rem;padding:.35rem .4rem;border:1px solid transparent;border-radius:7px;margin-bottom:.3rem;cursor:pointer;transition:all .2s;position:relative;}
+.animal-row:hover{background:rgba(201,168,76,.07);border-color:var(--border);}
+.animal-row.matched{background:rgba(0,180,80,.08);border-color:rgba(0,200,80,.3);}
+.animal-row img{width:38px;height:38px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 1px 3px rgba(0,0,0,.6));}
+.animal-name{font-size:.82rem;color:var(--cream);flex:1;}
+.animal-clue-slot{width:34px;height:34px;border:1px dashed rgba(201,168,76,.3);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(0,0,0,.2);}
+.animal-clue-slot img{width:30px;height:30px;object-fit:contain;}
+.animal-clue-slot.filled{border-color:rgba(0,200,80,.4);background:rgba(0,180,80,.07);}
 
-.tc{ /* store track cell */
-  width:var(--C);height:var(--C);flex-shrink:0;
-  border:1px solid rgba(201,168,76,.15);border-radius:5px;overflow:hidden;
-  background:rgba(5,10,4,.65);display:flex;align-items:center;justify-content:center;
-  cursor:grab;transition:border-color .18s,transform .1s,opacity .2s;padding:8px;
-}
-.tc:hover{border-color:rgba(201,168,76,.45);transform:scale(1.03);}
-.tc.used{opacity:0;pointer-events:none;}
-.tc.anon{border-color:rgba(192,57,43,.25);}
-.tc img{max-width:100%;max-height:100%;object-fit:contain;}
+/* clue cards */
+.clue-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;}
+.clue-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:.4rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.clue-card:hover{border-color:var(--gold-l);background:rgba(201,168,76,.1);}
+.clue-card.selected{border-color:var(--gold);background:rgba(201,168,76,.18);box-shadow:0 0 10px rgba(201,168,76,.3);}
+.clue-card.used{opacity:.35;pointer-events:none;}
+.clue-card img{width:100%;aspect-ratio:1;object-fit:contain;}
+.clue-num{font-size:.65rem;color:var(--dim);margin-top:.2rem;}
 
-/* ── BOARD CELLS ── */
-.bc{ /* board cell */
-  width:var(--C);height:var(--C);flex-shrink:0;
-  border:2px dashed rgba(201,168,76,.22);border-radius:5px;
-  background:rgba(5,12,5,.4);display:flex;align-items:center;justify-content:center;
-  transition:background .15s,border-color .15s;overflow:hidden;
-}
-.bc.trk{background:rgba(5,8,4,.5);}
-.bc.over{background:rgba(201,168,76,.18);border-color:var(--gold);border-style:solid;}
-.bc.has{border-style:solid;border-color:rgba(201,168,76,.35);}
-.bc img.ba{width:100%;height:100%;object-fit:cover;object-position:top center;cursor:grab;}
-.bc img.bt{max-width:88%;max-height:88%;object-fit:contain;cursor:grab;}
+/* footer */
+.footer{background:rgba(4,10,4,.95);border-top:1px solid var(--border);padding:.45rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.footer-info{font-size:.75rem;color:var(--dim);}
+.progress{font-size:.8rem;color:var(--gold);font-weight:600;}
 
-/* FLOAT */
-#fl{position:fixed;pointer-events:none;z-index:9999;display:none;
-  width:var(--C);height:var(--C);transform:translate(-50%,-50%);
-  border-radius:5px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.6);}
-#fl img{width:100%;height:100%;object-fit:contain;}
-#fl.an img{object-fit:cover;object-position:top center;}
+/* back btn */
+.back-btn{position:fixed;bottom:.7rem;right:.7rem;background:rgba(10,21,10,.9);border:1px solid rgba(45,106,48,.35);color:var(--dim);font-size:.78rem;padding:.3rem .8rem;border-radius:20px;cursor:pointer;z-index:200;font-family:'Rubik',sans-serif;transition:all .2s;}
+.back-btn:hover{border-color:var(--gold);color:var(--gold);}
 
-/* FOOTER */
-.footer{background:rgba(5,10,4,.95);border-top:1px solid var(--border);padding:.4rem 1.2rem;
-  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:.8rem;}
-.fh{font-size:.72rem;color:var(--dim);line-height:1.5;max-width:220px;}
-.cbtn{font-family:'Secular One',sans-serif;font-size:.9rem;padding:.55rem 1.6rem;
-  background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#060d07;border:none;
-  border-radius:8px;cursor:pointer;transition:transform .15s;white-space:nowrap;}
-.cbtn:hover{transform:translateY(-1px);}
+/* notif */
+.notif{position:fixed;top:3.2rem;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(40,8,8,.96);border:1px solid #a93226;color:var(--cream);padding:.4rem 1rem;border-radius:26px;font-size:.85rem;z-index:400;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap;max-width:92vw;text-align:center;}
+.notif.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.notif.ok{background:rgba(8,40,8,.96);border-color:#2a8a2a;color:#9fefaf;}
 
-/* OVERLAYS */
-.ovl{position:fixed;inset:0;background:rgba(4,9,3,.92);display:flex;align-items:center;
-  justify-content:center;z-index:500;opacity:0;pointer-events:none;transition:opacity .4s;padding:1rem;}
-.ovl.on{opacity:1;pointer-events:all;}
-.cbox{background:rgba(8,18,6,.97);border:1px solid rgba(201,168,76,.4);border-radius:12px;
-  padding:1.5rem 1.4rem;max-width:480px;width:100%;text-align:center;}
-.cbox.err{border-color:var(--red);animation:shake .4s ease;}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.ct{font-family:'Secular One',sans-serif;font-size:1.3rem;color:var(--gold);margin-bottom:.6rem;}
-.ct.r{color:var(--red);}
-.cb{font-size:.92rem;color:var(--cream);line-height:1.85;margin-bottom:1rem;}
-.ai{max-height:100px;max-width:140px;object-fit:contain;margin:.5rem auto;display:block;}
-.btn{font-family:'Secular One',sans-serif;font-size:.92rem;padding:.65rem 1.6rem;
-  background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#060d07;border:none;
-  border-radius:8px;cursor:pointer;transition:transform .15s;}
-.btn:hover{transform:translateY(-2px);}
+/* dev panel */
+.dev-panel{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.55rem;opacity:0;pointer-events:none;transition:opacity .25s;padding:1.5rem;}
+.dev-panel.open{opacity:1;pointer-events:all;}
+.dev-ttl{font-family:'Rubik',sans-serif;color:#0f0;font-size:1rem;margin-bottom:.3rem;}
+.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;width:100%;max-width:310px;}
+.dev-bi{background:#060d06;border:1px solid #1a2a1a;color:#0f0;font-family:monospace;font-size:.75rem;padding:.5rem .3rem;border-radius:5px;cursor:pointer;text-align:center;}
+.dev-bi:hover{background:#0a180a;border-color:#0f0;}
+.dev-bi.red{color:#f55;border-color:#3a1010;}
+.dev-bi.red:hover{background:#180a0a;border-color:#f55;}
+.dev-close{background:transparent;border:1px solid #222;color:#444;font-size:.73rem;padding:.32rem 1rem;border-radius:5px;cursor:pointer;margin-top:.2rem;}
 
-/* Dev */
-.db{position:fixed;top:.4rem;left:.4rem;background:transparent;border:none;cursor:pointer;z-index:600;opacity:.1;font-size:1.1rem;}
-.db:hover{opacity:.45;}
-.dp{position:fixed;top:2rem;left:.4rem;background:rgba(5,12,5,.97);border:1px solid rgba(0,255,65,.3);border-radius:8px;padding:.8rem;z-index:601;display:none;flex-direction:column;gap:.4rem;min-width:140px;}
-.dp.open{display:flex;}
-.di{background:transparent;border:1px solid rgba(0,255,65,.25);color:#00ff41;font-family:monospace;font-size:.72rem;padding:.3rem .6rem;border-radius:4px;cursor:pointer;}
-.di:hover{background:rgba(0,255,65,.08);}
-.dc{color:#3a5a3a;font-size:.65rem;text-align:center;cursor:pointer;margin-top:.2rem;}
+/* instructions overlay */
+.inst-ov{position:fixed;inset:0;z-index:110;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .3s;}
+.inst-ov.show{opacity:1;pointer-events:all;}
+.inst-box{background:rgba(6,18,6,.97);border:1px solid var(--border);border-radius:12px;max-width:480px;width:100%;padding:1.5rem 1.8rem;}
+.inst-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:1.1rem;margin-bottom:.8rem;text-align:center;}
+.inst-body{font-family:'Rubik',sans-serif;font-size:.92rem;color:var(--cream);line-height:1.85;}
+.inst-body li{margin-bottom:.4rem;}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<div class="app">
-  <div class="hdr"><div class="hdr-t">שלב 1 — זיהוי עקבות</div></div>
-  <div class="main"><div class="layout" id="layout"></div></div>
+
+<div class="app" id="app">
+  <div class="hdr">
+    <div class="hdr-left">
+      <button class="dev-btn" onclick="openDev()">🔧</button>
+    </div>
+    <div class="hdr-title" id="hdr-title">זירת הפשע</div>
+    <div class="hdr-right">
+      <button class="hdr-btn" onclick="showInst()">הוראות ℹ</button>
+      <button class="hdr-btn" onclick="history.back()">← חזרה</button>
+    </div>
+  </div>
+
+  <div class="main" id="main">
+    <div class="bg-img"></div>
+    <!-- content injected by JS -->
+  </div>
+
   <div class="footer">
-    <div class="fh">גררו חיות ועקבות אל הטורים המרכזיים<br>הצמידו כל חיה לעקבה שלה באותה שורה</div>
-    <button class="cbtn" onclick="checkAll()">בדקו את ההתאמות</button>
-    <div class="fh">ניתן לגרור חזרה למחסן<br>ולשנות התאמות בכל עת</div>
-  </div>
-</div>
-<div id="fl"><img src="" alt=""></div>
-
-<!-- Wrong -->
-<div class="ovl" id="ow">
-  <div class="cbox err">
-    <div class="ct r">יש לכם טעות!</div>
-    <div class="cb">אחד או יותר מהזוגות אינם מדויקים. בדקו שוב.</div>
-    <button class="btn" onclick="document.getElementById('ow').classList.remove('on')">נמשיך לחקור</button>
-  </div>
-</div>
-<!-- Win -->
-<div class="ovl" id="owi">
-  <div class="cbox">
-    <div class="ct">כל הכבוד!</div>
-    <div class="cb">זיהיתם את העקבות של כל 12 חיות השמורה ומצאתם את העקבה הנוספת הבלתי מזוהה!</div>
-    <img class="ai" src="clues/c10.png" alt="">
-    <div class="cb">עקבה זו אינה שייכת לאף אחת מ-12 חיות השמורה. מי יכול להשאיר אותה כאן?</div>
-    <button class="btn" onclick="goNext()">המשיכו לשלב הבא</button>
+    <div class="footer-info" id="footer-info">זירת הפשע — שמורת עדן הסודית</div>
+    <div class="progress" id="progress-txt"></div>
   </div>
 </div>
 
-<button class="db" onclick="toggleDev()">🔧</button>
-<div class="dp" id="dp">
-  <div style="font-size:.65rem;color:#00a82a;">⚙ DEV</div>
-  <button class="di" onclick="devSolve()">פתור הכל</button>
-  <button class="di" onclick="document.getElementById('owi').classList.add('on')">דלג</button>
-  <div class="dc" onclick="toggleDev()">סגור ✕</div>
+<!-- OVERLAY for popup panels -->
+<div class="ov" id="ov">
+  <div class="ov-box" id="ov-box"></div>
+</div>
+
+<!-- INSTRUCTIONS -->
+<div class="inst-ov" id="inst-ov">
+  <div class="inst-box">
+    <div class="inst-title" id="inst-title">הוראות</div>
+    <div class="inst-body" id="inst-body"></div>
+    <div style="text-align:center;margin-top:1rem">
+      <button class="btn-outline" onclick="closeInst()">הבנתי ✓</button>
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<div class="dev-panel" id="dev-panel">
+  <div class="dev-ttl">⚙ DEV MODE — זירת הפשע</div>
+  <div class="dev-grid">
+    <div class="dev-bi" onclick="devGo('index')">מסך כניסה</div>
+    <div class="dev-bi" onclick="devSolve()">פתור הכל</div>
+    <div class="dev-bi" onclick="devGo('stage2')">שלב הבא</div>
+    <div class="dev-bi" onclick="devGo('stage3')">ספר פרופילים</div>
+    <div class="dev-bi" onclick="devGo('stage4')">האשמה</div>
+    <div class="dev-bi" onclick="devGo('puzzle')">פאזל מפה</div>
+    <div class="dev-bi" onclick="devGo('stage6')">פתיחת קוד</div>
+    <div class="dev-bi red" onclick="devReset()" style="grid-column:1/-1">איפוס מלא ↺</div>
+  </div>
+  <button class="dev-close" onclick="closeDev()">✕ סגור</button>
 </div>
 
 <script>
+const DEV_CODE='7763';
+
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
 const ANIMALS=[
-  {id:'lion',    name:'אריה',    img:'animals/lion.png',       tid:'c1',  timg:'clues/c1.png'},
-  {id:'elephant',name:'פיל',     img:'animals/elephant.png',   tid:'c2',  timg:'clues/c2.png'},
-  {id:'gorilla', name:'גורילה',  img:'animals/gorilla.png',    tid:'c3',  timg:'clues/c3.png'},
-  {id:'croc',    name:'תנין',    img:'animals/crocodile.png',  tid:'c4',  timg:'clues/c4.png'},
-  {id:'eagle',   name:'נשר',     img:'animals/eagle.png',      tid:'c5',  timg:'clues/c5.png'},
-  {id:'badger',  name:'גירית',   img:'animals/badger.jpg',     tid:'c6',  timg:'clues/c6.png'},
-  {id:'boar',    name:'חזיר בר', img:'animals/wild_boar.png',  tid:'c7',  timg:'clues/c7.png'},
-  {id:'tiger',   name:'טיגריס', img:'animals/tiger.png',      tid:'c8',  timg:'clues/c8.png'},
-  {id:'bear',    name:'דב',      img:'animals/bear.png',       tid:'c9',  timg:'clues/c9.png'},
-  {id:'chimp',   name:'שימפנזה',img:'animals/chimpanzee.png', tid:'c15', timg:'clues/c15.png'},
-  {id:'pelican', name:'שקנאי',  img:'animals/pelican.png',    tid:'c16', timg:'clues/c16.png'},
-  {id:'zebra',   name:'זברה',   img:'animals/zebra.png',      tid:'zebra',timg:null},
+  {id:'lion',    name:'אריה',     img:'animals/lion.png',    clue:1},
+  {id:'elephant',name:'פיל',      img:'animals/elephant.png',clue:2},
+  {id:'gorilla', name:'גורילה',   img:'animals/gorilla.png', clue:3},
+  {id:'eagle',   name:'נשר',      img:'animals/eagle.png',   clue:4},
+  {id:'badger',  name:'גירית',    img:'animals/badger.jpg',  clue:5},
+  {id:'wildboar',name:'חזיר בר',  img:'animals/wild_boar.png',clue:6},
+  {id:'bear',    name:'דב',       img:'animals/bear.png',    clue:7},
+  {id:'tiger',   name:'טיגריס',   img:'animals/tiger.png',   clue:8},
+  {id:'chimp',   name:'שימפנזה',  img:'animals/chimpanzee.png',clue:9},
+  {id:'pelican', name:'שקנאי',    img:'animals/pelican.png', clue:10},
+  {id:'zebra',   name:'זברה',     img:'animals/zebra.png',   clue:11},
+  {id:'sloth',   name:'עצלן',     img:'animals/sloth.png',   clue:12},
 ];
-const ANON={id:'anon',timg:'clues/c10.png'};
-const ALLTRACKS=[...ANIMALS.map(a=>a.tid),ANON.id];
+// clue 13 = raccoon (unknown)
+const CLUE_COUNT=13;
 
-function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
-
-// Board state: 2 panels × 6 rows, each row has {aid,tid}
-// Panel 0 = right answer group, Panel 1 = left answer group
-const ROWS=6;
-let board=[
-  Array.from({length:ROWS},()=>({aid:null,tid:null})),
-  Array.from({length:ROWS},()=>({aid:null,tid:null}))
+// NON-FOOTPRINT evidence items shown in phase A
+const EXTRA_EVIDENCE=[
+  {img:'clues/extra1.png', label:'ענף שבור'},
+  {img:'clues/extra2.png', label:'גדר פרוצה'},
+  {img:'clues/torn_leaf.jpg', label:'עלה קרוע'},
 ];
 
-let drag=null;
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let phase='A'; // A=crime scene popup → B=match footprints
+let selectedClue=null; // clue index 1-13 or null
+let matches={}; // {animalId: clueNum}
+let phaseAStep=0; // 0=show scene, 1=evidence popup, 2=inspector popup
 
-function build(){
-  const lo=document.getElementById('layout');lo.innerHTML='';
-  const ao=shuffle(ANIMALS.map(a=>a.id));
-  const to=shuffle(ALLTRACKS);
+function saveState(){localStorage.setItem('rm_s1',JSON.stringify({phase,matches}));}
+function loadState(){try{const s=localStorage.getItem('rm_s1');if(s){const d=JSON.parse(s);phase=d.phase||'A';matches=d.matches||{};}}catch(e){}}
 
-  // Calculate cell size to fit screen
-  // Calculate cell size to fit both height and width
-  // Measure actual header and footer heights after render
-  const hdr=document.querySelector('.hdr');
-  const ftr=document.querySelector('.footer');
-  const hdrH=hdr?hdr.offsetHeight:44;
-  const ftrH=ftr?ftr.offsetHeight:48;
-  const avH=window.innerHeight - hdrH - ftrH - 12; // 12px total padding
-  const cellByH=Math.floor((avH - 5*4)/6); // 6 rows, 5 gaps of 4px
-  // Width: 8 cols + 2 gaps(10px) + 2 answer-gaps(14px+10px) + answer panel padding(12px) + outer padding(12px)
-  const avW=window.innerWidth-12-10-10-12-6-14-6; // subtract all fixed gaps
-  const cellByW=Math.floor((avW-0)/8); // 8 cells
-  const C=Math.min(Math.floor(Math.min(cellByH,cellByW)),160);
-  document.documentElement.style.setProperty('--C',C+'px');
-  // Also set gap-sm to fill remaining space
-  const totalCells=8*C;
-  const fixedGaps=14+6; // answer mid-gap + answer panel padding×2
-  const remaining=window.innerWidth-totalCells-fixedGaps-12;
-  const sideGap=Math.max(8,Math.floor(remaining/4)); // 4 gaps: 2×gap-sm + answer-panel border
-  document.documentElement.style.setProperty('--gap-sm',sideGap+'px');
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+let _nt;
+function showNotif(m,ok=false){const el=document.getElementById('notif');el.textContent=m;el.className='notif show'+(ok?' ok':'');clearTimeout(_nt);_nt=setTimeout(()=>el.classList.remove('show'),3000);}
 
-  const a1=ao.slice(0,6),a2=ao.slice(6,12);
-  const t1=to.slice(0,7),t2=to.slice(7,13);
+function showOv(html){
+  document.getElementById('ov-box').innerHTML=html;
+  document.getElementById('ov').classList.add('show');
+}
+function closeOv(){document.getElementById('ov').classList.remove('show');}
 
-  // RIGHT animal store (2 cols)
-  lo.appendChild(makeAnimalStorePair(a1,a2));
-  lo.appendChild(gapsm());
+window.showInst=function(){
+  const titles={A:'הוראות — זירת הפשע',B:'הוראות — התאמת עקבות'};
+  const bodies={
+    A:'<ul><li>לפניכם זירת הפשע — אגמון הסלע בשמורת עדן.</li><li>עיינו בראיות שנאספו על ידי צוות המז"פ.</li><li>לחצו על כל ראיה לפרטים נוספים.</li></ul>',
+    B:'<ul><li>לפניכם 13 עקבות שנמצאו בזירה.</li><li>בצד שמאל — 12 דיירי השמורה. בצד ימין — העקבות.</li><li>לחצו על עקבה, ואז לחצו על החיה המתאימה לה.</li><li>כשסיימתם 12 התאמות — שלחו לאישור המעבדה.</li><li>עקבה 13 לא תתאים לאף חיה — שלחו אותה למעבדה לזיהוי.</li></ul>'
+  };
+  document.getElementById('inst-title').textContent=titles[phase]||'הוראות';
+  document.getElementById('inst-body').innerHTML=bodies[phase]||'';
+  document.getElementById('inst-ov').classList.add('show');
+};
+window.closeInst=()=>document.getElementById('inst-ov').classList.remove('show');
 
-  // ANSWER PANEL
-  const ap=document.createElement('div');ap.className='answer-panel';
-  // Panel 0 (right): animal col | track col
-  ap.appendChild(makeBoardVcol('a',0));
-  ap.appendChild(makeBoardVcol('t',0));
-  // mid gap
-  const mg=document.createElement('div');mg.className='answer-mid-gap';ap.appendChild(mg);
-  // Panel 1 (left): animal col | track col
-  ap.appendChild(makeBoardVcol('a',1));
-  ap.appendChild(makeBoardVcol('t',1));
-  lo.appendChild(ap);
-
-  lo.appendChild(gapsm());
-  // LEFT track store (2 cols)
-  lo.appendChild(makeTrackStorePair(t1,t2));
+// ═══════════════════════════════════════════════
+// PHASE A — crime scene + popups
+// ═══════════════════════════════════════════════
+function startPhaseA(){
+  document.getElementById('main').innerHTML=`<div class="bg-img"></div>`;
+  document.getElementById('hdr-title').textContent='זירת הפשע';
+  document.getElementById('progress-txt').textContent='';
+  document.getElementById('footer-info').textContent='שמורת עדן הסודית — ליד אגמון הסלע';
+  phaseAStep=0;
+  // Show crime scene for 2.5s then popup
+  setTimeout(showEvidencePopup, 2500);
 }
 
-function gapsm(){const d=document.createElement('div');d.className='gap-sm';return d;}
-
-function makeAnimalStorePair(a1,a2){
-  const pair=document.createElement('div');pair.className='col-pair';
-  pair.appendChild(makeAnimalStoreVcol(a1));
-  pair.appendChild(makeAnimalStoreVcol(a2));
-  return pair;
-}
-function makeTrackStorePair(t1,t2){
-  const pair=document.createElement('div');pair.className='col-pair';
-  pair.appendChild(makeTrackStoreVcol(t1));
-  pair.appendChild(makeTrackStoreVcol(t2));
-  return pair;
-}
-
-function makeAnimalStoreVcol(ids){
-  const col=document.createElement('div');col.className='vcol';
-  ids.forEach(id=>{
-    const a=ANIMALS.find(x=>x.id===id);
-    const cell=document.createElement('div');
-    cell.className='sc';cell.id=`as-${id}`;cell.dataset.aid=id;
-    const img=document.createElement('img');img.src=a.img;img.alt=a.name;
-    img.onerror=()=>{cell.textContent=a.name;};
-    cell.appendChild(img);
-    cell.addEventListener('pointerdown',e=>{e.preventDefault();startDrag(e,'a',id,null,null,true);});
-    col.appendChild(cell);
+function showEvidencePopup(){
+  // Build clue thumbnails (all 13)
+  let clueHTML='<div class="ev-grid">';
+  for(let i=1;i<=CLUE_COUNT;i++){
+    const isLast=i===CLUE_COUNT;
+    clueHTML+=`<div class="ev-item" onclick="showClueDetail(${i})">
+      <img src="clues/c${i}.png" onerror="this.style.opacity='.3'" alt="עקבה ${i}">
+      <span>${isLast?'עקבה לא מזוהה':`עקבה ${i}`}</span>
+    </div>`;
+  }
+  // Extra evidence
+  EXTRA_EVIDENCE.forEach(e=>{
+    clueHTML+=`<div class="ev-item">
+      <img src="${e.img}" onerror="this.style.opacity='.3'" alt="${e.label}">
+      <span>${e.label}</span>
+    </div>`;
   });
-  return col;
+  clueHTML+='</div>';
+
+  showOv(`
+    <div class="ov-title">🔍 ראיות מהזירה</div>
+    <div class="ov-body">
+      <p>הגעתם לאגמון הסלע — זירת הפשע.</p>
+      <p>יש כאן הרבה ראיות ועקבות. <strong>חלקן טריות וחלקן ישנות יותר.</strong></p>
+      <p>צוות המז"פ — מחלקת זיהוי פלילי — אסף את הראיות בשטח על-מנת לנתח אותן במעבדה.</p>
+      <p>אלה הראיות והעקבות שנאספו:</p>
+      ${clueHTML}
+    </div>
+    <div class="ov-close">
+      <button class="btn-gold" onclick="closeOv();showInspectorPopup()">המשיכו לדבר עם המפקח</button>
+    </div>
+  `);
 }
 
-function makeTrackStoreVcol(tids){
-  const col=document.createElement('div');col.className='vcol';
-  tids.forEach(tid=>{
-    const timg=tid===ANON.id?ANON.timg:(ANIMALS.find(a=>a.tid===tid)?.timg||'');
-    const cell=document.createElement('div');
-    cell.className='tc'+(tid===ANON.id?' anon':'');cell.id=`ts-${tid}`;cell.dataset.tid=tid;
-    const img=document.createElement('img');img.src=timg||'';img.alt='';
-    cell.appendChild(img);
-    cell.addEventListener('pointerdown',e=>{e.preventDefault();startDrag(e,'t',tid,null,null,true);});
-    col.appendChild(cell);
+window.showClueDetail=function(n){
+  const isLast=n===CLUE_COUNT;
+  showNotif(isLast?'עקבה לא מזוהה — של מי היא?':`עקבה מספר ${n}`);
+};
+
+function showInspectorPopup(){
+  showOv(`
+    <div class="ov-title">👮 שיחה עם הפקח</div>
+    <div class="ov-body">
+      <p>כדי לעשות סדר בראיות ובעקבות, כדאי לדבר עם הפקח.</p>
+      <p>הוא יוכל לספר לכם <strong>אילו חיות גרות בשמורה</strong> — ולהראות לכם את ספר הפרופילים שלו.</p>
+      <p>זה גם יקל מאוד על עבודת המעבדה בשלב הבא.</p>
+    </div>
+    <div class="ov-close" style="flex-direction:column;gap:.6rem">
+      <button class="btn-gold" onclick="closeOv();goToProfileBook()">אל ספר הפרופילים</button>
+    </div>
+  `);
+}
+
+window.goToProfileBook=function(){window.location.href='stage3.html';};
+
+// ═══════════════════════════════════════════════
+// PHASE B — footprint matching
+// ═══════════════════════════════════════════════
+function startPhaseB(){
+  phase='B';saveState();
+  document.getElementById('hdr-title').textContent='בדיקת ראיות';
+  document.getElementById('footer-info').textContent='התאימו כל עקבה לחיה המתאימה';
+  renderMatchUI();
+  updateProgress();
+  // Intro popup
+  showOv(`
+    <div class="ov-title">🧪 בדיקת ראיות</div>
+    <div class="ov-body">
+      <p>עיינתם בספר הפרופילים וכעת אתם מכירים את כל דיירי השמורה.</p>
+      <p>כדי לעזור לצוות המעבדה — <strong>התאימו כל עקבה לחיה שהשאירה אותה.</strong></p>
+      <p>לחצו על עקבה בצד ימין, ואז לחצו על החיה המתאימה לה בצד שמאל.</p>
+      <p>אחרי 12 התאמות — שלחו לאישור המעבדה.</p>
+    </div>
+    <div class="ov-close">
+      <button class="btn-gold" onclick="closeOv()">התחילו ✓</button>
+    </div>
+  `);
+}
+
+function renderMatchUI(){
+  const main=document.getElementById('main');
+  let animalsHTML='<div class="col-hdr">חיות השמורה (12)</div>';
+  ANIMALS.forEach(a=>{
+    const matched=Object.entries(matches).find(([id,_])=>id===a.id);
+    const clueNum=matched?matched[1]:null;
+    animalsHTML+=`
+      <div class="animal-row${clueNum?' matched':''}" id="arow-${a.id}" onclick="selectAnimal('${a.id}')">
+        <img src="${a.img}" onerror="this.src=''" alt="${a.name}">
+        <span class="animal-name">${a.name}</span>
+        <div class="animal-clue-slot${clueNum?' filled':''}">
+          ${clueNum?`<img src="clues/c${clueNum}.png" alt="">`:' '}
+        </div>
+      </div>`;
   });
-  return col;
-}
 
-function makeBoardVcol(type,panel){
-  // type: 'a'=animal, 't'=track; panel: 0 or 1
-  const col=document.createElement('div');col.className='vcol';
-  for(let r=0;r<ROWS;r++){
-    const cell=document.createElement('div');
-    cell.className='bc'+(type==='t'?' trk':'');
-    cell.id=`bc-${panel}-${type}-${r}`;
-    cell.dataset.panel=panel;cell.dataset.type=type;cell.dataset.row=r;
-    cell.addEventListener('pointerenter',()=>{if(drag&&drag.type===type)cell.classList.add('over');});
-    cell.addEventListener('pointerleave',()=>cell.classList.remove('over'));
-    col.appendChild(cell);
+  let cluesHTML='<div class="col-hdr">עקבות (13)</div><div class="clue-grid">';
+  for(let i=1;i<=CLUE_COUNT;i++){
+    const usedBy=Object.entries(matches).find(([_,n])=>n===i);
+    const sel=selectedClue===i;
+    cluesHTML+=`
+      <div class="clue-card${usedBy?' used':''}${sel?' selected':''}" id="ccard-${i}" onclick="selectClue(${i})">
+        <img src="clues/c${i}.png" onerror="this.style.opacity='.3'" alt="">
+        <div class="clue-num">${i===CLUE_COUNT?'?':i}</div>
+      </div>`;
   }
-  return col;
+  cluesHTML+='</div>';
+
+  main.innerHTML=`
+    <div class="match-wrap">
+      <div class="col-animals">${animalsHTML}</div>
+      <div class="col-clues">${cluesHTML}</div>
+    </div>`;
 }
 
-// DRAG
-function getImg(type,id){
-  if(type==='a')return ANIMALS.find(a=>a.id===id)?.img||'';
-  if(id===ANON.id)return ANON.timg;
-  return ANIMALS.find(a=>a.tid===id)?.timg||'';
-}
+window.selectClue=function(n){
+  if(Object.values(matches).includes(n))return;
+  selectedClue=selectedClue===n?null:n;
+  renderMatchUI();
+};
 
-function startDrag(e,type,id,fromPanel,fromRow,fromStore){
-  drag={type,id,fromPanel,fromRow,fromStore};
-  if(fromStore){
-    document.getElementById(type==='a'?`as-${id}`:`ts-${id}`)?.classList.add('used');
-  } else {
-    clearBoardCell(type,fromPanel,fromRow);
-  }
-  const fl=document.getElementById('fl');
-  fl.className=type==='a'?'an':'';
-  fl.querySelector('img').src=getImg(type,id);
-  fl.style.display='block';
-  fl.style.left=e.clientX+'px';fl.style.top=e.clientY+'px';
-}
+window.selectAnimal=function(id){
+  if(!selectedClue){showNotif('בחרו קודם עקבה מהרשימה מימין');return;}
+  if(selectedClue===CLUE_COUNT){showNotif('העקבה הלא-מזוהה תישלח למעבדה לזיהוי');selectedClue=null;renderMatchUI();return;}
+  matches[id]=selectedClue;
+  selectedClue=null;
+  saveState();
+  renderMatchUI();
+  updateProgress();
+};
 
-document.addEventListener('pointermove',e=>{
-  if(!drag)return;
-  const fl=document.getElementById('fl');
-  fl.style.left=e.clientX+'px';fl.style.top=e.clientY+'px';
-  document.querySelectorAll('.bc.over').forEach(c=>c.classList.remove('over'));
-  const under=document.elementsFromPoint(e.clientX,e.clientY);
-  const cell=under.find(el=>el.classList?.contains('bc')&&el.dataset.type===drag.type);
-  if(cell)cell.classList.add('over');
-});
-
-document.addEventListener('pointerup',e=>{
-  if(!drag)return;
-  document.getElementById('fl').style.display='none';
-  document.querySelectorAll('.bc.over').forEach(c=>c.classList.remove('over'));
-  const {type,id,fromPanel,fromRow,fromStore}=drag;drag=null;
-
-  const under=document.elementsFromPoint(e.clientX,e.clientY);
-  const cell=under.find(el=>el.classList?.contains('bc')&&el.dataset.type===type);
-
-  if(cell){
-    const panel=parseInt(cell.dataset.panel),row=parseInt(cell.dataset.row);
-    // evict existing
-    const existing=type==='a'?board[panel][row].aid:board[panel][row].tid;
-    if(existing&&existing!==id)returnToStore(type,existing);
-    // if same item was somewhere else on board, clear it
-    evictFromBoard(type,id,panel,row);
-    placeOnBoard(type,id,panel,row);
-  } else {
-    // return to store
-    returnToStore(type,id);
-  }
-});
-
-function placeOnBoard(type,id,panel,row){
-  if(type==='a')board[panel][row].aid=id;
-  else board[panel][row].tid=id;
-  // hide store
-  document.getElementById(type==='a'?`as-${id}`:`ts-${id}`)?.classList.add('used');
-  // render
-  const cell=document.getElementById(`bc-${panel}-${type}-${row}`);
-  if(!cell)return;
-  cell.innerHTML='';cell.classList.add('has');
-  const img=document.createElement('img');
-  img.src=getImg(type,id);img.alt='';
-  img.className=type==='a'?'ba':'bt';
-  img.addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation();startDrag(ev,type,id,panel,row,false);});
-  cell.appendChild(img);
-}
-
-function clearBoardCell(type,panel,row){
-  if(type==='a')board[panel][row].aid=null;
-  else board[panel][row].tid=null;
-  const cell=document.getElementById(`bc-${panel}-${type}-${row}`);
-  if(cell){cell.innerHTML='';cell.classList.remove('has');}
-}
-
-function evictFromBoard(type,id,keepPanel,keepRow){
-  // Remove this id from any other board position
-  for(let p=0;p<2;p++)for(let r=0;r<ROWS;r++){
-    if(p===keepPanel&&r===keepRow)continue;
-    if(type==='a'&&board[p][r].aid===id)clearBoardCell('a',p,r);
-    if(type==='t'&&board[p][r].tid===id)clearBoardCell('t',p,r);
+function updateProgress(){
+  const done=Object.keys(matches).length;
+  document.getElementById('progress-txt').textContent=`${done} / 12 התאמות`;
+  const footerBtn=document.getElementById('submit-btn');
+  if(done>=12&&!footerBtn){
+    document.querySelector('.footer').insertAdjacentHTML('afterbegin',
+      `<button class="btn-gold" id="submit-btn" style="font-size:.85rem;padding:.5rem 1.2rem" onclick="submitMatches()">שלחו לאישור המעבדה ←</button>`
+    );
   }
 }
 
-function returnToStore(type,id){
-  // clear from board
-  for(let p=0;p<2;p++)for(let r=0;r<ROWS;r++){
-    if(type==='a'&&board[p][r].aid===id)clearBoardCell('a',p,r);
-    if(type==='t'&&board[p][r].tid===id)clearBoardCell('t',p,r);
+function submitMatches(){
+  // Check correctness
+  let correct=0;
+  ANIMALS.forEach(a=>{if(matches[a.id]===a.clue)correct++;});
+  if(correct<12){
+    showOv(`
+      <div class="ov-title">🔬 תשובה מהמעבדה</div>
+      <div class="ov-body">
+        <p>המעבדה בדקה את ההתאמות שלכם.</p>
+        <p>צדקתם ב-<strong>${correct} מתוך 12</strong> התאמות.</p>
+        <p>יש כמה שגיאות — חזרו לבדוק שוב.</p>
+      </div>
+      <div class="ov-close">
+        <button class="btn-outline" onclick="closeOv()">חזרה לבדיקה</button>
+      </div>
+    `);
+    return;
   }
-  document.getElementById(type==='a'?`as-${id}`:`ts-${id}`)?.classList.remove('used');
+  // All correct!
+  showOv(`
+    <div class="ov-title">✅ כל הכבוד!</div>
+    <div class="ov-body">
+      <p>המעבדה אימתה את כל 12 ההתאמות שלכם — <strong>מצוין!</strong></p>
+      <p>אבל שימו לב — נמצאה <strong>עקבה 13</strong> שאינה שייכת לאף אחד מדיירי השמורה.</p>
+      <p>כדאי לשלוח אותה למעבדה לניתוח — שם יוכלו להגיד לכם לאיזו חיה היא שייכת.</p>
+    </div>
+    <div class="ov-close">
+      <button class="btn-gold" onclick="closeOv();goToLab()">שלחו למעבדה ←</button>
+    </div>
+  `);
 }
 
-// CHECK
-function checkAll(){
-  const pairs=[];
-  for(let p=0;p<2;p++)for(let r=0;r<ROWS;r++){
-    const {aid,tid}=board[p][r];
-    if(aid&&tid)pairs.push({aid,tid});
-  }
-  if(pairs.length<12){showErr();return;}
-  const ok=pairs.every(({aid,tid})=>{
-    const a=ANIMALS.find(x=>x.id===aid);
-    return a&&a.tid===tid;
-  });
-  if(ok)setTimeout(()=>document.getElementById('owi').classList.add('on'),300);
-  else showErr();
-}
+window.goToLab=function(){window.location.href='stage2.html';};
 
-function showErr(){
-  const box=document.querySelector('#ow .cbox');
-  box.classList.remove('err');void box.offsetWidth;box.classList.add('err');
-  document.getElementById('ow').classList.add('on');
-}
+// ═══════════════════════════════════════════════
+// DEV
+// ═══════════════════════════════════════════════
+window.openDev=function(){const c=prompt('קוד DEV:');if(c===DEV_CODE)document.getElementById('dev-panel').classList.add('open');else if(c!==null)showNotif('קוד שגוי');};
+window.closeDev=()=>document.getElementById('dev-panel').classList.remove('open');
+window.devGo=function(id){
+  closeDev();
+  if(id==='index'){window.location.href='index.html';return;}
+  window.location.href=id+'.html';
+};
+window.devSolve=function(){
+  closeDev();
+  ANIMALS.forEach(a=>{matches[a.id]=a.clue;});
+  saveState();
+  if(phase==='B'){renderMatchUI();updateProgress();}
+  showNotif('כל ההתאמות מולאו',true);
+};
+window.devReset=function(){
+  if(!confirm('איפוס מלא?'))return;
+  closeDev();localStorage.clear();window.location.href='index.html';
+};
 
-window.goNext=function(){document.getElementById('owi').classList.remove('on');window.location.href='stage2.html';};
-function toggleDev(){document.getElementById('dp').classList.toggle('open');}
-function devSolve(){
-  toggleDev();
-  // Clear board
-  for(let p=0;p<2;p++)for(let r=0;r<ROWS;r++){
-    clearBoardCell('a',p,r);clearBoardCell('t',p,r);
-    board[p][r]={aid:null,tid:null};
-  }
-  document.querySelectorAll('.sc.used,.tc.used').forEach(e=>e.classList.remove('used'));
-  ANIMALS.forEach((a,i)=>{
-    if(!a.timg)return;
-    const p=i<6?0:1,r=i%6;
-    placeOnBoard('a',a.id,p,r);placeOnBoard('t',a.tid,p,r);
-  });
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+loadState();
+if(phase==='B'){
+  // Came back from profile book — go straight to matching
+  startPhaseB();
+} else {
+  startPhaseA();
 }
-
-build();
 </script>
 </body>
 </html>
