@@ -14,12 +14,17 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);}
 .screen.active{opacity:1;pointer-events:all;}
 
 /* ── fixed chrome — identical across ALL screens ── */
-#chrome{position:fixed;top:0;left:0;right:0;height:2.6rem;z-index:500;display:flex;align-items:center;padding:0 .5rem;gap:.4rem;pointer-events:none;}
+#chrome{position:fixed;top:0;left:0;right:0;height:3.2rem;z-index:500;display:flex;align-items:center;padding:0 .6rem;gap:.5rem;pointer-events:none;}
 #chrome>*{pointer-events:all;}
-.ch-btn{width:28px;height:28px;background:rgba(0,0,0,.45);border:1px solid rgba(201,168,76,.28);color:rgba(201,168,76,.65);font-size:.85rem;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
-.ch-btn:hover{border-color:var(--gold);color:var(--gold);}
-.ch-back{font-size:.75rem;padding:0 .55rem;width:auto;display:none;}
+/* user-facing — prominent */
+.ch-btn-user{height:2.2rem;padding:0 .85rem;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.55);color:var(--gold-l);font-size:.95rem;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:.35rem;font-family:'Rubik',sans-serif;font-weight:500;transition:all .2s;white-space:nowrap;}
+.ch-btn-user:hover{background:rgba(201,168,76,.22);border-color:var(--gold-l);color:#fff;}
+.ch-back{display:none;}
 .ch-back.vis{display:flex;}
+/* DEV — small, unobtrusive */
+.ch-btn-dev{height:1.8rem;padding:0 .55rem;background:transparent;border:1px solid rgba(201,168,76,.18);color:rgba(201,168,76,.35);font-size:.72rem;border-radius:4px;cursor:pointer;font-family:monospace;transition:all .2s;}
+.ch-btn-dev:hover{border-color:rgba(201,168,76,.5);color:rgba(201,168,76,.7);}
+.ch-spacer{flex:1;}
 
 /* loading */
 #s-load{background:#000;gap:.8rem;}
@@ -83,9 +88,10 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);}
 
 <!-- fixed chrome — always visible -->
 <div id="chrome">
-  <button class="ch-btn" id="ch-dev" onclick="openDev()" title="DEV">🔧</button>
-  <button class="ch-btn" id="ch-fs" onclick="toggleFS()" title="מסך מלא">⛶</button>
-  <button class="ch-btn ch-back" id="ch-back" onclick="goBack()">← חזרה</button>
+  <button class="ch-btn-user" id="ch-fs" onclick="toggleFS()">⛶ מסך מלא</button>
+  <button class="ch-btn-user ch-back" id="ch-back" onclick="goBack()">← חזרה</button>
+  <div class="ch-spacer"></div>
+  <button class="ch-btn-dev" id="ch-dev" onclick="openDev()">DEV</button>
 </div>
 
 <!-- loading -->
@@ -150,7 +156,7 @@ window.goTo=function(id,h=true){
   if(h&&!['s-load','s-curtain'].includes(id)){const cur=document.querySelector('.screen.active');if(cur&&cur.id!==id)hist.push(cur.id);}
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.getElementById('ch-back').className='ch-btn ch-back'+(hist.length?' vis':'');
+  document.getElementById('ch-back').className='ch-btn-user ch-back'+(hist.length?' vis':'');
   if(id==='s-intro')setTimeout(startTypewriter,350);
 };
 window.goBack=function(){if(!hist.length)return;goTo(hist.pop(),false);};
