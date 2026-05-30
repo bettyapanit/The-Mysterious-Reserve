@@ -56,7 +56,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);}
 #s-intro,#s-brief{background:url('jungle.jpg') center/cover no-repeat;}
 #s-intro::before,#s-brief::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,.58);pointer-events:none;z-index:1;}
 .story-inner{position:relative;z-index:5;width:100%;max-width:860px;padding:3.2rem 3vw 2.5rem;display:flex;flex-direction:column;align-items:center;gap:2.5vh;height:100%;justify-content:center;}
-.story-txt{font-family:'Special Elite',serif;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.98);line-height:1.8;text-align:center;width:100%;font-size:clamp(1.35rem,2.9vh,2.1rem);}
+.story-txt{font-family:'Special Elite',serif;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.98);line-height:1.8;text-align:center;width:100%;font-size:clamp(1.1rem,2.3vh,1.65rem);}
 .story-txt .sm{font-size:.78em;vertical-align:.05em;}
 .tw-cursor{display:inline-block;width:2px;height:.9em;background:var(--gold-l);vertical-align:middle;animation:blink .65s ease infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
@@ -141,7 +141,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);}
 <!-- מסך המתנה לפני זירת הפשע -->
 <div class="screen" id="s-wait">
   <div class="wait-inner">
-    <div class="wait-blink">כבר מגיעים אל זירת הפשע.<br>פקח השמורה כבר מחכה לכם שם.</div>
+    <div class="wait-blink">עוד רגע תגיעו אל זירת הפשע.<br>פקח השמורה כבר מחכה לכם שם.</div>
   </div>
 </div>
 
@@ -234,8 +234,11 @@ function startTypewriter(){typewrite(STORY_RAW,'story-el',()=>setTimeout(()=>doc
 window.startBriefing=function(){document.getElementById('btn-start').classList.remove('show');goTo('s-brief');typewrite(BRIEF_RAW,'brief-el',()=>setTimeout(()=>document.getElementById('btn-brief-go').classList.add('show'),300));};
 window.goToStage1=function(){
   localStorage.removeItem('rm_state');
+  // Remember fullscreen state so stage1 can restore it
+  if(document.fullscreenElement)localStorage.setItem('rm_fs','1');
+  else localStorage.removeItem('rm_fs');
   goTo('s-wait',false);
-  setTimeout(()=>{window.location.href='stage1.html';},3500);
+  setTimeout(()=>{window.location.href='stage1.html';},5000);
 };
 
 let _nt;

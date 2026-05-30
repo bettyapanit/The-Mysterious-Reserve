@@ -592,13 +592,12 @@ window.toggleFS=function(){if(!document.fullscreenElement)document.documentEleme
 let timerSec=3600,timerInt=null;
 function startTimer(){
   const el=document.getElementById('timer');
-  // try restore
-  const saved=parseInt(localStorage.getItem('rm_timer')||'0');
-  if(saved>0&&saved<3600)timerSec=saved;
+  // Always start fresh — never restore stale timer
+  timerSec=3600;
+  el.textContent='60:00';
   timerInt=setInterval(()=>{
     if(timerSec<=0){clearInterval(timerInt);el.textContent='00:00';return;}
     timerSec--;
-    localStorage.setItem('rm_timer',timerSec);
     const m=Math.floor(timerSec/60).toString().padStart(2,'0');
     const s=(timerSec%60).toString().padStart(2,'0');
     el.textContent=m+':'+s;
@@ -620,17 +619,19 @@ function showStage(id){
   document.getElementById('hdr-title').textContent=TITLES[id]||'';
   document.getElementById('btn-back').className='hdr-btn-user'+(['A'].includes(id)?' hidden':'');
   // footer
-  document.getElementById('ftr-submit').className='btn-gold'+(id==='E'?' show':'');
+  const fs=document.getElementById('ftr-submit');if(fs)fs.className='btn-gold'+(id==='E'?' show':'');
   document.getElementById('ftr-progress').textContent='';
-  document.getElementById('ftr-book').className='hdr-btn'+((['D','E'].includes(id)&&bookUnlocked)?' show':'');
+  const ftb=document.getElementById('ftr-book');if(ftb)ftb.className='hdr-btn'+((['D','E'].includes(id)&&bookUnlocked)?' show':'');
   // instructions only relevant for E (match stage)
-  document.getElementById('ftr-instr').style.display=id==='E'?'block':'none';
+  const fi=document.getElementById('ftr-instr');if(fi)fi.style.display=id==='E'?'block':'none';
   // floating map button
   const fb=document.getElementById('float-btns');
   const showMap=(['D','E','C'].includes(id));
-  fb.style.display=showMap?'flex':'none';
-  if(document.getElementById('float-map-btn'))document.getElementById('float-map-btn').style.display=showMap?'block':'none';
-  if(document.getElementById('float-book-btn'))document.getElementById('float-book-btn').style.display=((['E'].includes(id)&&bookUnlocked)?'block':'none');
+  if(fb)fb.style.display=showMap?'flex':'none';
+  const fmb=document.getElementById('float-map-btn');
+  if(fmb)fmb.style.display=showMap?'block':'none';
+  const fbb=document.getElementById('float-book-btn');
+  if(fbb)fbb.style.display=(id==='E'&&bookUnlocked)?'block':'none';
   if(id==='A')initA();
   if(id==='D')initD();
   if(id==='E')initE();
@@ -934,12 +935,17 @@ window.devSolve=function(){closeDev();ANIMALS.forEach(a=>{matches[a.id]=a.clue;}
 window.devReset=function(){if(!confirm('איפוס?'))return;closeDev();localStorage.clear();window.location.href='index.html';};
 
 /* ══ INIT ══ */
-load();startTimer();
-if(curStg==='C'){buildBook();showStage('C');}
-else if(curStg==='B'&&!bookUnlocked){showStage('B');}
-else if(curStg==='D'){showStage('D');}
-else if(curStg==='E'){showStage('E');}
-else{showStage('A');}
+// Always start stage1 from scratch — no restore
+localStorage.removeItem('rm_s1');
+localStorage.removeItem('rm_timer');
+curStg='A'; matches={}; bookPage=0; bookUnlocked=false;
+// Restore fullscreen if it was active on index
+if(localStorage.getItem('rm_fs')==='1'){
+  localStorage.removeItem('rm_fs');
+  setTimeout(()=>document.documentElement.requestFullscreen().catch(()=>{}),300);
+}
+startTimer();
+showStage('A');
 </script>
 </body>
 </html>
