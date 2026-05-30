@@ -306,7 +306,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 /* ══ STAGE C — Book ══ */
 #stg-C{display:flex;flex-direction:column;align-items:center;padding:.5rem 1rem;}
 #stg-C .bg-station{position:absolute;inset:0;z-index:0;opacity:.35;}
-.book-area{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;gap:.5rem;padding:.3rem 0;}
+.book-area{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:.3rem 0 .3rem 33%;}
 .book-container{flex:1;min-height:0;position:relative;width:100%;display:flex;align-items:center;justify-content:center;}
 .book-page{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s;}
 .book-page.show{opacity:1;pointer-events:all;}
@@ -331,7 +331,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 .ev-lbl-main{font-family:'Secular One',sans-serif;font-size:clamp(.9rem,1.9vw,1.1rem);color:var(--gold);}
 .ev-grid{
   flex:1;overflow-y:auto;
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
   gap:.5rem;align-content:start;
 }
 .ev-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:.3rem;text-align:center;cursor:pointer;transition:border-color .18s;}
@@ -341,70 +341,78 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 .ev-placeholder{display:none;}
 .ev-lbl-sm{font-size:.7rem;color:var(--dim);line-height:1.3;min-height:1.4em;}
 
-/* ══ STAGE E — Match redesigned ══ */
+/* ══ STAGE E — Match: 2-column pairs left, clues grid right ══ */
 .match-layout{
   position:absolute;inset:0;
-  display:flex;flex-direction:column;
-  padding:.4rem .6rem .3rem;
-  gap:.35rem;
+  display:flex;flex-direction:row;
+  gap:.5rem;
+  padding:.35rem .5rem;
   z-index:2;
 }
-.match-section{display:flex;flex-direction:column;gap:.25rem;min-height:0;}
-.match-section-hdr{
-  font-family:'Secular One',sans-serif;
-  font-size:clamp(.78rem,1.5vw,.95rem);
-  color:var(--gold);letter-spacing:.04em;
-  text-align:center;
-  flex-shrink:0;
-}
-/* Clue row — horizontal scrollable strip at top */
-.clue-row{
-  display:flex;flex-wrap:wrap;gap:.3rem;
-  justify-content:center;
-  overflow-y:auto;max-height:22vh;
-  padding:.2rem 0;
-}
-.c-card{
-  background:rgba(20,35,20,.85);
-  border:2px solid rgba(201,168,76,.2);
-  border-radius:7px;padding:.3rem;text-align:center;cursor:pointer;
-  transition:all .18s;
-  width:clamp(55px,7vw,75px);flex-shrink:0;
-}
-.c-card:hover{border-color:var(--gold-l);background:rgba(201,168,76,.1);}
-.c-card.sel{border-color:var(--gold);background:rgba(201,168,76,.2);box-shadow:0 0 10px rgba(201,168,76,.4);}
-.c-card.used{opacity:.3;pointer-events:none;}
-.c-card img{width:100%;aspect-ratio:1;object-fit:contain;display:block;}
-.c-num{font-size:.6rem;color:var(--gold);margin-top:.15rem;font-weight:600;}
-
-/* Animal grid — 4 columns */
-.animal-grid{
+/* Left ~52%: animal pairs in 2 columns */
+.pairs-area{
+  width:52%;flex-shrink:0;
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:.35rem;
-  overflow-y:auto;flex:1;min-height:0;
-  padding:.1rem 0;
+  grid-template-columns:1fr 1fr;
+  gap:.4rem 1rem;  /* row-gap col-gap */
+  overflow-y:auto;
+  align-content:start;
+}
+/* Each pair = animal card + slot side by side */
+.a-pair{
+  display:flex;flex-direction:column;
+  align-items:center;gap:.2rem;
 }
 .a-card{
   background:rgba(10,22,10,.88);
-  border:2px solid rgba(201,168,76,.18);
-  border-radius:9px;padding:.4rem .35rem;
-  display:flex;flex-direction:column;align-items:center;gap:.25rem;
-  cursor:pointer;transition:all .18s;
-  position:relative;
+  border:1.5px solid rgba(201,168,76,.22);
+  border-radius:8px;padding:.3rem .25rem .2rem;
+  display:flex;flex-direction:column;align-items:center;gap:.15rem;
+  cursor:pointer;transition:border-color .18s;
+  width:100%;
 }
-.a-card:hover{border-color:var(--gold);background:rgba(201,168,76,.08);}
-.a-card.matched{border-color:rgba(0,220,80,.5);background:rgba(0,180,60,.1);}
-.a-card img.a-img{width:100%;max-width:70px;aspect-ratio:1;object-fit:contain;}
-.a-card .a-name{font-family:'Special Elite',serif;font-size:clamp(.75rem,1.4vw,.95rem);color:var(--cream);text-align:center;}
-.a-card .a-slot{
-  width:38px;height:38px;
-  border:1.5px dashed rgba(201,168,76,.35);
-  border-radius:5px;
+.a-card:hover{border-color:var(--gold);}
+.a-card.matched{border-color:rgba(0,220,80,.5);background:rgba(0,180,60,.08);}
+.a-card img.a-img{width:clamp(36px,5vw,58px);aspect-ratio:1;object-fit:contain;}
+.a-card .a-name{font-family:'Special Elite',serif;font-size:clamp(.7rem,1.2vw,.88rem);color:var(--cream);text-align:center;}
+/* Clue slot below animal */
+.a-slot{
+  width:clamp(36px,5vw,56px);height:clamp(36px,5vw,56px);
+  border:1.5px dashed rgba(201,168,76,.35);border-radius:5px;
   display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.25);
+  cursor:pointer;transition:border-color .18s;
 }
-.a-card .a-slot img{width:34px;height:34px;object-fit:contain;}
-.a-card .a-slot.filled{border-color:rgba(0,220,80,.5);}
+.a-slot:hover{border-color:var(--gold);}
+.a-slot.filled{border-color:rgba(0,220,80,.5);background:rgba(0,180,60,.07);}
+.a-slot img{width:90%;height:90%;object-fit:contain;}
+
+/* Right ~48%: clue grid */
+.clues-area{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;
+  gap:.3rem;
+  overflow:hidden;
+}
+.clue-row{
+  flex:1;min-height:0;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(clamp(52px,7vw,72px),1fr));
+  gap:.3rem;
+  overflow-y:auto;
+  align-content:start;
+}
+.c-card{
+  background:rgba(20,35,20,.85);
+  border:1.5px solid rgba(201,168,76,.2);
+  border-radius:6px;padding:.25rem;text-align:center;cursor:pointer;
+  transition:all .15s;
+}
+.c-card:hover{border-color:var(--gold-l);background:rgba(201,168,76,.1);}
+.c-card.sel{border-color:var(--gold);background:rgba(201,168,76,.2);box-shadow:0 0 8px rgba(201,168,76,.4);}
+.c-card.used{opacity:.28;pointer-events:none;}
+.c-card img{width:100%;aspect-ratio:1;object-fit:contain;display:block;}
+.c-num{font-size:.58rem;color:var(--gold);margin-top:.12rem;font-weight:600;}
 
 /* ══ FOOTER ══ */
 #ftr{
@@ -531,9 +539,9 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
       <div class="lock-input-row">
         <span class="lock-label">הקוד לפתיחת המגירה:</span>
         <div class="lock-digits">
-          <input class="lock-digit" id="d0" type="text" maxlength="1" inputmode="numeric" oninput="digitIn(0)" onkeydown="digitKey(event,0)">
-          <input class="lock-digit" id="d1" type="text" maxlength="1" inputmode="numeric" oninput="digitIn(1)" onkeydown="digitKey(event,1)">
-          <input class="lock-digit" id="d2" type="text" maxlength="1" inputmode="numeric" oninput="digitIn(2)" onkeydown="digitKey(event,2)">
+          <input class="lock-digit" id="d0" type="text" maxlength="1" inputmode="numeric" autocomplete="off" autocorrect="off" spellcheck="false" name="digit0" oninput="digitIn(0)" onkeydown="digitKey(event,0)">
+          <input class="lock-digit" id="d1" type="text" maxlength="1" inputmode="numeric" autocomplete="off" autocorrect="off" spellcheck="false" name="digit1" oninput="digitIn(1)" onkeydown="digitKey(event,1)">
+          <input class="lock-digit" id="d2" type="text" maxlength="1" inputmode="numeric" autocomplete="off" autocorrect="off" spellcheck="false" name="digit2" oninput="digitIn(2)" onkeydown="digitKey(event,2)">
         </div>
         <button class="btn-check" onclick="checkCode()">בדיקת הקוד</button>
       </div>
@@ -541,25 +549,20 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
     </div>
   </div></div>
   <!-- success bubble — speech2.png image-based, bottom left of screen -->
-  <div id="lock-success" style="display:none;position:absolute;bottom:0;left:33%;width:62%;z-index:30;">
-    <!-- speech2 image: 4961x3508, bubble rect at bottom 74%-91.5% of image, left 65% of width -->
-    <!-- We show full image but position text in the bubble area -->
+  <div id="lock-success" style="display:none;position:absolute;bottom:2rem;left:30%;width:65%;z-index:30;">
     <div style="position:relative;width:100%;padding-top:70.7%">
       <img src="speech2.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:fill;pointer-events:none;">
-      <!-- text area: rect starts at 74% image height, ends at 91.5% -->
-      <!-- in padding-top container: top=74%, bottom=100%-91.5%=8.5% -->
-      <!-- bubble is left ~4% to 64% of image width -->
-      <div style="position:absolute;top:74%;bottom:8%;left:4%;right:36%;
+      <div style="position:absolute;top:72%;bottom:7%;left:4%;right:35%;
                   display:flex;flex-direction:column;justify-content:space-between;
-                  padding:.3rem .6rem .2rem .6rem;overflow:hidden;">
-        <div style="font-family:'Special Elite',serif;font-size:clamp(1.1rem,1.9vw,1.35rem);
+                  padding:.4rem .7rem .3rem .7rem;overflow:hidden;gap:.3rem;">
+        <div style="font-family:'Special Elite',serif;font-size:clamp(1.2rem,2.1vw,1.5rem);
                     color:#111;line-height:1.65;text-align:right;">
           כל הכבוד! הצלחתם לנחש את הקוד ולפתוח את המגירה!<br>
           עכשיו אתם יכולים להוציא ממנה את ספר הפרופילים של דיירי השמורה.
         </div>
-        <button onclick="openBook()" style="align-self:flex-end;margin-left:15%;
+        <button onclick="openBook()" style="align-self:flex-end;margin-left:18%;
           color:var(--jd);background:linear-gradient(135deg,var(--gold-d),var(--gold));
-          border:none;font-size:.9rem;padding:.45rem 1.1rem;border-radius:14px;cursor:pointer;
+          border:none;font-size:.95rem;padding:.5rem 1.2rem;border-radius:14px;cursor:pointer;
           font-family:'Rubik',sans-serif;font-weight:600;white-space:nowrap;">
           הוציאו את ספר הפרופילים מהמגירה
         </button>
@@ -594,7 +597,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 <div class="stage" id="stg-D">
   <div class="bg bg-crime"></div>
   <!-- right 1/3: typewriter text -->
-  <div class="r-panel" id="rp-D" style="opacity:1;z-index:10;">
+  <div class="r-panel" id="rp-D" style="opacity:1;z-index:10;justify-content:center;">
     <div class="r-txt" id="rp-D-typewriter"></div>
     <div id="rp-D-btn" style="display:none;margin-top:.8rem;">
       <div class="r-txt" style="font-size:clamp(.95rem,1.7vw,1.15rem);">צוות המעבדה מבקש את עזרתכם כדי לעשות סדר בכל הראיות ולהתאים את העקבות לחיות השמורה.</div>
@@ -603,7 +606,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   </div>
   <!-- left 2/3: evidence grid -->
   <div class="ev-area" id="ev-area">
-    <div class="sub-title-2" style="position:static;text-align:center;margin-bottom:.4rem;">ראיות מהזירה</div>
+    <div style="font-family:'Secular One',sans-serif;font-size:clamp(.9rem,1.8vw,1.1rem);color:rgba(201,168,76,.75);letter-spacing:.05em;text-align:center;flex-shrink:0;">ראיות מהזירה</div>
     <div class="ev-grid" id="ev-grid"></div>
   </div>
 </div>
@@ -614,15 +617,11 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 <div class="stage" id="stg-E">
   <div class="bg bg-crime" style="filter:brightness(.4) saturate(.6);"></div>
   <div class="match-layout">
-    <!-- TOP: clue cards -->
-    <div class="match-section">
-      <div class="match-section-hdr">עקבות שנמצאו בזירה</div>
+    <!-- LEFT: animal pairs (2 columns) -->
+    <div class="pairs-area" id="col-animals"></div>
+    <!-- RIGHT: clue cards grid -->
+    <div class="clues-area">
       <div class="clue-row" id="col-clues"></div>
-    </div>
-    <!-- BOTTOM: animal cards with drop slots -->
-    <div class="match-section" style="flex:1;min-height:0;">
-      <div class="match-section-hdr">חיות השמורה — גררו עקבה לחיה המתאימה</div>
-      <div class="animal-grid" id="col-animals"></div>
     </div>
   </div>
 </div>
@@ -636,9 +635,9 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 
 <!-- ══ FOOTER ══ -->
 <!-- Floating persistent buttons (map + book) -->
-<div id="float-btns" style="position:fixed;bottom:3.7rem;left:.6rem;z-index:460;display:none;gap:.5rem;flex-direction:row;align-items:center;">
-  <button id="float-map-btn" class="btn-sm" onclick="openMapPopup()" style="display:none;font-size:.78rem;padding:.3rem .85rem;">מפת השמורה</button>
-  <button id="float-book-btn" class="btn-sm" onclick="openBookPopup()" style="display:none;font-size:.78rem;padding:.3rem .85rem;">ספר הפרופילים</button>
+<div id="float-btns" style="display:none;gap:.4rem;flex-direction:row;align-items:center;">
+  <button id="float-map-btn" class="btn-sm" onclick="openMapPopup()" style="display:none;font-size:.8rem;padding:.35rem .95rem;">מפת השמורה</button>
+  <button id="float-book-btn" class="btn-sm" onclick="openBookPopup()" style="display:none;font-size:.8rem;padding:.35rem .95rem;">ספר הפרופילים</button>
 </div>
 
 <!-- Map popup -->
@@ -664,8 +663,8 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 </div>
 
 <div id="ftr">
-  <button id="ftr-instr" onclick="showInst()">הוראות</button>
-  <button id="ftr-book" onclick="returnToBook()">ספר הפרופילים</button>
+  <div id="float-btns-slot" style="display:flex;gap:.4rem;align-items:center;"></div>
+  <button id="ftr-instr" onclick="showInst()" style="display:none;">הוראות</button>
   <button id="ftr-submit" onclick="submitMatch()">שלחו לאישור המעבדה</button>
   <span id="ftr-progress"></span>
 </div>
@@ -760,7 +759,12 @@ function showStage(id){
       if(lw&&lw.style.display==='none')lw.style.display='flex';
     },100);
   }
-  if(id==='D')initD();
+  if(id==='D'){
+    // Restore ranger if hidden during C→D transition
+    const rw=document.getElementById('ranger-wrap');
+    if(rw&&rw.style.opacity==='0'){rw.style.transition='opacity 1s';rw.style.opacity='1';}
+    initD();
+  }
   if(id==='E')initE();
   save();
 }
@@ -821,7 +825,10 @@ window.doneWithMap=function(){
   // Show floating map button immediately
   const fmb=document.getElementById('float-map-btn');
   if(fmb){fmb.style.display='inline-block';}
+  // Move float-btns into footer slot
   const fbar=document.getElementById('float-btns');
+  const slot=document.getElementById('float-btns-slot');
+  if(fbar&&slot&&!slot.contains(fbar)){slot.appendChild(fbar);}
   if(fbar){fbar.style.display='flex';}
 
   // Hide map area
@@ -1031,6 +1038,8 @@ window.bookDone=function(){
   const fbb=document.getElementById('float-book-btn');
   if(fbb)fbb.style.display='inline-block';
   const fb=document.getElementById('float-btns');
+  const slot2=document.getElementById('float-btns-slot');
+  if(fb&&slot2&&!slot2.contains(fb)){slot2.appendChild(fb);}
   if(fb)fb.style.display='flex';
   // Slow transition: fade out station → wait → fade in crime scene
   // First fade out the C stage
@@ -1148,25 +1157,28 @@ let selClue=null;
 
 function initE(){selClue=null;renderMatch();updateProg();}
 function renderMatch(){
-  // Animal cards
+  // Animal pairs: animal card + slot below, in 2-column grid
   let ah='';
   ANIMALS.forEach(a=>{
     const cn=matches[a.id];
-    ah+=`<div class="a-card${cn?' matched':''}" onclick="pickAnimal('${a.id}')">
-      <img class="a-img" src="${a.img}" alt="${a.name}" onerror="this.style.opacity='.15'">
-      <div class="a-name">${a.name}</div>
-      <div class="a-slot${cn?' filled':''}">
+    ah+=`<div class="a-pair">
+      <div class="a-card${cn?' matched':''}" onclick="pickAnimal('${a.id}')">
+        <img class="a-img" src="${a.img}" alt="${a.name}"
+          onerror="this.src='';this.style.display='none';this.insertAdjacentHTML('afterend','<div style=\"width:clamp(36px,5vw,58px);height:clamp(36px,5vw,58px);display:flex;align-items:center;justify-content:center;font-size:1.5rem;\">🐾</div>')">
+        <div class="a-name">${a.name}</div>
+      </div>
+      <div class="a-slot${cn?' filled':''}" onclick="pickAnimal('${a.id}')">
         ${cn?`<img src="clues/c${cn}.png" onerror="this.style.opacity='.1'">`:' '}
       </div>
     </div>`;
   });
   document.getElementById('col-animals').innerHTML=ah;
-  // Clue strip
+  // Clue grid (right side)
   let ch='';
   for(let i=1;i<=CLUE_N;i++){
     const used=Object.values(matches).includes(i);
     const ev=EVIDENCE[i-1];
-    ch+=`<div class="c-card${used?' used':''}${selClue===i?' sel':''}" onclick="pickClue(${i})" title="${ev?ev.n:''}">
+    ch+=`<div class="c-card${used?' used':''}${selClue===i?' sel':''}" onclick="pickClue(${i})">
       <img src="clues/c${i}.png" onerror="this.style.opacity='.12'">
       <div class="c-num">${ev?ev.n:i}</div>
     </div>`;
