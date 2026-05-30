@@ -98,12 +98,14 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 .l-area.show{opacity:1;}
 /* ── Level-2 subtitle (below main title, centered) ── */
 .sub-title-2{
-  position:absolute;top:.7rem;left:50%;transform:translateX(-50%);
+  position:absolute;top:.5rem;
+  left:0;right:0;
+  text-align:center;
   font-family:'Secular One',sans-serif;
   font-size:clamp(.9rem,1.8vw,1.1rem);
   color:rgba(201,168,76,.75);
   letter-spacing:.05em;
-  z-index:5;white-space:nowrap;
+  z-index:5;
 }
 .section-lbl{
   font-family:'Secular One',sans-serif;
@@ -437,7 +439,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
       <div class="speech-content">
         <div class="speech-txt" id="speech-txt"></div>
         <button class="btn-sm" id="speech-cont" onclick="speechNext()"
-          style="align-self:flex-end;color:var(--jd);background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;font-size:1rem;padding:.5rem 1.3rem;">המשך</button>
+          style="align-self:center;margin-right:10%;color:var(--jd);background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;font-size:1rem;padding:.5rem 1.3rem;">המשך</button>
       </div>
     </div>
   </div>
@@ -665,17 +667,21 @@ let _nt;
 function showNotif(m,ok=false){const el=document.getElementById('notif');el.textContent=m;el.className='notif show'+(ok?' ok':'');clearTimeout(_nt);_nt=setTimeout(()=>el.classList.remove('show'),3000);}
 
 /* ══ STAGE A ══ */
-// speechIdx: -1=intro (before map), 0,1=main testimony
+// speechIdx: -1=intro, 0/1/2=testimony part 1/2/3, 3=closing
 const SPEECH_INTRO=`<p>שלום יובל וצוות הבלשים, אני פקח השמורה.<br>זוהי זירת הפשע, אגמון הסלע בשמורת עדן הסודית,<br>מקום המחבוא הסודי שממנו נגנבה מפת האוצרות העתיקה.<br>לפני שאספר לכם כל מה שקרה כדאי שתכירו<br>קצת את מפת השמורה. כך יהיה לכם יותר קל להבין את הסיפור.</p>`;
 
 const SPEECH=[
-`<p>הבוקר לא יצאתי לסיור הבוקר הקבוע שלי, כי הגיעו להחליף את הגדר הישנה בחלק הצפוני של השמורה. זה לקח את רוב שעות היום, אז יצאתי רק לסיור הערב. במהלך הסיור עברתי כמו תמיד באזור אגמון הסלע ומצאתי את הבור, בדיוק במקום שבו לפני כמה ימים טמנתי את התיבה עם המפה העתיקה.</p>
-<p>לפני כמה ימים שמעתי שהיתה פריצה בתחנת הפיקוח של שמורה סמוכה והחלטתי עוד באותו ערב לקחת את המפה הסודית, שהיתה שמורה עד אז במגירה בתחנת הפיקוח, ולהחביא אותה כאן. הכנסתי את המפה לתוך תיבה נעולה והטמנתי את התיבה בתוך בור שחפרתי באדמה ליד הסלע הסמוך לאגמון.</p>
-<p>יש כאן רק בור אחד, אז אני מבין שהגנב ידע בדיוק איפה לחפור. אולי אחת החיות עקבה אחריי באותו הערב וכך ידעה איפה קברתי אותה? תעזרו לי לתפוס את הגנב ולהחזיר את מפת האוצרות העתיקה.</p>`,
-`<p style="font-size:1.1em;line-height:2">בשמורה חיות 12 חיות. לרוב כולנו חיים כאן בשלווה ובשלום.</p>
-<p style="font-size:1.1em;line-height:2">בתחנת הפיקוח יש ספר פרופילים של כל דיירי השמורה. הספר נמצא במגירה, אבל המגירה נעולה ואני לא זוכר בדיוק את הקוד.</p>
-<p style="font-size:1.1em;line-height:2">עשיתי כבר כמה ניסיונות לפתוח את המגירה ולא הצלחתי. אני צריך את עזרתכם.</p>
-<p style="font-size:1.1em;line-height:2;font-weight:bold;color:var(--gold-d)">בואו איתי לתחנת הפקחים.</p>`
+  // 0: part 1 of testimony
+  `<p>הבוקר לא יצאתי לסיור הבוקר הקבוע שלי, כי הגיעו להחליף את הגדר הישנה בחלק הצפוני של השמורה. זה לקח את רוב שעות היום, אז יצאתי רק לסיור הערב. במהלך הסיור עברתי כמו תמיד באזור אגמון הסלע ומצאתי את הבור, בדיוק במקום שבו לפני כמה ימים טמנתי את התיבה עם המפה העתיקה.</p>`,
+  // 1: part 2 of testimony
+  `<p>לפני כמה ימים שמעתי שהיתה פריצה בתחנת הפיקוח של שמורה סמוכה והחלטתי עוד באותו ערב לקחת את המפה הסודית, שהיתה שמורה עד אז במגירה בתחנת הפיקוח, ולהחביא אותה כאן. הכנסתי את המפה לתוך תיבה נעולה והטמנתי את התיבה בתוך בור שחפרתי באדמה ליד הסלע הסמוך לאגמון.</p>`,
+  // 2: part 3 of testimony
+  `<p>יש כאן רק בור אחד, אז אני מבין שהגנב ידע בדיוק איפה לחפור. אולי אחת החיות עקבה אחריי באותו הערב וכך ידעה איפה קברתי אותה? תעזרו לי לתפוס את הגנב ולהחזיר את מפת האוצרות העתיקה.</p>`,
+  // 3: closing — second ranger speech (lock/book)
+  `<p>בשמורה חיות 12 חיות. לרוב כולנו חיים כאן בשלווה ובשלום.</p>
+<p>בתחנת הפיקוח יש ספר פרופילים של כל דיירי השמורה. הספר נמצא במגירה, אבל המגירה נעולה ואני לא זוכר בדיוק את הקוד.</p>
+<p>עשיתי כבר כמה ניסיונות לפתוח את המגירה ולא הצלחתי. אני צריך את עזרתכם.</p>
+<p>בואו איתי לתחנת הפקחים.</p>`
 ];
 let speechIdx=-1;
 let stageAInit=false;
@@ -720,7 +726,7 @@ window.doneWithMap=function(){
     bz.classList.add('visible');
     setSpeechText(SPEECH[0]);
     document.getElementById('speech-cont').textContent='המשך';
-    speechIdx=0;
+    speechIdx=0;  /* testimony part 1 */
     // Show level-2 subtitle "עדות פקח השמורה"
     let sub=document.getElementById('sub-ranger');
     if(!sub){
@@ -745,7 +751,7 @@ window.closeMapPopup=function(){
 
 window.speechNext=function(){
   if(speechIdx===-1){
-    // Hide bubble, show map area
+    // Intro done → show map
     const bz=document.getElementById('bubble-zone');
     bz.classList.remove('show');
     setTimeout(()=>{
@@ -759,8 +765,13 @@ window.speechNext=function(){
   speechIdx++;
   if(speechIdx<SPEECH.length){
     setSpeechText(SPEECH[speechIdx]);
-    if(speechIdx===SPEECH.length-1)
-      document.getElementById('speech-cont').textContent='לפיצוח הקוד למנעול המגירה';
+    // Update button text based on position
+    const btn=document.getElementById('speech-cont');
+    if(speechIdx===SPEECH.length-1){
+      btn.textContent='אל תחנת הפקחים';
+    } else {
+      btn.textContent='המשך';
+    }
   } else {
     showStage('B');
   }
