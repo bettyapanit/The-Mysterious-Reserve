@@ -96,6 +96,15 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   opacity:0;transition:opacity .7s;
 }
 .l-area.show{opacity:1;}
+/* ── Level-2 subtitle (below main title, centered) ── */
+.sub-title-2{
+  position:absolute;top:.7rem;left:50%;transform:translateX(-50%);
+  font-family:'Secular One',sans-serif;
+  font-size:clamp(.9rem,1.8vw,1.1rem);
+  color:rgba(201,168,76,.75);
+  letter-spacing:.05em;
+  z-index:5;white-space:nowrap;
+}
 .section-lbl{
   font-family:'Secular One',sans-serif;
   font-size:clamp(.85rem,1.7vw,1rem);
@@ -122,7 +131,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   display:flex;align-items:flex-end;
   opacity:0;transform:translateX(-110%);
   transition:transform 1.4s cubic-bezier(.22,1,.36,1), opacity .3s;
-  z-index:20;
+  z-index:20;pointer-events:none;
 }
 #ranger-wrap.in{opacity:1;transform:translateX(0);}
 #ranger-wrap.out{transform:translateX(-110%);transition:transform 1.1s cubic-bezier(.77,0,.18,1);}
@@ -133,56 +142,51 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   position:absolute;top:0;left:32%;right:0;
   height:100%;
   display:none;flex-direction:column;
-  justify-content:center;
-  padding:1.5rem 1.5rem 1.5rem 1rem;
+  justify-content:flex-start;
+  padding:.5rem .8rem 0 .3rem;
   opacity:0;transition:opacity .5s;
   z-index:21;
 }
 #bubble-zone.visible{display:flex;}
 #bubble-zone.show{opacity:1;}
 
-/* Pure CSS speech bubble — big, clear, with tail pointing left toward ranger */
-.speech-bubble{
+/* speech1.png: transparent PNG, bubble rect = top 8%-82%, full width */
+/* We use it as a sized img, then overlay text absolutely inside */
+.speech-outer{
   position:relative;
-  background:rgba(245,240,225,.93);
-  border-radius:18px;
-  border:2px solid rgba(80,70,40,.25);
-  box-shadow:0 8px 40px rgba(0,0,0,.55);
-  padding:1.8rem 2rem 1.4rem 2rem;
-  display:flex;flex-direction:column;gap:.9rem;
-  max-height:85%;
+  width:100%;
+  /* height = full height so image + tail fit */
+  flex:1;min-height:0;
+}
+.speech-bg{
+  position:absolute;
+  top:0;left:0;right:0;
+  width:100%;
+  /* image is 4961x3508; bubble ends at ~82% height → show full image */
+  object-fit:contain;
+  object-position:top left;
+  max-height:100%;
+  pointer-events:none;
+}
+/* text sits inside the bubble rect: 8%→72% vertically, 4%→96% horizontally */
+.speech-content{
+  position:absolute;
+  top:8%;bottom:22%;    /* 8% from top, tail starts ~82% so leave 22% for tail */
+  left:5%;right:4%;
   overflow-y:auto;
+  display:flex;flex-direction:column;
+  justify-content:space-between;
+  gap:.6rem;
+  padding:.5rem .8rem;
+  z-index:2;
 }
-/* tail pointing left (toward ranger) */
-.speech-bubble::before{
-  content:'';
-  position:absolute;
-  left:-28px;
-  bottom:22%;
-  width:0;height:0;
-  border-top:16px solid transparent;
-  border-bottom:16px solid transparent;
-  border-right:28px solid rgba(245,240,225,.93);
-}
-.speech-bubble::after{
-  content:'';
-  position:absolute;
-  left:-32px;
-  bottom:calc(22% - 2px);
-  width:0;height:0;
-  border-top:18px solid transparent;
-  border-bottom:18px solid transparent;
-  border-right:30px solid rgba(80,70,40,.2);
-  z-index:-1;
-}
-
 .speech-txt{
   font-family:'Special Elite',serif;
-  font-size:clamp(1.1rem,2.1vw,1.45rem);
-  color:#1a160a;line-height:1.9;text-align:right;
+  font-size:clamp(1.05rem,2vw,1.4rem);
+  color:#111;line-height:1.85;text-align:right;
   flex:1;
 }
-.speech-txt p{margin-bottom:.7rem;}
+.speech-txt p{margin-bottom:.65rem;}
 .speech-txt p:last-child{margin-bottom:0;}
 .speech-txt{transition:opacity .35s;}
 .speech-txt.fading{opacity:0;}
@@ -409,21 +413,32 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   <!-- ranger entering from left — shown first -->
   <div id="ranger-wrap"><img src="ranger.png" alt="פקח השמורה" onerror="this.style.opacity='.5'"></div>
 
-  <!-- speech bubble zone — right 68% — pure CSS bubble -->
+  <!-- speech bubble zone — right 68%, speech1.png as transparent overlay -->
   <div id="bubble-zone">
-    <div class="speech-bubble">
-      <div class="speech-txt" id="speech-txt"></div>
-      <div style="text-align:left">
-        <button class="btn-sm" id="speech-cont" onclick="speechNext()" style="color:var(--jd);background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;">המשך</button>
+    <div class="speech-outer">
+      <img class="speech-bg" src="speech1.png" alt="">
+      <div class="speech-content">
+        <div class="speech-txt" id="speech-txt"></div>
+        <button class="btn-sm" id="speech-cont" onclick="speechNext()"
+          style="align-self:flex-start;color:var(--jd);background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;font-size:1rem;padding:.5rem 1.3rem;">המשך</button>
       </div>
     </div>
   </div>
 
-  <!-- map view — hidden initially, shown after button click -->
-  <div class="l-area" id="la-A" style="display:none">
-    <div class="section-lbl">מפת השמורה</div>
-    <img class="map-img" src="reserve_map.png" alt="מפת השמורה" onerror="this.style.opacity='.2'">
-    <button class="btn-sm" id="btn-map-done" onclick="doneWithMap()">המשך לעדות הפקח</button>
+  <!-- map view — right 2/3, hidden initially -->
+  <div id="map-area" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;transition:opacity .5s;">
+    <div style="position:absolute;top:.7rem;left:50%;transform:translateX(-50%);z-index:5;text-align:center;">
+      <span style="font-family:'Secular One',sans-serif;font-size:clamp(.9rem,1.8vw,1.1rem);color:rgba(201,168,76,.75);letter-spacing:.05em;">מפת השמורה</span>
+    </div>
+    <div style="position:absolute;top:2.5rem;right:.8rem;width:65%;bottom:3rem;">
+      <img src="reserve_map.png" alt="מפת השמורה"
+        style="width:100%;height:100%;object-fit:contain;border-radius:6px;box-shadow:0 4px 28px rgba(0,0,0,.55);"
+        onerror="this.style.opacity='.2'">
+    </div>
+    <div style="position:absolute;bottom:.6rem;left:50%;transform:translateX(-50%);">
+      <button class="btn-sm" onclick="doneWithMap()"
+        style="font-size:.95rem;padding:.55rem 1.6rem;">סיימנו לעיין במפה</button>
+    </div>
   </div>
 </div>
 
@@ -522,6 +537,13 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   </div>
 </div>
 
+<!-- ══ MAP POPUP OVERLAY ══ -->
+<div id="map-popup" style="display:none;position:fixed;inset:0;z-index:450;background:rgba(0,0,0,.82);align-items:center;justify-content:center;flex-direction:column;gap:1rem;padding:1rem;">
+  <img src="reserve_map.png" alt="מפת השמורה"
+    style="max-width:90%;max-height:82vh;object-fit:contain;border-radius:8px;box-shadow:0 6px 40px rgba(0,0,0,.7);">
+  <button class="btn-sm" onclick="closeMapPopup()" style="font-size:.95rem;padding:.55rem 1.6rem;">סגירת המפה</button>
+</div>
+
 <!-- ══ FOOTER ══ -->
 <div id="ftr">
   <button id="ftr-instr" onclick="showInst()">הוראות</button>
@@ -601,6 +623,14 @@ function showStage(id){
   document.getElementById('ftr-submit').className='btn-gold'+(id==='E'?' show':'');
   document.getElementById('ftr-progress').textContent='';
   document.getElementById('ftr-book').className='hdr-btn'+((['D','E'].includes(id)&&bookUnlocked)?' show':'');
+  // instructions only relevant for E (match stage)
+  document.getElementById('ftr-instr').style.display=id==='E'?'block':'none';
+  // floating map button
+  const fb=document.getElementById('float-btns');
+  const showMap=(['D','E','C'].includes(id));
+  fb.style.display=showMap?'flex':'none';
+  if(document.getElementById('float-map-btn'))document.getElementById('float-map-btn').style.display=showMap?'block':'none';
+  if(document.getElementById('float-book-btn'))document.getElementById('float-book-btn').style.display=((['E'].includes(id)&&bookUnlocked)?'block':'none');
   if(id==='A')initA();
   if(id==='D')initD();
   if(id==='E')initE();
@@ -624,9 +654,10 @@ const SPEECH=[
 `<p>הבוקר לא יצאתי לסיור הבוקר הקבוע שלי, כי הגיעו להחליף את הגדר הישנה בחלק הצפוני של השמורה. זה לקח את רוב שעות היום, אז יצאתי רק לסיור הערב. במהלך הסיור עברתי כמו תמיד באזור אגמון הסלע ומצאתי את הבור, בדיוק במקום שבו לפני כמה ימים טמנתי את התיבה עם המפה העתיקה.</p>
 <p>לפני כמה ימים שמעתי שהיתה פריצה בתחנת הפיקוח של שמורה סמוכה והחלטתי עוד באותו ערב לקחת את המפה הסודית, שהיתה שמורה עד אז במגירה בתחנת הפיקוח, ולהחביא אותה כאן. הכנסתי את המפה לתוך תיבה נעולה והטמנתי את התיבה בתוך בור שחפרתי באדמה ליד הסלע הסמוך לאגמון.</p>
 <p>יש כאן רק בור אחד, אז אני מבין שהגנב ידע בדיוק איפה לחפור. אולי אחת החיות עקבה אחריי באותו הערב וכך ידעה איפה קברתי אותה? תעזרו לי לתפוס את הגנב ולהחזיר את מפת האוצרות העתיקה.</p>`,
-`<p>בשמורה חיות 12 חיות. לרוב כולנו חיים כאן בשלווה ובשלום.</p>
-<p>בתחנת הפיקוח יש ספר פרופילים של כל דיירי השמורה. הספר נמצא במגירה, אבל המגירה נעולה ואני לא זוכר בדיוק את הקוד.</p>
-<p>עשיתי כבר כמה ניסיונות לפתוח את המגירה ולא הצלחתי. אני צריך את עזרתכם.</p>`
+`<p style="font-size:1.1em;line-height:2">בשמורה חיות 12 חיות. לרוב כולנו חיים כאן בשלווה ובשלום.</p>
+<p style="font-size:1.1em;line-height:2">בתחנת הפיקוח יש ספר פרופילים של כל דיירי השמורה. הספר נמצא במגירה, אבל המגירה נעולה ואני לא זוכר בדיוק את הקוד.</p>
+<p style="font-size:1.1em;line-height:2">עשיתי כבר כמה ניסיונות לפתוח את המגירה ולא הצלחתי. אני צריך את עזרתכם.</p>
+<p style="font-size:1.1em;line-height:2;font-weight:bold;color:var(--gold-d)">בואו איתי לתחנת הפקחים.</p>`
 ];
 let speechIdx=-1;
 let stageAInit=false;
@@ -655,30 +686,54 @@ function setSpeechText(html){
 }
 
 window.doneWithMap=function(){
-  const la=document.getElementById('la-A');
-  la.style.opacity='0';
+  // Show floating map button
+  const fb=document.getElementById('float-map-btn');
+  if(fb)fb.style.display='block';
+  document.getElementById('float-btns').style.display='flex';
+
+  // Hide map area
+  const ma=document.getElementById('map-area');
+  ma.style.opacity='0';
   setTimeout(()=>{
-    la.style.display='none';
+    ma.style.display='none';
+    // Show bubble with speech[0] and subtitle
     const bz=document.getElementById('bubble-zone');
     bz.classList.add('visible');
     setSpeechText(SPEECH[0]);
     document.getElementById('speech-cont').textContent='המשך';
     speechIdx=0;
+    // Show level-2 subtitle "עדות פקח השמורה"
+    let sub=document.getElementById('sub-ranger');
+    if(!sub){
+      sub=document.createElement('div');
+      sub.id='sub-ranger';sub.className='sub-title-2';
+      sub.textContent='עדות פקח השמורה';
+      document.getElementById('stg-A').appendChild(sub);
+    }
+    sub.style.display='block';
     setTimeout(()=>bz.classList.add('show'),30);
   },450);
 };
 
+window.openMapPopup=function(){
+  const p=document.getElementById('map-popup');
+  p.style.display='flex';
+};
+window.closeMapPopup=function(){
+  const p=document.getElementById('map-popup');
+  p.style.display='none';
+};
+
 window.speechNext=function(){
   if(speechIdx===-1){
-    // Hide bubble, show map
+    // Hide bubble, show map area
     const bz=document.getElementById('bubble-zone');
     bz.classList.remove('show');
     setTimeout(()=>{
       bz.classList.remove('visible');
-      const la=document.getElementById('la-A');
-      la.style.display='flex';
-      la.style.opacity='0';
-      setTimeout(()=>la.style.opacity='1',30);
+      const ma=document.getElementById('map-area');
+      ma.style.display='block';
+      setTimeout(()=>ma.style.opacity='1',30);
     },400);
     return;
   }

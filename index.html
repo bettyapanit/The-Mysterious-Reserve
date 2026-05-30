@@ -68,6 +68,19 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);}
 .btn-start{opacity:0;transition:opacity .5s;pointer-events:none;}
 .btn-start.show{opacity:1;pointer-events:all;}
 
+/* waiting screen before stage1 */
+#s-wait{background:#000;}
+.wait-inner{text-align:center;padding:2rem;}
+.wait-blink{
+  font-family:'Special Elite',serif;
+  font-size:clamp(1.4rem,3.5vw,2.2rem);
+  color:var(--gold-l);
+  line-height:1.9;
+  text-shadow:0 0 30px rgba(201,168,76,.6);
+  animation:wblink 1.4s ease-in-out infinite;
+}
+@keyframes wblink{0%,100%{opacity:1}50%{opacity:.25}}
+
 /* notif */
 .notif{position:fixed;top:3rem;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(40,8,8,.96);border:1px solid #a93226;color:var(--cream);padding:.4rem 1rem;border-radius:26px;font-family:'Rubik',sans-serif;font-size:.88rem;z-index:600;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap;max-width:92vw;text-align:center;}
 .notif.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -122,6 +135,13 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);}
   <div class="story-inner">
     <div class="story-txt" id="brief-el"></div>
     <button class="btn-gold btn-start" id="btn-brief-go" onclick="goToStage1()">אל זירת הפשע</button>
+  </div>
+</div>
+
+<!-- מסך המתנה לפני זירת הפשע -->
+<div class="screen" id="s-wait">
+  <div class="wait-inner">
+    <div class="wait-blink">כבר מגיעים אל זירת הפשע.<br>פקח השמורה כבר מחכה לכם שם.</div>
   </div>
 </div>
 
@@ -212,7 +232,11 @@ function typewrite(raw,elId,onDone){
 }
 function startTypewriter(){typewrite(STORY_RAW,'story-el',()=>setTimeout(()=>document.getElementById('btn-start').classList.add('show'),300));}
 window.startBriefing=function(){document.getElementById('btn-start').classList.remove('show');goTo('s-brief');typewrite(BRIEF_RAW,'brief-el',()=>setTimeout(()=>document.getElementById('btn-brief-go').classList.add('show'),300));};
-window.goToStage1=function(){localStorage.removeItem('rm_state');window.location.href='stage1.html';};
+window.goToStage1=function(){
+  localStorage.removeItem('rm_state');
+  goTo('s-wait',false);
+  setTimeout(()=>{window.location.href='stage1.html';},3500);
+};
 
 let _nt;
 window.showNotif=function(m){const el=document.getElementById('notif');el.textContent=m;el.classList.add('show');clearTimeout(_nt);_nt=setTimeout(()=>el.classList.remove('show'),2800);};
