@@ -84,8 +84,8 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 .r-panel.show{opacity:1;}
 .r-txt{
   font-family:'Special Elite',serif;
-  font-size:clamp(1rem,1.8vw,1.25rem);
-  color:var(--cream);line-height:1.8;text-align:right;
+  font-size:clamp(1.05rem,1.9vw,1.3rem);
+  color:var(--cream);line-height:1.85;text-align:right;
   text-shadow:0 1px 10px rgba(0,0,0,.95),0 0 24px rgba(0,0,0,.8);
 }
 
@@ -151,7 +151,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 #bubble-zone{
   position:absolute;
   /* Narrower bubble, shifted left so text has room */
-  top:0;bottom:0;left:33%;right:4%;
+  top:0;bottom:10%;left:33%;right:4%;
   display:none;flex-direction:column;
   justify-content:center;
   align-items:stretch;
@@ -224,13 +224,13 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 }
 .lock-title{
   font-family:'Secular One',sans-serif;
-  font-size:clamp(1.05rem,2.1vw,1.4rem);
-  color:var(--gold);margin-bottom:.6rem;
+  font-size:clamp(1.2rem,2.4vw,1.6rem);
+  color:var(--gold);margin-bottom:.7rem;
 }
 .lock-intro{
   font-family:'Special Elite',serif;
-  font-size:clamp(1rem,1.8vw,1.2rem);
-  color:var(--cream);line-height:1.75;margin-bottom:1rem;
+  font-size:clamp(1.05rem,2vw,1.35rem);
+  color:var(--cream);line-height:1.8;margin-bottom:1rem;
 }
 .lock-attempts{margin-bottom:1rem;}
 .lock-row{
@@ -317,49 +317,94 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 .book-arrow:disabled{opacity:.22;pointer-events:none;}
 .book-page-num{font-family:'Special Elite',serif;font-size:.85rem;color:var(--dim);}
 .book-fallback{color:var(--gold);font-family:'Secular One',sans-serif;font-size:1.1rem;padding:1.5rem;text-align:center;}
-.book-hint{font-family:'Rubik',sans-serif;font-size:.78rem;color:var(--dim);text-align:center;flex-shrink:0;padding:.2rem;}
+.book-hint{font-family:'Rubik',sans-serif;font-size:.78rem;color:var(--dim);text-align:center;}
+.book-footer-slot{height:2.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
 /* ══ STAGE D — Evidence ══ */
 .ev-area{
   position:absolute;top:0;left:0;width:67%;height:100%;
-  padding:.8rem 1rem .8rem 1.2rem;
-  display:flex;flex-direction:column;gap:.5rem;
+  padding:.5rem .8rem .8rem 1rem;
+  display:flex;flex-direction:column;gap:.4rem;
   opacity:0;transition:opacity .7s;
 }
 .ev-area.show{opacity:1;}
 .ev-lbl-main{font-family:'Secular One',sans-serif;font-size:clamp(.9rem,1.9vw,1.1rem);color:var(--gold);}
 .ev-grid{
   flex:1;overflow-y:auto;
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));
-  gap:.38rem;align-content:start;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+  gap:.5rem;align-content:start;
 }
 .ev-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:.3rem;text-align:center;cursor:pointer;transition:border-color .18s;}
 .ev-card:hover{border-color:var(--gold);}
 .ev-card img{width:100%;aspect-ratio:1;object-fit:contain;display:block;}
 .ev-card.img-err .ev-placeholder{display:flex;width:100%;aspect-ratio:1;align-items:center;justify-content:center;background:rgba(0,0,0,.3);border-radius:3px;}
 .ev-placeholder{display:none;}
-.ev-lbl-sm{font-size:.6rem;color:var(--dim);line-height:1.2;min-height:1.3em;}
+.ev-lbl-sm{font-size:.7rem;color:var(--dim);line-height:1.3;min-height:1.4em;}
 
-/* ══ STAGE E — Match ══ */
-.match-wrap{position:absolute;inset:0;display:flex;}
-.col-a{width:50%;background:rgba(3,9,3,.93);border-left:1px solid var(--border);overflow-y:auto;padding:.4rem;}
-.col-c{width:50%;background:rgba(6,14,6,.93);overflow-y:auto;padding:.4rem;}
-.col-hdr{font-family:'Secular One',sans-serif;font-size:.78rem;color:var(--gold);padding:.22rem .4rem .38rem;text-align:center;border-bottom:1px solid var(--border);margin-bottom:.32rem;letter-spacing:.05em;}
-.a-row{display:flex;align-items:center;gap:.38rem;padding:.28rem .38rem;border:1px solid transparent;border-radius:6px;margin-bottom:.25rem;cursor:pointer;transition:all .18s;}
-.a-row:hover{background:rgba(201,168,76,.07);border-color:var(--border);}
-.a-row.matched{background:rgba(0,180,80,.07);border-color:rgba(0,200,80,.28);}
-.a-row img{width:32px;height:32px;object-fit:contain;flex-shrink:0;}
-.a-name{font-size:.82rem;color:var(--cream);flex:1;}
-.a-slot{width:28px;height:28px;border:1px dashed rgba(201,168,76,.3);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.a-slot img{width:24px;height:24px;object-fit:contain;}
-.a-slot.filled{border-color:rgba(0,200,80,.4);}
-.c-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.32rem;}
-.c-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:.3rem;text-align:center;cursor:pointer;transition:all .18s;}
-.c-card:hover{border-color:var(--gold-l);}
-.c-card.sel{border-color:var(--gold);background:rgba(201,168,76,.15);box-shadow:0 0 9px rgba(201,168,76,.3);}
-.c-card.used{opacity:.28;pointer-events:none;}
-.c-card img{width:100%;aspect-ratio:1;object-fit:contain;}
-.c-num{font-size:.58rem;color:var(--dim);margin-top:.12rem;}
+/* ══ STAGE E — Match redesigned ══ */
+.match-layout{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  padding:.4rem .6rem .3rem;
+  gap:.35rem;
+  z-index:2;
+}
+.match-section{display:flex;flex-direction:column;gap:.25rem;min-height:0;}
+.match-section-hdr{
+  font-family:'Secular One',sans-serif;
+  font-size:clamp(.78rem,1.5vw,.95rem);
+  color:var(--gold);letter-spacing:.04em;
+  text-align:center;
+  flex-shrink:0;
+}
+/* Clue row — horizontal scrollable strip at top */
+.clue-row{
+  display:flex;flex-wrap:wrap;gap:.3rem;
+  justify-content:center;
+  overflow-y:auto;max-height:22vh;
+  padding:.2rem 0;
+}
+.c-card{
+  background:rgba(20,35,20,.85);
+  border:2px solid rgba(201,168,76,.2);
+  border-radius:7px;padding:.3rem;text-align:center;cursor:pointer;
+  transition:all .18s;
+  width:clamp(55px,7vw,75px);flex-shrink:0;
+}
+.c-card:hover{border-color:var(--gold-l);background:rgba(201,168,76,.1);}
+.c-card.sel{border-color:var(--gold);background:rgba(201,168,76,.2);box-shadow:0 0 10px rgba(201,168,76,.4);}
+.c-card.used{opacity:.3;pointer-events:none;}
+.c-card img{width:100%;aspect-ratio:1;object-fit:contain;display:block;}
+.c-num{font-size:.6rem;color:var(--gold);margin-top:.15rem;font-weight:600;}
+
+/* Animal grid — 4 columns */
+.animal-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:.35rem;
+  overflow-y:auto;flex:1;min-height:0;
+  padding:.1rem 0;
+}
+.a-card{
+  background:rgba(10,22,10,.88);
+  border:2px solid rgba(201,168,76,.18);
+  border-radius:9px;padding:.4rem .35rem;
+  display:flex;flex-direction:column;align-items:center;gap:.25rem;
+  cursor:pointer;transition:all .18s;
+  position:relative;
+}
+.a-card:hover{border-color:var(--gold);background:rgba(201,168,76,.08);}
+.a-card.matched{border-color:rgba(0,220,80,.5);background:rgba(0,180,60,.1);}
+.a-card img.a-img{width:100%;max-width:70px;aspect-ratio:1;object-fit:contain;}
+.a-card .a-name{font-family:'Special Elite',serif;font-size:clamp(.75rem,1.4vw,.95rem);color:var(--cream);text-align:center;}
+.a-card .a-slot{
+  width:38px;height:38px;
+  border:1.5px dashed rgba(201,168,76,.35);
+  border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+}
+.a-card .a-slot img{width:34px;height:34px;object-fit:contain;}
+.a-card .a-slot.filled{border-color:rgba(0,220,80,.5);}
 
 /* ══ FOOTER ══ */
 #ftr{
@@ -473,8 +518,8 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   <!-- ranger handled by persistent #ranger-wrap -->
   <!-- lock puzzle — compact, centered, with subtitle -->
   <div id="lock-subtitle" class="sub-title-2" style="display:none">תחנת הפקחים — פיצוח הקוד לפתיחת המגירה <button onclick="showLockInst()" style="font-size:.82rem;margin-right:.8rem;padding:.3rem .85rem;background:rgba(201,168,76,.15);border:1px solid var(--gold);color:var(--gold);border-radius:10px;cursor:pointer;font-family:'Rubik',sans-serif;font-weight:500;">הוראות</button></div>
-  <div id="lock-animate-wrap" style="display:none;position:absolute;top:3rem;left:28%;right:2%;bottom:0;display:none;align-items:flex-start;justify-content:center;padding:.8rem 1.5rem .5rem;">
-  <div class="lock-box" style="width:auto;max-width:720px;">
+  <div id="lock-animate-wrap" style="display:none;position:absolute;top:3rem;left:22%;right:2%;bottom:0;display:none;align-items:flex-start;justify-content:center;padding:.8rem 2rem .5rem;">
+  <div class="lock-box" style="width:auto;max-width:820px;">
       <div class="lock-intro">אלה התוצאות של 5 הניסיונות הקודמים של הפקח לנחש את הקוד.<br>השתמשו בהיגיון כדי לפסול את המספרים השגויים ולמצוא את הקוד המדויק:</div>
       <div class="lock-attempts">
         <div class="lock-row"><span class="lock-guess">682</span><span class="lock-result">ספרה אחת נכונה והיא נמצאת במיקום המדויק שלה.</span></div>
@@ -507,14 +552,14 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
       <div style="position:absolute;top:74%;bottom:8%;left:4%;right:36%;
                   display:flex;flex-direction:column;justify-content:space-between;
                   padding:.3rem .6rem .2rem .6rem;overflow:hidden;">
-        <div style="font-family:'Special Elite',serif;font-size:clamp(.95rem,1.7vw,1.2rem);
-                    color:#111;line-height:1.6;text-align:right;">
+        <div style="font-family:'Special Elite',serif;font-size:clamp(1.1rem,1.9vw,1.35rem);
+                    color:#111;line-height:1.65;text-align:right;">
           כל הכבוד! הצלחתם לנחש את הקוד ולפתוח את המגירה!<br>
           עכשיו אתם יכולים להוציא ממנה את ספר הפרופילים של דיירי השמורה.
         </div>
-        <button onclick="openBook()" style="align-self:flex-end;margin-left:5%;
+        <button onclick="openBook()" style="align-self:flex-end;margin-left:15%;
           color:var(--jd);background:linear-gradient(135deg,var(--gold-d),var(--gold));
-          border:none;font-size:.85rem;padding:.4rem 1rem;border-radius:14px;cursor:pointer;
+          border:none;font-size:.9rem;padding:.45rem 1.1rem;border-radius:14px;cursor:pointer;
           font-family:'Rubik',sans-serif;font-weight:600;white-space:nowrap;">
           הוציאו את ספר הפרופילים מהמגירה
         </button>
@@ -535,8 +580,11 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
       <span class="book-page-num" id="page-num">1 / 1</span>
       <button class="book-arrow" id="btn-next" onclick="flipPage(1)">&#8592;</button>
     </div>
-    <div class="book-hint" id="book-hint">לחצו על החצים לדיפדוף בעמודי הספר</div>
-    <button class="btn-sm" id="btn-to-ev" style="display:none;align-self:center;" onclick="bookDone()">סיימנו לעיין בספר — חזרה לזירת הפשע</button>
+    <!-- fixed-height footer area so nav never jumps -->
+    <div class="book-footer-slot">
+      <div class="book-hint" id="book-hint">לחצו על החצים לדיפדוף בעמודי הספר</div>
+      <button class="btn-sm" id="btn-to-ev" style="display:none;" onclick="bookDone()">סיימנו לעיין בספר — חזרה לזירת הפשע</button>
+    </div>
   </div>
 </div>
 
@@ -545,15 +593,17 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 ═══════════════════════════════════════ -->
 <div class="stage" id="stg-D">
   <div class="bg bg-crime"></div>
-  <div class="r-panel" id="rp-D" style="opacity:1">
-    <div class="r-txt">צוות המז"פ (זיהוי פלילי) כבר הספיק להגיע לכאן לפניכם ולאסוף את הראיות. בגלל הגשם שירד אתמול בערב והקרבה למי האגמון, האדמה מסביב רטובה ומז"פ מצאו לא מעט עקבות וראיות נוספות. יש סיכוי טוב שגם הגנב השאיר אחריו עקבות. אלה הראיות שנאספו.</div>
-    <div id="rp-D-extra" style="display:none">
-      <div class="r-txt" style="font-size:clamp(.9rem,1.6vw,1.1rem);margin-top:.5rem">צוות המעבדה מבקש את עזרתכם כדי לעשות סדר בכל הראיות ולהתאים את העקבות לחיות השמורה.</div>
-      <button class="btn-sm" style="margin-top:.5rem" onclick="goToMatch()">לבדיקת הראיות</button>
+  <!-- right 1/3: typewriter text -->
+  <div class="r-panel" id="rp-D" style="opacity:1;z-index:10;">
+    <div class="r-txt" id="rp-D-typewriter"></div>
+    <div id="rp-D-btn" style="display:none;margin-top:.8rem;">
+      <div class="r-txt" style="font-size:clamp(.95rem,1.7vw,1.15rem);">צוות המעבדה מבקש את עזרתכם כדי לעשות סדר בכל הראיות ולהתאים את העקבות לחיות השמורה.</div>
+      <button class="btn-sm" style="margin-top:.6rem;font-size:.95rem;padding:.5rem 1.4rem;" onclick="goToMatch()">לבדיקת הראיות</button>
     </div>
   </div>
+  <!-- left 2/3: evidence grid -->
   <div class="ev-area" id="ev-area">
-    <div class="ev-lbl-main">ראיות מהזירה</div>
+    <div class="sub-title-2" style="position:static;text-align:center;margin-bottom:.4rem;">ראיות מהזירה</div>
     <div class="ev-grid" id="ev-grid"></div>
   </div>
 </div>
@@ -562,14 +612,17 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
      STAGE E — Footprint matching
 ═══════════════════════════════════════ -->
 <div class="stage" id="stg-E">
-  <div class="match-wrap">
-    <div class="col-a">
-      <div class="col-hdr">חיות השמורה (12)</div>
-      <div id="col-animals"></div>
+  <div class="bg bg-crime" style="filter:brightness(.4) saturate(.6);"></div>
+  <div class="match-layout">
+    <!-- TOP: clue cards -->
+    <div class="match-section">
+      <div class="match-section-hdr">עקבות שנמצאו בזירה</div>
+      <div class="clue-row" id="col-clues"></div>
     </div>
-    <div class="col-c">
-      <div class="col-hdr">עקבות (13)</div>
-      <div class="c-grid" id="col-clues"></div>
+    <!-- BOTTOM: animal cards with drop slots -->
+    <div class="match-section" style="flex:1;min-height:0;">
+      <div class="match-section-hdr">חיות השמורה — גררו עקבה לחיה המתאימה</div>
+      <div class="animal-grid" id="col-animals"></div>
     </div>
   </div>
 </div>
@@ -797,9 +850,14 @@ window.doneWithMap=function(){
 
 /* ══ TRANSITION A→B ══ */
 window.transitionToB=function(){
-  // Fade out the crime scene BG (not the ranger)
+  // Hide speech bubble IMMEDIATELY
+  const bz=document.getElementById('bubble-zone');
+  bz.classList.remove('show');
+  bz.classList.remove('visible');
+  bz.style.display='none';
+  // Fade out ONLY the crime scene BG — ranger stays put
   const bgA=document.querySelector('#stg-A .bg');
-  if(bgA)bgA.style.opacity='0';
+  if(bgA){bgA.style.transition='opacity 1s';bgA.style.opacity='0';}
   // Show wait screen after .6s
   setTimeout(()=>{
     const wb=document.getElementById('wait-B');
@@ -924,10 +982,10 @@ window.checkCode=function(){
 
 /* ══ STAGE C — Book ══ */
 const BOOK_PAGES=[
-  {img:'book_cover.jpg',lbl:'כריכה'},
-  {img:'book_p1.jpg',lbl:'דיירים נוכחיים'},
-  {img:'book_p2.jpg',lbl:'דיירים נוכחיים'},
-  {img:'book_p3.jpg',lbl:'דיירי עבר'},
+  {img:'book_cover.png',lbl:'כריכה'},
+  {img:'book_p1.png',lbl:'דיירים נוכחיים'},
+  {img:'book_p2.png',lbl:'דיירים נוכחיים'},
+  {img:'book_p3.png',lbl:'דיירי עבר'},
 ];
 
 function buildBook(){
@@ -974,41 +1032,94 @@ window.bookDone=function(){
   if(fbb)fbb.style.display='inline-block';
   const fb=document.getElementById('float-btns');
   if(fb)fb.style.display='flex';
-  showStage('D');
+  // Slow transition: fade out station → wait → fade in crime scene
+  // First fade out the C stage
+  const stgC=document.getElementById('stg-C');
+  stgC.style.transition='opacity .8s';
+  stgC.style.opacity='0';
+  // Ranger fades too
+  const rw=document.getElementById('ranger-wrap');
+  if(rw){rw.style.transition='opacity .8s';rw.style.opacity='0';}
+  setTimeout(()=>{
+    // Show wait overlay
+    const wb=document.createElement('div');
+    wb.id='wait-D';
+    wb.style.cssText='position:fixed;inset:0;z-index:480;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .5s;';
+    wb.innerHTML='<div style="font-family:Special Elite,serif;font-size:clamp(1.4rem,3vw,2rem);color:var(--gold-l);text-align:center;text-shadow:0 0 30px rgba(201,168,76,.6);animation:wblink 1.4s ease-in-out infinite;line-height:1.9;">בחזרה אל זירת הפשע להמשך החקירה.</div>';
+    document.body.appendChild(wb);
+    setTimeout(()=>wb.style.opacity='1',30);
+    setTimeout(()=>{
+      wb.style.opacity='0';
+      setTimeout(()=>{
+        wb.remove();
+        // Reset ranger
+        if(rw){rw.style.transition='';rw.style.opacity='1';}
+        showStage('D');
+      },600);
+    },5000);
+  },800);
 };
 
 /* ══ STAGE D — Evidence ══ */
 const EVIDENCE=[
-  ...Array.from({length:12},(_,i)=>({f:`clues/c${i+1}.png`,l:''})),
-  {f:'clues/c13.png',l:'עקבה לא מזוהה'},
-  {f:'clues/c14.png',l:''},
-  {f:'clues/c15.png',l:''},
-  {f:'clues/c16.png',l:'חתיכת פרווה שנתפסה בענף'},
-  {f:'clues/c17.png',l:'קרע אגרסיבי בצמח'},
-  {f:'clues/c18.png',l:'עצם לעוסה'},
+  ...Array.from({length:12},(_,i)=>({f:`clues/c${i+1}.png`,l:'',n:`C-${String(i+1).padStart(2,'0')}`})),
+  {f:'clues/c13.png',l:'',n:'C-13'},
+  {f:'clues/c14.png',l:'חתיכת פרווה שנתפסה בענף',n:'C-14'},
+  {f:'clues/c15.png',l:'ציפורן',n:'C-15'},
+  {f:'clues/c16.png',l:'',n:'C-16'},
+  {f:'clues/c17.png',l:'קרע אגרסיבי בצמח',n:'C-17'},
+  {f:'clues/c18.png',l:'עצם לעוסה',n:'C-18'},
 ];
 let evBuilt=false;
+const D_TEXT='צוות המז"פ (זיהוי פלילי) כבר הספיק להגיע לכאן לפניכם ולאסוף את הראיות. בגלל הגשם שירד אתמול בערב והקרבה למי האגמון, האדמה מסביב רטובה ומז"פ מצאו לא מעט עקבות וראיות נוספות. יש סיכוי טוב שגם הגנב השאיר אחריו עקבות. אלה הראיות שנאספו.';
 function initD(){
   if(evBuilt)return;evBuilt=true;
+  // Typewriter for right panel
+  const twEl=document.getElementById('rp-D-typewriter');
+  if(twEl){
+    let i=0;
+    const chars=D_TEXT.split('');
+    twEl.textContent='';
+    function twNext(){
+      if(i>=chars.length){
+        twEl.textContent=D_TEXT;
+        // Show evidence grid after text done
+        setTimeout(()=>{
+          document.getElementById('ev-area').classList.add('show');
+          // Show "to match" button after 8 more seconds
+          setTimeout(()=>document.getElementById('rp-D-btn').style.display='block',8000);
+        },500);
+        return;
+      }
+      twEl.textContent=D_TEXT.slice(0,i+1);
+      const ch=chars[i++];
+      const d=ch==='.'?380:ch===','?140:ch===' '?45:32+Math.random()*15;
+      setTimeout(twNext,d);
+    }
+    setTimeout(twNext,300);
+  }
   const g=document.getElementById('ev-grid');
   EVIDENCE.forEach((e,i)=>{
     const d=document.createElement('div');
     d.className='ev-card';
-    const num='C'+String(i+1).padStart(2,'0');
     const img=document.createElement('img');
-    img.src=e.f;img.alt=num;
+    img.src=e.f;img.alt=e.n;
     img.onerror=function(){
       this.style.display='none';
       const ph=document.createElement('div');
       ph.className='ev-placeholder';
-      ph.style.cssText='display:flex;width:100%;aspect-ratio:1;align-items:center;justify-content:center;background:rgba(0,0,0,.3);border-radius:3px;font-size:1.2rem;';
-      ph.textContent='?';
+      ph.style.cssText='display:flex;width:100%;aspect-ratio:1;align-items:center;justify-content:center;background:rgba(0,0,0,.3);border-radius:3px;font-size:1rem;color:var(--dim);';
+      ph.textContent=e.n;
       d.insertBefore(ph,d.firstChild);
     };
-    const lbl=document.createElement('div');
-    lbl.className='ev-lbl-sm';
-    lbl.textContent=e.l||num;
-    d.appendChild(img);d.appendChild(lbl);
+    const numLbl=document.createElement('div');
+    numLbl.className='ev-lbl-sm';
+    numLbl.style.cssText='color:var(--gold);font-weight:600;font-size:.65rem;';
+    numLbl.textContent=e.n;
+    const descLbl=document.createElement('div');
+    descLbl.className='ev-lbl-sm';
+    descLbl.textContent=e.l||'';
+    d.appendChild(img);d.appendChild(numLbl);if(e.l)d.appendChild(descLbl);
     g.appendChild(d);
   });
   // show ev area after 5s, bottom text after 15s
@@ -1037,24 +1148,27 @@ let selClue=null;
 
 function initE(){selClue=null;renderMatch();updateProg();}
 function renderMatch(){
+  // Animal cards
   let ah='';
   ANIMALS.forEach(a=>{
     const cn=matches[a.id];
-    ah+=`<div class="a-row${cn?' matched':''}" onclick="pickAnimal('${a.id}')">
-      <img src="${a.img}" alt="${a.name}" onerror="this.style.opacity='.15'">
-      <span class="a-name">${a.name}</span>
+    ah+=`<div class="a-card${cn?' matched':''}" onclick="pickAnimal('${a.id}')">
+      <img class="a-img" src="${a.img}" alt="${a.name}" onerror="this.style.opacity='.15'">
+      <div class="a-name">${a.name}</div>
       <div class="a-slot${cn?' filled':''}">
         ${cn?`<img src="clues/c${cn}.png" onerror="this.style.opacity='.1'">`:' '}
       </div>
     </div>`;
   });
   document.getElementById('col-animals').innerHTML=ah;
+  // Clue strip
   let ch='';
   for(let i=1;i<=CLUE_N;i++){
     const used=Object.values(matches).includes(i);
-    ch+=`<div class="c-card${used?' used':''}${selClue===i?' sel':''}" onclick="pickClue(${i})">
+    const ev=EVIDENCE[i-1];
+    ch+=`<div class="c-card${used?' used':''}${selClue===i?' sel':''}" onclick="pickClue(${i})" title="${ev?ev.n:''}">
       <img src="clues/c${i}.png" onerror="this.style.opacity='.12'">
-      <div class="c-num">${i===CLUE_N?'?':i}</div>
+      <div class="c-num">${ev?ev.n:i}</div>
     </div>`;
   }
   document.getElementById('col-clues').innerHTML=ch;
