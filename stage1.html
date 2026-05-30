@@ -138,55 +138,68 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 #ranger-wrap img{width:100%;max-height:100%;object-fit:contain;object-position:bottom;}
 
 /* ══ SPEECH BUBBLE ZONE — right 68% ══ */
+/* ══ BUBBLE ZONE ══
+   speech1.png dimensions: 4961x3508
+   Bubble rect (gray area): approx top 8% → 78%, left 4% → 96%
+   Tail: below 78%, pointing bottom-left
+   Strategy: fix the outer container to match image aspect ratio,
+   then position text absolutely within the gray rectangle
+*/
 #bubble-zone{
-  position:absolute;top:0;left:32%;right:0;
-  height:100%;
+  position:absolute;
+  /* sit in right 68%, vertically centered with some top padding */
+  top:2%;bottom:5%;left:32%;right:1%;
   display:none;flex-direction:column;
-  justify-content:flex-start;
-  padding:.5rem .8rem 0 .3rem;
+  justify-content:center;
+  padding:0;
   opacity:0;transition:opacity .5s;
   z-index:21;
 }
 #bubble-zone.visible{display:flex;}
 #bubble-zone.show{opacity:1;}
 
-/* speech1.png: transparent PNG, bubble rect = top 8%-82%, full width */
-/* We use it as a sized img, then overlay text absolutely inside */
 .speech-outer{
   position:relative;
   width:100%;
-  /* height = full height so image + tail fit */
-  flex:1;min-height:0;
+  /* Maintain image aspect ratio: 4961/3508 ≈ 1.414 wide */
+  /* So height = width / 1.414. Use padding-top trick */
+  padding-top:0;
+  flex:1;min-height:0;max-height:100%;
 }
+/* The actual image — fills the outer, keeps ratio */
 .speech-bg{
   position:absolute;
-  top:0;left:0;right:0;
-  width:100%;
-  /* image is 4961x3508; bubble ends at ~82% height → show full image */
+  top:0;left:0;
+  width:100%;height:100%;
   object-fit:contain;
-  object-position:top left;
-  max-height:100%;
+  object-position:top center;
   pointer-events:none;
 }
-/* text sits inside the bubble rect: 8%→72% vertically, 4%→96% horizontally */
+/* Text area — positioned inside the gray bubble rectangle
+   Bubble top: ~9% of image height
+   Bubble bottom: ~76% of image height  (tail starts at ~76%)
+   Bubble left: ~4% of image width (right side in RTL)
+   Bubble right: ~4% of image width
+*/
 .speech-content{
   position:absolute;
-  top:8%;bottom:22%;    /* 8% from top, tail starts ~82% so leave 22% for tail */
-  left:5%;right:4%;
+  top:9%;
+  bottom:28%;   /* leave 28% for tail */
+  left:5%;right:5%;
   overflow-y:auto;
   display:flex;flex-direction:column;
-  justify-content:space-between;
-  gap:.6rem;
-  padding:.5rem .8rem;
+  justify-content:flex-start;
+  gap:.5rem;
+  padding:.4rem .6rem .4rem 1rem;
   z-index:2;
 }
 .speech-txt{
   font-family:'Special Elite',serif;
-  font-size:clamp(1.05rem,2vw,1.4rem);
-  color:#111;line-height:1.85;text-align:right;
+  font-size:clamp(1.05rem,1.85vw,1.3rem);
+  color:#111;line-height:1.75;text-align:right;
   flex:1;
 }
-.speech-txt p{margin-bottom:.65rem;}
+.speech-txt p{margin-bottom:.55rem;}
 .speech-txt p:last-child{margin-bottom:0;}
 .speech-txt{transition:opacity .35s;}
 .speech-txt.fading{opacity:0;}
@@ -688,9 +701,10 @@ function setSpeechText(html){
 
 window.doneWithMap=function(){
   // Show floating map button
-  const fb=document.getElementById('float-map-btn');
-  if(fb)fb.style.display='block';
-  document.getElementById('float-btns').style.display='flex';
+  const fmb=document.getElementById('float-map-btn');
+  if(fmb)fmb.style.display='inline-block';
+  const fbar=document.getElementById('float-btns');
+  if(fbar)fbar.style.display='flex';
 
   // Hide map area
   const ma=document.getElementById('map-area');
@@ -939,13 +953,20 @@ window.devReset=function(){if(!confirm('איפוס?'))return;closeDev();localSto
 localStorage.removeItem('rm_s1');
 localStorage.removeItem('rm_timer');
 curStg='A'; matches={}; bookPage=0; bookUnlocked=false;
-// Restore fullscreen if it was active on index
-if(localStorage.getItem('rm_fs')==='1'){
-  localStorage.removeItem('rm_fs');
-  setTimeout(()=>document.documentElement.requestFullscreen().catch(()=>{}),300);
-}
 startTimer();
 showStage('A');
+// Restore fullscreen: browsers require user gesture, so we show a brief overlay
+if(localStorage.getItem('rm_fs')==='1'){
+  localStorage.removeItem('rm_fs');
+  // Show fullscreen restore overlay
+  const fsOv=document.createElement('div');
+  fsOv.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;cursor:pointer;';
+  fsOv.innerHTML='<div style="font-family:Special Elite,serif;font-size:1.6rem;color:var(--gold-l);text-align:center;text-shadow:0 0 20px rgba(201,168,76,.6)">לחצו להמשך במסך מלא</div>';
+  fsOv.onclick=()=>{document.documentElement.requestFullscreen().catch(()=>{});fsOv.remove();};
+  document.body.appendChild(fsOv);
+  // Auto-dismiss after 4s even without click
+  setTimeout(()=>{if(fsOv.parentNode)fsOv.remove();},4000);
+}
 </script>
 </body>
 </html>
