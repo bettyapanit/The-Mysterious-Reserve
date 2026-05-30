@@ -3,292 +3,488 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>זירת הפשע — השמורה המסתורית</title>
+<title>זירת הפשע</title>
 <link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Special+Elite&family=Rubik:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#8a6820;--jd:#0a1508;--cream:#f5edd8;--dim:#a8c4aa;--dark:#060e06;--border:rgba(201,168,76,.22);}
+:root{
+  --gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#8a6820;
+  --jd:#0a1508;--cream:#f5edd8;--dim:#a8c4aa;
+  --dark:#060e06;--border:rgba(201,168,76,.22);
+}
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-family:'Rubik',sans-serif;}
 
-/* ── fixed chrome ── */
-#chrome{position:fixed;top:0;left:0;right:0;height:2.6rem;z-index:500;display:flex;align-items:center;padding:0 .5rem;gap:.4rem;}
-.ch-btn{width:28px;height:28px;background:rgba(0,0,0,.45);border:1px solid rgba(201,168,76,.28);color:rgba(201,168,76,.65);font-size:.85rem;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.ch-btn:hover{border-color:var(--gold);color:var(--gold);}
-.ch-back{font-size:.75rem;padding:0 .55rem;width:auto;}
-.ch-spacer{flex:1;}
-.ch-title{font-family:'Secular One',sans-serif;font-size:clamp(.9rem,2.2vw,1.15rem);color:var(--gold);letter-spacing:.04em;position:absolute;left:50%;transform:translateX(-50%);}
+/* ══ HEADER BAR ══ */
+#hdr{
+  position:fixed;top:0;left:0;right:0;height:3rem;z-index:500;
+  background:rgba(4,10,4,.97);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+}
+#hdr-left{display:flex;align-items:center;gap:.4rem;padding:0 .6rem;}
+#hdr-center{flex:1;text-align:center;}
+#hdr-title{font-family:'Secular One',sans-serif;font-size:clamp(1rem,2.4vw,1.35rem);color:var(--gold);letter-spacing:.04em;}
+#hdr-right{display:flex;align-items:center;gap:.4rem;padding:0 .6rem;}
 
-/* ── timer ── */
-#timer{position:fixed;top:.45rem;right:.6rem;z-index:500;font-family:'Special Elite',serif;font-size:1.1rem;color:var(--gold-l);text-shadow:0 0 12px rgba(201,168,76,.5);letter-spacing:.06em;}
-#timer.warn{color:#f55;text-shadow:0 0 12px rgba(255,80,80,.6);animation:twarn .7s ease-in-out infinite;}
-@keyframes twarn{0%,100%{opacity:1}50%{opacity:.5}}
+.hdr-btn{
+  height:2rem;min-width:2rem;padding:0 .55rem;
+  background:rgba(0,0,0,.35);
+  border:1px solid rgba(201,168,76,.3);
+  color:rgba(201,168,76,.75);
+  font-size:.85rem;border-radius:5px;cursor:pointer;
+  display:flex;align-items:center;gap:.28rem;
+  font-family:'Rubik',sans-serif;font-size:.78rem;
+  transition:all .2s;white-space:nowrap;
+}
+.hdr-btn:hover{border-color:var(--gold);color:var(--gold);}
+.hdr-btn.hidden{display:none;}
 
-/* ── stage wrapper ── */
-.stage{position:fixed;inset:0;opacity:0;pointer-events:none;transition:opacity .5s;}
+/* ══ TIMER — center bottom ══ */
+#timer{
+  position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);
+  z-index:500;
+  font-family:'Special Elite',serif;font-size:1.6rem;
+  color:var(--gold-l);text-shadow:0 0 14px rgba(201,168,76,.5);
+  letter-spacing:.1em;
+}
+#timer.warn{color:#f55;text-shadow:0 0 14px rgba(255,80,80,.6);animation:twarn .7s ease-in-out infinite;}
+@keyframes twarn{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ══ STAGE WRAPPER ══ */
+.stage{position:fixed;inset:0;top:3rem;bottom:3.5rem;opacity:0;pointer-events:none;transition:opacity .45s;}
 .stage.active{opacity:1;pointer-events:all;}
 
-/* ── shared bg ── */
-.bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;}
-.bg-crime{background-image:url('crime_scene.jpg');filter:brightness(.85) saturate(.9);}
-.bg-station{background-image:url('crime_scene.jpg');filter:brightness(.6) saturate(.5) hue-rotate(20deg);}
+/* ══ BACKGROUNDS ══ */
+.bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;transition:opacity .6s;}
+.bg-crime{background-image:url('crime_scene.jpg');}
+.bg-station{background-image:url('ranger_station.jpg');}
 
-/* ── right text panel ── */
-.r-panel{position:absolute;top:3rem;right:0;width:28%;padding:1.2rem 1.2rem 1.2rem .8rem;opacity:0;transition:opacity .8s;}
+/* ══ LAYOUT HELPERS ══ */
+/* Right 1/3 panel */
+.r-panel{
+  position:absolute;top:0;right:0;width:33%;height:100%;
+  padding:1.2rem 1.2rem 1.2rem .8rem;
+  display:flex;flex-direction:column;gap:.7rem;
+  opacity:0;transition:opacity .7s;
+}
 .r-panel.show{opacity:1;}
-.r-panel-txt{font-family:'Special Elite',serif;font-size:clamp(.85rem,1.5vw,1rem);color:var(--cream);line-height:1.75;text-align:right;text-shadow:0 1px 8px rgba(0,0,0,.9),0 0 20px rgba(0,0,0,.7);}
-.btn-sm{font-family:'Rubik',sans-serif;font-size:.82rem;padding:.4rem 1rem;background:rgba(10,21,10,.85);border:1px solid var(--border);color:var(--gold);border-radius:16px;cursor:pointer;margin-top:.8rem;transition:all .2s;display:inline-block;}
-.btn-sm:hover{border-color:var(--gold-l);background:rgba(201,168,76,.12);}
+.r-txt{
+  font-family:'Special Elite',serif;
+  font-size:clamp(1rem,1.8vw,1.25rem);
+  color:var(--cream);line-height:1.8;text-align:right;
+  text-shadow:0 1px 10px rgba(0,0,0,.95),0 0 24px rgba(0,0,0,.8);
+}
 
-/* ── map area (left 72%) ── */
-.map-area{position:absolute;top:3rem;left:0;width:72%;padding:1rem 1rem 1rem 1.2rem;display:flex;flex-direction:column;gap:.5rem;opacity:0;transition:opacity .8s;}
-.map-area.show{opacity:1;}
-.map-lbl{font-family:'Secular One',sans-serif;font-size:clamp(.9rem,2vw,1.1rem);color:var(--gold);letter-spacing:.04em;}
-.map-img{width:100%;max-height:calc(100vh - 8rem);object-fit:contain;border-radius:6px;box-shadow:0 4px 30px rgba(0,0,0,.6);}
+/* Left 2/3 content */
+.l-area{
+  position:absolute;top:0;left:0;width:67%;height:100%;
+  padding:.8rem 1rem .8rem 1.2rem;
+  display:flex;flex-direction:column;gap:.5rem;
+  opacity:0;transition:opacity .7s;
+}
+.l-area.show{opacity:1;}
+.section-lbl{
+  font-family:'Secular One',sans-serif;
+  font-size:clamp(.85rem,1.7vw,1rem);
+  color:rgba(201,168,76,.7);letter-spacing:.04em;
+}
+.map-img{
+  flex:1;min-height:0;
+  width:100%;object-fit:contain;object-position:top;
+  border-radius:6px;box-shadow:0 4px 28px rgba(0,0,0,.55);
+}
 
-/* ── ranger character ── */
-#ranger{position:absolute;bottom:0;left:0;width:28%;max-width:340px;opacity:0;transform:translateX(-110%);transition:transform 1.4s cubic-bezier(.22,1,.36,1), opacity .4s;}
-#ranger.in{opacity:1;transform:translateX(0);}
-#ranger.out{opacity:1;transform:translateX(-110%);transition:transform 1.2s cubic-bezier(.77,0,.18,1), opacity .3s;}
-#ranger img{width:100%;display:block;}
+.btn-sm{
+  font-family:'Rubik',sans-serif;font-size:.85rem;
+  padding:.42rem 1.1rem;
+  background:rgba(8,22,8,.88);border:1px solid var(--border);
+  color:var(--gold);border-radius:16px;cursor:pointer;
+  transition:all .2s;display:inline-block;align-self:flex-start;
+}
+.btn-sm:hover{border-color:var(--gold-l);background:rgba(201,168,76,.1);}
 
-/* ── speech bubble ── */
-.bubble-wrap{position:absolute;top:3rem;left:28%;width:69%;padding:.8rem;}
-.bubble{background:rgba(6,18,6,.88);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.4rem;max-height:calc(100vh - 6rem);overflow-y:auto;backdrop-filter:blur(6px);}
-.bubble-title{font-family:'Secular One',sans-serif;font-size:clamp(.95rem,2vw,1.2rem);color:var(--gold);margin-bottom:.7rem;}
-.bubble-txt{font-family:'Special Elite',serif;font-size:clamp(.85rem,1.6vw,1rem);color:var(--cream);line-height:1.85;}
-.bubble-txt p{margin-bottom:.65rem;}
+/* ══ RANGER + BUBBLE (stage A ranger scene) ══ */
+#ranger-wrap{
+  position:absolute;bottom:0;left:0;width:33%;height:100%;
+  display:flex;align-items:flex-end;
+  opacity:0;transform:translateX(-108%);
+  transition:transform 1.4s cubic-bezier(.22,1,.36,1), opacity .3s;
+}
+#ranger-wrap.in{opacity:1;transform:translateX(0);}
+#ranger-wrap.out{transform:translateX(-110%);transition:transform 1.1s cubic-bezier(.77,0,.18,1);}
+#ranger-wrap img{width:100%;max-height:100%;object-fit:contain;object-position:bottom;}
 
-/* ── clue lock puzzle ── */
-.lock-area{position:absolute;top:3rem;left:28%;width:69%;padding:.8rem;}
-.lock-box{background:rgba(6,18,6,.88);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.4rem;backdrop-filter:blur(6px);}
-.lock-title{font-family:'Secular One',sans-serif;font-size:clamp(.95rem,2vw,1.2rem);color:var(--gold);margin-bottom:.6rem;}
-.lock-intro{font-family:'Special Elite',serif;font-size:clamp(.82rem,1.5vw,.98rem);color:var(--cream);line-height:1.75;margin-bottom:.8rem;}
-.lock-attempts{margin-bottom:.9rem;}
-.lock-row{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.35rem;font-family:'Special Elite',serif;font-size:clamp(.9rem,1.7vw,1.05rem);}
-.lock-guess{color:var(--gold-l);font-weight:700;font-size:1.2em;letter-spacing:.08em;direction:ltr;display:inline-block;}
-.lock-result{color:var(--cream);}
-.lock-input-row{display:flex;align-items:center;gap:.7rem;margin-top:.6rem;flex-wrap:wrap;}
-.lock-label{font-family:'Special Elite',serif;font-size:clamp(.88rem,1.6vw,1rem);color:var(--gold);}
-.lock-digits{display:flex;gap:.4rem;direction:ltr;}
-.lock-digit{width:44px;height:52px;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:6px;font-family:'Secular One',sans-serif;font-size:1.5rem;color:var(--gold-l);text-align:center;outline:none;caret-color:var(--gold-l);}
+/* speech bubble area — right 2/3 */
+#bubble-zone{
+  position:absolute;top:0;left:33%;right:0;height:100%;
+  display:none;flex-direction:column;justify-content:center;
+  padding:.8rem 1.2rem .8rem .6rem;
+  opacity:0;transition:opacity .5s;
+}
+#bubble-zone.visible{display:flex;}
+#bubble-zone.show{opacity:1;}
+.bubble-title{
+  font-family:'Secular One',sans-serif;
+  font-size:clamp(1rem,2vw,1.3rem);color:var(--gold);
+  margin-bottom:.5rem;text-align:right;
+}
+/* speech bubble image as background */
+.speech-outer{
+  position:relative;
+  width:100%;flex:1;min-height:0;
+  display:flex;align-items:stretch;
+}
+.speech-bg{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:fill;
+  /* darken the gray bubble so text is readable */
+  filter:brightness(.6) saturate(0);
+  opacity:.85;
+}
+.speech-content{
+  position:relative;z-index:2;
+  width:100%;padding:8% 9% 12% 9%;
+  overflow-y:auto;
+  display:flex;flex-direction:column;gap:.5rem;
+}
+.speech-txt{
+  font-family:'Special Elite',serif;
+  font-size:clamp(1rem,1.9vw,1.3rem);
+  color:#fff;line-height:1.85;text-align:right;
+  flex:1;
+}
+.speech-txt p{margin-bottom:.6rem;}
+/* fade transition between speech texts */
+.speech-txt{transition:opacity .35s;}
+.speech-txt.fading{opacity:0;}
+
+/* ══ STAGE B — Lock (station bg) ══ */
+#stg-B .lock-wrap{
+  position:absolute;top:0;left:33%;right:0;
+  height:100%;display:flex;align-items:center;
+  padding:.8rem 1.2rem .8rem .6rem;
+}
+.lock-box{
+  background:rgba(6,18,6,.9);border:1px solid var(--border);
+  border-radius:14px;padding:1.4rem 1.8rem;width:100%;
+  backdrop-filter:blur(6px);
+}
+.lock-title{
+  font-family:'Secular One',sans-serif;
+  font-size:clamp(1.05rem,2.1vw,1.4rem);
+  color:var(--gold);margin-bottom:.6rem;
+}
+.lock-intro{
+  font-family:'Special Elite',serif;
+  font-size:clamp(1rem,1.8vw,1.2rem);
+  color:var(--cream);line-height:1.75;margin-bottom:1rem;
+}
+.lock-attempts{margin-bottom:1rem;}
+.lock-row{
+  display:flex;align-items:baseline;gap:.7rem;
+  margin-bottom:.4rem;
+  font-family:'Special Elite',serif;
+}
+.lock-guess{
+  color:var(--gold-l);font-size:clamp(1.1rem,2vw,1.4rem);
+  font-weight:700;letter-spacing:.1em;direction:ltr;display:inline-block;min-width:3.5ch;
+}
+.lock-result{
+  color:var(--cream);font-size:clamp(.95rem,1.7vw,1.15rem);
+}
+.lock-input-row{
+  display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-top:.8rem;
+}
+.lock-label{
+  font-family:'Special Elite',serif;
+  font-size:clamp(1rem,1.8vw,1.2rem);color:var(--gold);
+}
+.lock-digits{display:flex;gap:.45rem;direction:ltr;}
+.lock-digit{
+  width:50px;height:58px;background:rgba(0,0,0,.45);
+  border:1px solid var(--border);border-radius:7px;
+  font-family:'Secular One',sans-serif;font-size:1.7rem;
+  color:var(--gold-l);text-align:center;outline:none;
+  caret-color:var(--gold-l);
+}
 .lock-digit:focus{border-color:var(--gold);box-shadow:0 0 10px rgba(201,168,76,.3);}
-.btn-check{font-family:'Rubik',sans-serif;font-weight:600;font-size:.9rem;padding:.55rem 1.3rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--jd);border:none;border-radius:7px;cursor:pointer;transition:all .2s;}
-.btn-check:hover{transform:translateY(-1px);}
-.lock-msg{font-family:'Special Elite',serif;font-size:.9rem;margin-top:.5rem;min-height:1.4em;}
-.lock-msg.err{color:#f88;animation:shake .4s ease;}
+.btn-check{
+  font-family:'Rubik',sans-serif;font-weight:600;
+  font-size:clamp(.95rem,1.7vw,1.15rem);
+  padding:.6rem 1.5rem;
+  background:linear-gradient(135deg,var(--gold-d),var(--gold));
+  color:var(--jd);border:none;border-radius:8px;cursor:pointer;
+}
+.lock-msg{
+  font-family:'Special Elite',serif;
+  font-size:clamp(.95rem,1.7vw,1.15rem);
+  margin-top:.55rem;min-height:1.5em;
+}
+.lock-msg.err{color:#f99;animation:shake .4s ease;}
 .lock-msg.ok{color:#7ef0a0;}
-@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 
-/* ── book display ── */
-.book-area{position:absolute;top:2.8rem;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;padding:1rem;gap:.6rem;}
-.book-container{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}
+/* success speech bubble (speech2.png) — bottom center */
+#lock-success{
+  position:absolute;bottom:0;left:33%;right:0;
+  padding:.5rem 1.2rem .5rem .6rem;
+  display:none;
+}
+#lock-success.show{display:block;}
+.success-outer{position:relative;width:100%;}
+.success-bg{width:100%;display:block;filter:brightness(.55) saturate(0);opacity:.9;}
+.success-content{
+  position:absolute;inset:0;
+  padding:8% 10% 15% 10%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;
+}
+.success-txt{
+  font-family:'Special Elite',serif;
+  font-size:clamp(.95rem,1.7vw,1.15rem);
+  color:#fff;text-align:center;line-height:1.7;
+}
+
+/* ══ STAGE C — Book ══ */
+#stg-C{display:flex;flex-direction:column;align-items:center;padding:.5rem 1rem;}
+#stg-C .bg-station{position:absolute;inset:0;z-index:0;opacity:.35;}
+.book-area{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;gap:.5rem;padding:.3rem 0;}
+.book-container{flex:1;min-height:0;position:relative;width:100%;display:flex;align-items:center;justify-content:center;}
 .book-page{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s;}
 .book-page.show{opacity:1;pointer-events:all;}
-.book-page img{max-height:100%;max-width:100%;object-fit:contain;border-radius:8px;box-shadow:0 6px 40px rgba(0,0,0,.7);}
-.book-nav{display:flex;align-items:center;gap:1.2rem;}
-.book-arrow{width:40px;height:40px;background:rgba(10,21,10,.85);border:1px solid var(--border);color:var(--gold);border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.book-arrow:hover{border-color:var(--gold-l);background:rgba(201,168,76,.12);}
-.book-arrow:disabled{opacity:.25;pointer-events:none;}
-.book-page-num{font-family:'Special Elite',serif;font-size:.88rem;color:var(--dim);}
+.book-page img{max-height:100%;max-width:100%;object-fit:contain;border-radius:8px;box-shadow:0 6px 36px rgba(0,0,0,.7);}
+.book-nav{display:flex;align-items:center;gap:1.2rem;flex-shrink:0;}
+.book-arrow{width:38px;height:38px;background:rgba(10,21,10,.85);border:1px solid var(--border);color:var(--gold);border-radius:50%;cursor:pointer;font-size:1.15rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.book-arrow:hover{border-color:var(--gold-l);}
+.book-arrow:disabled{opacity:.22;pointer-events:none;}
+.book-page-num{font-family:'Special Elite',serif;font-size:.85rem;color:var(--dim);}
+.book-fallback{color:var(--gold);font-family:'Secular One',sans-serif;font-size:1.1rem;padding:1.5rem;text-align:center;}
 
-/* ── evidence grid ── */
-.ev-area{position:absolute;top:3rem;left:0;width:72%;padding:.8rem 1rem 1rem 1.2rem;opacity:0;transition:opacity .8s;}
+/* ══ STAGE D — Evidence ══ */
+.ev-area{
+  position:absolute;top:0;left:0;width:67%;height:100%;
+  padding:.8rem 1rem .8rem 1.2rem;
+  display:flex;flex-direction:column;gap:.5rem;
+  opacity:0;transition:opacity .7s;
+}
 .ev-area.show{opacity:1;}
-.ev-lbl{font-family:'Secular One',sans-serif;font-size:clamp(.88rem,1.9vw,1.05rem);color:var(--gold);margin-bottom:.5rem;}
-.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:.4rem;}
-.ev-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:.35rem;text-align:center;cursor:pointer;transition:border-color .2s;}
+.ev-lbl-main{font-family:'Secular One',sans-serif;font-size:clamp(.9rem,1.9vw,1.1rem);color:var(--gold);}
+.ev-grid{
+  flex:1;overflow-y:auto;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));
+  gap:.38rem;align-content:start;
+}
+.ev-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:.3rem;text-align:center;cursor:pointer;transition:border-color .18s;}
 .ev-card:hover{border-color:var(--gold);}
 .ev-card img{width:100%;aspect-ratio:1;object-fit:contain;display:block;}
-.ev-card.no-img{background:rgba(0,0,0,.3);}
-.ev-card .ev-lbl-sm{font-size:.62rem;color:var(--dim);margin-top:.2rem;line-height:1.2;min-height:1.4em;}
+.ev-card.img-err .ev-placeholder{display:flex;width:100%;aspect-ratio:1;align-items:center;justify-content:center;background:rgba(0,0,0,.3);border-radius:3px;}
+.ev-placeholder{display:none;}
+.ev-lbl-sm{font-size:.6rem;color:var(--dim);line-height:1.2;min-height:1.3em;}
 
-/* ── match stage ── */
-.match-wrap{position:absolute;top:2.6rem;left:0;right:0;bottom:2.8rem;display:flex;}
-.col-a{width:50%;background:rgba(3,9,3,.92);border-left:1px solid var(--border);overflow-y:auto;padding:.4rem;}
-.col-c{width:50%;background:rgba(6,14,6,.92);overflow-y:auto;padding:.4rem;}
-.col-hdr{font-family:'Secular One',sans-serif;font-size:.78rem;color:var(--gold);padding:.25rem .4rem .4rem;text-align:center;border-bottom:1px solid var(--border);margin-bottom:.35rem;letter-spacing:.05em;}
-.a-row{display:flex;align-items:center;gap:.4rem;padding:.3rem .4rem;border:1px solid transparent;border-radius:6px;margin-bottom:.28rem;cursor:pointer;transition:all .18s;}
+/* ══ STAGE E — Match ══ */
+.match-wrap{position:absolute;inset:0;display:flex;}
+.col-a{width:50%;background:rgba(3,9,3,.93);border-left:1px solid var(--border);overflow-y:auto;padding:.4rem;}
+.col-c{width:50%;background:rgba(6,14,6,.93);overflow-y:auto;padding:.4rem;}
+.col-hdr{font-family:'Secular One',sans-serif;font-size:.78rem;color:var(--gold);padding:.22rem .4rem .38rem;text-align:center;border-bottom:1px solid var(--border);margin-bottom:.32rem;letter-spacing:.05em;}
+.a-row{display:flex;align-items:center;gap:.38rem;padding:.28rem .38rem;border:1px solid transparent;border-radius:6px;margin-bottom:.25rem;cursor:pointer;transition:all .18s;}
 .a-row:hover{background:rgba(201,168,76,.07);border-color:var(--border);}
 .a-row.matched{background:rgba(0,180,80,.07);border-color:rgba(0,200,80,.28);}
-.a-row img{width:34px;height:34px;object-fit:contain;flex-shrink:0;}
-.a-name{font-size:.8rem;color:var(--cream);flex:1;}
-.a-slot{width:30px;height:30px;border:1px dashed rgba(201,168,76,.3);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.a-slot img{width:26px;height:26px;object-fit:contain;}
+.a-row img{width:32px;height:32px;object-fit:contain;flex-shrink:0;}
+.a-name{font-size:.82rem;color:var(--cream);flex:1;}
+.a-slot{width:28px;height:28px;border:1px dashed rgba(201,168,76,.3);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.a-slot img{width:24px;height:24px;object-fit:contain;}
 .a-slot.filled{border-color:rgba(0,200,80,.4);}
-.c-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;}
-.c-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:.35rem;text-align:center;cursor:pointer;transition:all .18s;}
+.c-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.32rem;}
+.c-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:.3rem;text-align:center;cursor:pointer;transition:all .18s;}
 .c-card:hover{border-color:var(--gold-l);}
-.c-card.sel{border-color:var(--gold);background:rgba(201,168,76,.16);box-shadow:0 0 9px rgba(201,168,76,.3);}
-.c-card.used{opacity:.3;pointer-events:none;}
+.c-card.sel{border-color:var(--gold);background:rgba(201,168,76,.15);box-shadow:0 0 9px rgba(201,168,76,.3);}
+.c-card.used{opacity:.28;pointer-events:none;}
 .c-card img{width:100%;aspect-ratio:1;object-fit:contain;}
-.c-num{font-size:.6rem;color:var(--dim);margin-top:.15rem;}
+.c-num{font-size:.58rem;color:var(--dim);margin-top:.12rem;}
 
-/* ── footer bar ── */
-#footer{position:fixed;bottom:0;left:0;right:0;height:2.6rem;background:rgba(4,10,4,.95);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 .8rem;z-index:400;}
-#footer-info{font-size:.72rem;color:var(--dim);}
-#footer-btn{font-family:'Rubik',sans-serif;font-weight:600;font-size:.82rem;padding:.38rem 1.1rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--jd);border:none;border-radius:6px;cursor:pointer;display:none;transition:all .2s;}
-#footer-btn.show{display:block;}
-#progress{font-size:.8rem;color:var(--gold);font-weight:600;}
+/* ══ FOOTER ══ */
+#ftr{
+  position:fixed;bottom:0;left:0;right:0;height:3.5rem;z-index:490;
+  background:rgba(4,10,4,.96);border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;gap:1rem;
+  padding:0 1rem;
+}
+#ftr-submit{
+  font-family:'Rubik',sans-serif;font-weight:600;
+  font-size:.9rem;padding:.45rem 1.3rem;
+  background:linear-gradient(135deg,var(--gold-d),var(--gold));
+  color:var(--jd);border:none;border-radius:7px;cursor:pointer;
+  display:none;
+}
+#ftr-submit.show{display:block;}
+#ftr-progress{font-size:.82rem;color:var(--gold);font-weight:600;}
+#ftr-instr{font-family:'Rubik',sans-serif;font-size:.75rem;padding:.35rem .9rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:14px;cursor:pointer;}
+#ftr-instr:hover{border-color:var(--gold);color:var(--gold);}
+#ftr-book{font-family:'Rubik',sans-serif;font-size:.75rem;padding:.35rem .9rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:14px;cursor:pointer;display:none;}
+#ftr-book.show{display:block;}
+#ftr-book:hover{border-color:var(--gold);color:var(--gold);}
 
-/* ── floating book btn ── */
-#book-float{position:fixed;bottom:3.3rem;left:.6rem;z-index:450;display:none;}
-#book-float button{font-family:'Rubik',sans-serif;font-size:.72rem;padding:.32rem .75rem;background:rgba(10,21,10,.9);border:1px solid var(--border);color:var(--gold);border-radius:14px;cursor:pointer;transition:all .2s;}
-#book-float button:hover{border-color:var(--gold-l);}
-#book-float.show{display:block;}
-
-/* ── notif ── */
-.notif{position:fixed;top:3rem;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(40,8,8,.96);border:1px solid #a93226;color:var(--cream);padding:.4rem 1rem;border-radius:26px;font-family:'Rubik',sans-serif;font-size:.85rem;z-index:600;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap;max-width:92vw;text-align:center;}
+/* ══ NOTIF ══ */
+.notif{position:fixed;top:3.5rem;left:50%;transform:translateX(-50%) translateY(-8px);background:rgba(40,8,8,.97);border:1px solid #a93226;color:var(--cream);padding:.38rem .95rem;border-radius:24px;font-family:'Rubik',sans-serif;font-size:.84rem;z-index:600;opacity:0;transition:all .22s;pointer-events:none;white-space:nowrap;max-width:92vw;text-align:center;}
 .notif.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.notif.ok{background:rgba(8,40,8,.96);border-color:#2a8a2a;color:#9fefaf;}
+.notif.ok{background:rgba(8,40,8,.97);border-color:#2a8a2a;color:#9fefaf;}
 
-/* ── success bubble ── */
-.success-bubble{position:fixed;bottom:3rem;left:50%;transform:translateX(-50%);z-index:450;background:rgba(6,20,6,.95);border:1px solid rgba(0,220,80,.35);border-radius:12px;padding:.9rem 1.4rem;max-width:500px;width:90%;text-align:center;font-family:'Special Elite',serif;font-size:clamp(.88rem,1.7vw,1rem);color:var(--cream);line-height:1.7;box-shadow:0 4px 24px rgba(0,0,0,.7);display:none;}
-.success-bubble.show{display:block;}
-
-/* ── dev panel ── */
-.dev-panel{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.52rem;opacity:0;pointer-events:none;transition:opacity .25s;padding:1.5rem;}
+/* ══ DEV PANEL ══ */
+.dev-panel{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;opacity:0;pointer-events:none;transition:opacity .22s;padding:1.4rem;}
 .dev-panel.open{opacity:1;pointer-events:all;}
-.dev-ttl{font-family:'Rubik',sans-serif;color:#0f0;font-size:1rem;margin-bottom:.3rem;}
-.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;width:100%;max-width:310px;}
-.dev-bi{background:#060d06;border:1px solid #1a2a1a;color:#0f0;font-family:monospace;font-size:.75rem;padding:.5rem .3rem;border-radius:5px;cursor:pointer;text-align:center;}
+.dev-ttl{font-family:'Rubik',sans-serif;color:#0f0;font-size:.95rem;margin-bottom:.3rem;}
+.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:.38rem;width:100%;max-width:310px;}
+.dev-bi{background:#060d06;border:1px solid #1a2a1a;color:#0f0;font-family:monospace;font-size:.74rem;padding:.48rem .3rem;border-radius:5px;cursor:pointer;text-align:center;}
 .dev-bi:hover{background:#0b1a0b;border-color:#0f0;}
 .dev-bi.red{color:#f66;border-color:#3a1010;}
 .dev-bi.red:hover{background:#180a0a;border-color:#f66;}
-.dev-close{background:transparent;border:1px solid #222;color:#444;font-size:.73rem;padding:.32rem 1rem;border-radius:5px;cursor:pointer;margin-top:.2rem;}
+.dev-close{background:transparent;border:1px solid #222;color:#444;font-size:.72rem;padding:.3rem 1rem;border-radius:5px;cursor:pointer;margin-top:.18rem;}
 
-/* ── instructions overlay ── */
-.inst-ov{position:fixed;inset:0;z-index:510;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .3s;}
+/* ══ INSTRUCTIONS ══ */
+.inst-ov{position:fixed;inset:0;z-index:510;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .28s;}
 .inst-ov.show{opacity:1;pointer-events:all;}
-.inst-box{background:rgba(6,18,6,.97);border:1px solid var(--border);border-radius:12px;max-width:460px;width:100%;padding:1.4rem 1.6rem;}
-.inst-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:1.05rem;margin-bottom:.7rem;text-align:center;}
-.inst-body{font-family:'Rubik',sans-serif;font-size:.88rem;color:var(--cream);line-height:1.8;}
-.inst-body li{margin-bottom:.35rem;}
+.inst-box{background:rgba(6,18,6,.97);border:1px solid var(--border);border-radius:12px;max-width:440px;width:100%;padding:1.3rem 1.5rem;}
+.inst-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:1rem;margin-bottom:.65rem;text-align:center;}
+.inst-body{font-family:'Rubik',sans-serif;font-size:.86rem;color:var(--cream);line-height:1.8;}
+.inst-body li{margin-bottom:.32rem;}
 </style>
 </head>
 <body>
 
-<!-- fixed chrome -->
-<div id="chrome">
-  <button class="ch-btn" onclick="openDev()" title="DEV">🔧</button>
-  <button class="ch-btn" onclick="toggleFS()" title="מסך מלא">⛶</button>
-  <button class="ch-btn ch-back" id="ch-back" onclick="goStagePrev()">← חזרה</button>
-  <div class="ch-spacer"></div>
-  <span class="ch-title" id="ch-title">זירת הפשע</span>
+<!-- ══ HEADER ══ -->
+<div id="hdr">
+  <div id="hdr-left">
+    <button class="hdr-btn" onclick="toggleFS()">⛶ מסך מלא</button>
+    <button class="hdr-btn hidden" id="btn-back" onclick="goBack()">← חזרה</button>
+  </div>
+  <div id="hdr-center"><span id="hdr-title">זירת הפשע</span></div>
+  <div id="hdr-right">
+    <button class="hdr-btn" onclick="openDev()">🔧 DEV</button>
+  </div>
 </div>
 
+<!-- ══ TIMER ══ -->
 <div id="timer">60:00</div>
 
-<!-- ════════════════════════════════
-     STAGE: CRIME SCENE (A)
-════════════════════════════════ -->
+<!-- ══════════════════════════════════════
+     STAGE A — Crime scene + Ranger speech
+═══════════════════════════════════════ -->
 <div class="stage active" id="stg-A">
   <div class="bg bg-crime"></div>
 
-  <!-- map + right text -->
+  <!-- right 1/3: scene description -->
   <div class="r-panel" id="rp-A">
-    <div class="r-panel-txt">זוהי זירת הפשע — אגמון הסלע בשמורת עדן הסודית, מקום המחבוא הסודי שממנו נגנבה מפת האוצרות העתיקה.</div>
-  </div>
-  <div class="map-area" id="ma-A">
-    <div class="map-lbl">מפת השמורה</div>
-    <img class="map-img" src="reserve_map.png" alt="מפת השמורה">
+    <div class="r-txt" id="rt-A">זוהי זירת הפשע — אגמון הסלע בשמורת עדן הסודית, מקום המחבוא הסודי שממנו נגנבה מפת האוצרות העתיקה.</div>
   </div>
 
-  <!-- ranger -->
-  <div id="ranger"><img src="ranger.png" alt="פקח השמורה"></div>
+  <!-- left 2/3: map -->
+  <div class="l-area" id="la-A">
+    <div class="section-lbl">מפת השמורה</div>
+    <img class="map-img" src="reserve_map.png" alt="מפת השמורה" onerror="this.style.opacity='.2'">
+  </div>
 
-  <!-- speech bubble -->
-  <div class="bubble-wrap" id="bw-A" style="display:none">
-    <div class="bubble">
-      <div class="bubble-title">👮 עדות פקח השמורה</div>
-      <div class="bubble-txt" id="bt-A"></div>
+  <!-- ranger entering from left -->
+  <div id="ranger-wrap"><img src="ranger.png" alt="פקח השמורה" onerror="this.style.opacity='.5'"></div>
+
+  <!-- speech bubble (right 2/3) -->
+  <div id="bubble-zone">
+    <div class="bubble-title">עדות פקח השמורה</div>
+    <div class="speech-outer">
+      <img class="speech-bg" src="speech1.png" alt="">
+      <div class="speech-content">
+        <div class="speech-txt" id="speech-txt"></div>
+        <button class="btn-sm" id="speech-cont" onclick="speechNext()">המשך</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ════════════════════════════════
-     STAGE: INFO GATHERING (B) — lock puzzle
-════════════════════════════════ -->
+<!-- ══════════════════════════════════════
+     STAGE B — Lock puzzle (station bg)
+═══════════════════════════════════════ -->
 <div class="stage" id="stg-B">
   <div class="bg bg-station"></div>
-  <div id="ranger-B" style="position:absolute;bottom:0;left:0;width:28%;max-width:340px;opacity:1;"><img src="ranger.png" alt="" style="width:100%"></div>
-
-  <div class="lock-area">
+  <!-- ranger stays on left -->
+  <div style="position:absolute;bottom:0;left:0;width:33%;max-width:320px;height:100%;display:flex;align-items:flex-end;pointer-events:none;">
+    <img src="ranger.png" alt="" style="width:100%;max-height:100%;object-fit:contain;object-position:bottom;">
+  </div>
+  <!-- lock puzzle right 2/3 -->
+  <div class="lock-wrap" style="position:absolute;top:0;left:33%;right:0;height:100%;display:flex;align-items:center;padding:.8rem 1.2rem .8rem .6rem;">
     <div class="lock-box">
-      <div class="lock-title">🔐 פיצוח הקוד לפתיחת המגירה</div>
+      <div class="lock-title">פיצוח הקוד לפתיחת המגירה</div>
       <div class="lock-intro">אלה התוצאות של 5 הניסיונות הקודמים של הפקח לנחש את הקוד.<br>השתמשו בהיגיון כדי לפסול את המספרים השגויים ולמצוא את הקוד המדויק:</div>
       <div class="lock-attempts">
-        <div class="lock-row"><span class="lock-guess">682</span><span class="lock-result">— ספרה אחת נכונה והיא נמצאת במיקום המדויק שלה.</span></div>
-        <div class="lock-row"><span class="lock-guess">614</span><span class="lock-result">— ספרה אחת נכונה, אבל היא נמצאת במיקום שגוי.</span></div>
-        <div class="lock-row"><span class="lock-guess">206</span><span class="lock-result">— שתי ספרות נכונות, אבל שתיהן נמצאות במיקומים שגויים.</span></div>
-        <div class="lock-row"><span class="lock-guess">738</span><span class="lock-result">— אף ספרה אינה נכונה! הכל שגוי.</span></div>
-        <div class="lock-row"><span class="lock-guess">380</span><span class="lock-result">— ספרה אחת נכונה, אבל היא נמצאת במיקום שגוי.</span></div>
+        <div class="lock-row"><span class="lock-guess">682</span><span class="lock-result">ספרה אחת נכונה והיא נמצאת במיקום המדויק שלה.</span></div>
+        <div class="lock-row"><span class="lock-guess">614</span><span class="lock-result">ספרה אחת נכונה, אבל היא נמצאת במיקום שגוי.</span></div>
+        <div class="lock-row"><span class="lock-guess">206</span><span class="lock-result">שתי ספרות נכונות, אבל שתיהן נמצאות במיקומים שגויים.</span></div>
+        <div class="lock-row"><span class="lock-guess">738</span><span class="lock-result">אף ספרה אינה נכונה. הכל שגוי.</span></div>
+        <div class="lock-row"><span class="lock-guess">380</span><span class="lock-result">ספרה אחת נכונה, אבל היא נמצאת במיקום שגוי.</span></div>
       </div>
       <div class="lock-input-row">
-        <span class="lock-label">הקוד לפתיחת המגירה הוא:</span>
+        <span class="lock-label">הקוד לפתיחת המגירה:</span>
         <div class="lock-digits">
-          <input class="lock-digit" id="d0" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" oninput="digitInput(0)" onkeydown="digitKey(event,0)">
-          <input class="lock-digit" id="d1" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" oninput="digitInput(1)" onkeydown="digitKey(event,1)">
-          <input class="lock-digit" id="d2" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" oninput="digitInput(2)" onkeydown="digitKey(event,2)">
+          <input class="lock-digit" id="d0" type="text" maxlength="1" inputmode="numeric" oninput="digitIn(0)" onkeydown="digitKey(event,0)">
+          <input class="lock-digit" id="d1" type="text" maxlength="1" inputmode="numeric" oninput="digitIn(1)" onkeydown="digitKey(event,1)">
+          <input class="lock-digit" id="d2" type="text" maxlength="1" inputmode="numeric" oninput="digitIn(2)" onkeydown="digitKey(event,2)">
         </div>
         <button class="btn-check" onclick="checkCode()">בדיקת הקוד</button>
       </div>
       <div class="lock-msg" id="lock-msg"></div>
     </div>
   </div>
-  <div class="success-bubble" id="lock-success">
-    <div>✅ כל הכבוד! הצלחתם לנחש את הקוד ולפתוח את המגירה!</div>
-    <div style="margin-top:.4rem;font-size:.9em;color:var(--dim)">עכשיו אתם יכולים להוציא ממנה את ספר הפרופילים של דיירי השמורה.</div>
-    <button class="btn-sm" style="margin-top:.6rem" onclick="openBook()">הוציאו את ספר הפרופילים</button>
+  <!-- success bubble bottom — speech2 -->
+  <div id="lock-success">
+    <div class="success-outer">
+      <img class="success-bg" src="speech2.png" alt="">
+      <div class="success-content">
+        <div class="success-txt">כל הכבוד! הצלחתם לנחש את הקוד ולפתוח את המגירה!<br><span style="font-size:.9em;color:var(--gold-l)">עכשיו אתם יכולים להוציא ממנה את ספר הפרופילים של דיירי השמורה.</span></div>
+        <button class="btn-sm" onclick="openBook()">הוציאו את ספר הפרופילים</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ════════════════════════════════
-     STAGE: PROFILE BOOK (C)
-════════════════════════════════ -->
+<!-- ══════════════════════════════════════
+     STAGE C — Profile Book
+═══════════════════════════════════════ -->
 <div class="stage" id="stg-C">
-  <div class="bg bg-station"></div>
+  <div class="bg bg-station" style="opacity:.3;"></div>
   <div class="book-area">
-    <div class="book-container" id="book-container">
-      <!-- pages injected by JS -->
-    </div>
+    <div class="book-container" id="book-container"></div>
     <div class="book-nav">
-      <button class="book-arrow" id="btn-prev" onclick="flipPage(-1)">→</button>
+      <button class="book-arrow" id="btn-prev" onclick="flipPage(-1)">&#8594;</button>
       <span class="book-page-num" id="page-num">1 / 1</span>
-      <button class="book-arrow" id="btn-next" onclick="flipPage(1)">←</button>
+      <button class="book-arrow" id="btn-next" onclick="flipPage(1)">&#8592;</button>
     </div>
-    <button class="btn-sm" id="btn-to-evidence" style="display:none" onclick="goToEvidence()">להמשך החקירה — הראיות מהזירה ←</button>
+    <button class="btn-sm" id="btn-to-ev" style="display:none;align-self:center;" onclick="goToEvidence()">להמשך החקירה — הראיות מהזירה</button>
   </div>
 </div>
 
-<!-- ════════════════════════════════
-     STAGE: EVIDENCE (D)
-════════════════════════════════ -->
+<!-- ══════════════════════════════════════
+     STAGE D — Evidence display
+═══════════════════════════════════════ -->
 <div class="stage" id="stg-D">
   <div class="bg bg-crime"></div>
-
-  <div class="r-panel" id="rp-D">
-    <div class="r-panel-txt" id="rp-D-txt">
-      צוות המז"פ (זיהוי פלילי) כבר הספיק להגיע לכאן לפניכם ולאסוף את הראיות. בגלל הגשם שירד אתמול בערב והקרבה למי האגמון, האדמה מסביב רטובה ומז"פ מצאו לא מעט עקבות וראיות נוספות. יש סיכוי טוב שגם הגנב השאיר אחריו עקבות. אלה הראיות שנאספו.
-    </div>
-    <div id="rp-D-btn" style="display:none">
-      <div style="margin-top:.7rem;font-size:.82rem;font-family:'Special Elite',serif;color:var(--cream);line-height:1.7">צוות המעבדה מבקש את עזרתכם כדי לעשות סדר בכל הראיות ולהתאים את העקבות לחיות השמורה.</div>
-      <button class="btn-sm" onclick="goToMatch()">לבדיקת הראיות ←</button>
+  <div class="r-panel" id="rp-D" style="opacity:1">
+    <div class="r-txt">צוות המז"פ (זיהוי פלילי) כבר הספיק להגיע לכאן לפניכם ולאסוף את הראיות. בגלל הגשם שירד אתמול בערב והקרבה למי האגמון, האדמה מסביב רטובה ומז"פ מצאו לא מעט עקבות וראיות נוספות. יש סיכוי טוב שגם הגנב השאיר אחריו עקבות. אלה הראיות שנאספו.</div>
+    <div id="rp-D-extra" style="display:none">
+      <div class="r-txt" style="font-size:clamp(.9rem,1.6vw,1.1rem);margin-top:.5rem">צוות המעבדה מבקש את עזרתכם כדי לעשות סדר בכל הראיות ולהתאים את העקבות לחיות השמורה.</div>
+      <button class="btn-sm" style="margin-top:.5rem" onclick="goToMatch()">לבדיקת הראיות</button>
     </div>
   </div>
-
   <div class="ev-area" id="ev-area">
-    <div class="ev-lbl">ראיות מהזירה</div>
+    <div class="ev-lbl-main">ראיות מהזירה</div>
     <div class="ev-grid" id="ev-grid"></div>
   </div>
 </div>
 
-<!-- ════════════════════════════════
-     STAGE: MATCH (E)
-════════════════════════════════ -->
+<!-- ══════════════════════════════════════
+     STAGE E — Footprint matching
+═══════════════════════════════════════ -->
 <div class="stage" id="stg-E">
   <div class="match-wrap">
     <div class="col-a">
-      <div class="col-hdr">חיות השמורה</div>
+      <div class="col-hdr">חיות השמורה (12)</div>
       <div id="col-animals"></div>
     </div>
     <div class="col-c">
@@ -298,274 +494,275 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   </div>
 </div>
 
-<!-- footer -->
-<div id="footer">
-  <span id="footer-info">שמורת עדן הסודית</span>
-  <button id="footer-btn" onclick="submitMatch()">שלחו לאישור המעבדה ←</button>
-  <span id="progress"></span>
-</div>
-
-<!-- floating book button -->
-<div id="book-float">
-  <button onclick="openFloatBook()">📖 ספר הפרופילים</button>
+<!-- ══ FOOTER ══ -->
+<div id="ftr">
+  <button id="ftr-instr" onclick="showInst()">הוראות</button>
+  <button id="ftr-book" onclick="returnToBook()">ספר הפרופילים</button>
+  <button id="ftr-submit" onclick="submitMatch()">שלחו לאישור המעבדה</button>
+  <span id="ftr-progress"></span>
 </div>
 
 <div class="notif" id="notif"></div>
 
-<!-- instructions overlay -->
 <div class="inst-ov" id="inst-ov">
   <div class="inst-box">
     <div class="inst-title" id="inst-title">הוראות</div>
     <div class="inst-body" id="inst-body"></div>
-    <div style="text-align:center;margin-top:.9rem">
-      <button class="btn-sm" onclick="closeInst()">הבנתי ✓</button>
+    <div style="text-align:center;margin-top:.85rem">
+      <button class="btn-sm" onclick="closeInst()">הבנתי</button>
     </div>
   </div>
 </div>
 
-<!-- dev panel -->
 <div class="dev-panel" id="dev-panel">
-  <div class="dev-ttl">⚙ DEV MODE — זירת הפשע</div>
+  <div class="dev-ttl">DEV MODE — זירת הפשע</div>
   <div class="dev-grid">
     <div class="dev-bi" onclick="devGo('index')">דף הבית</div>
-    <div class="dev-bi" onclick="devJump('A')">זירת הפשע A</div>
-    <div class="dev-bi" onclick="devJump('B')">פיצוח קוד B</div>
-    <div class="dev-bi" onclick="devJump('C')">ספר פרופילים C</div>
-    <div class="dev-bi" onclick="devJump('D')">ראיות D</div>
-    <div class="dev-bi" onclick="devJump('E')">התאמות E</div>
+    <div class="dev-bi" onclick="devJump('A')">שלב A</div>
+    <div class="dev-bi" onclick="devJump('B')">שלב B קוד</div>
+    <div class="dev-bi" onclick="devJump('C')">שלב C ספר</div>
+    <div class="dev-bi" onclick="devJump('D')">שלב D ראיות</div>
+    <div class="dev-bi" onclick="devJump('E')">שלב E התאמות</div>
     <div class="dev-bi" onclick="devSolve()">פתור הכל</div>
     <div class="dev-bi" onclick="devGo('stage2')">שלב הבא</div>
     <div class="dev-bi" onclick="devGo('stage3')">ספר פרופילים</div>
     <div class="dev-bi" onclick="devGo('stage4')">האשמה</div>
     <div class="dev-bi" onclick="devGo('puzzle')">פאזל</div>
     <div class="dev-bi" onclick="devGo('stage6')">פתיחת קוד</div>
-    <div class="dev-bi red" style="grid-column:1/-1" onclick="devReset()">איפוס מלא ↺</div>
+    <div class="dev-bi red" style="grid-column:1/-1" onclick="devReset()">איפוס מלא</div>
   </div>
-  <button class="dev-close" onclick="closeDev()">✕ סגור</button>
+  <button class="dev-close" onclick="closeDev()">סגור</button>
 </div>
 
 <script>
 const DEV_CODE='7763';
 window.toggleFS=function(){if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});else document.exitFullscreen();};
 
-// ══ TIMER ══
-let timerSec=3600, timerInt=null;
+/* ══ TIMER ══ */
+let timerSec=3600,timerInt=null;
 function startTimer(){
   const el=document.getElementById('timer');
+  // try restore
+  const saved=parseInt(localStorage.getItem('rm_timer')||'0');
+  if(saved>0&&saved<3600)timerSec=saved;
   timerInt=setInterval(()=>{
     if(timerSec<=0){clearInterval(timerInt);el.textContent='00:00';return;}
     timerSec--;
+    localStorage.setItem('rm_timer',timerSec);
     const m=Math.floor(timerSec/60).toString().padStart(2,'0');
     const s=(timerSec%60).toString().padStart(2,'0');
-    el.textContent=`${m}:${s}`;
+    el.textContent=m+':'+s;
     if(timerSec<=300)el.classList.add('warn');
   },1000);
 }
 
-// ══ STAGE MANAGEMENT ══
-let curStage='A';
+/* ══ STATE ══ */
+let curStg='A',matches={},bookPage=0,bookUnlocked=false;
+function save(){localStorage.setItem('rm_s1',JSON.stringify({curStg,matches,bookPage,bookUnlocked}));}
+function load(){try{const d=JSON.parse(localStorage.getItem('rm_s1')||'{}');curStg=d.curStg||'A';matches=d.matches||{};bookPage=d.bookPage||0;bookUnlocked=d.bookUnlocked||false;}catch(e){}}
+
+/* ══ STAGE SWITCHER ══ */
+const TITLES={A:'זירת הפשע',B:'איסוף מידע',C:'איסוף מידע',D:'זירת הפשע',E:'בדיקת ראיות'};
 function showStage(id){
   document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));
   document.getElementById('stg-'+id).classList.add('active');
-  curStage=id;
-  const titles={A:'זירת הפשע',B:'איסוף מידע',C:'איסוף מידע',D:'זירת הפשע',E:'בדיקת ראיות'};
-  document.getElementById('ch-title').textContent=titles[id]||'';
-  document.getElementById('ch-back').style.visibility=id==='A'?'hidden':'visible';
-  // footer btn
-  document.getElementById('footer-btn').className='btn-gold'+(id==='E'?' show':'');
-  document.getElementById('progress').textContent='';
-  document.getElementById('book-float').className='book-float'+((['D','E'].includes(id))?' show':'');
+  curStg=id;
+  document.getElementById('hdr-title').textContent=TITLES[id]||'';
+  document.getElementById('btn-back').className='hdr-btn'+(['A'].includes(id)?' hidden':'');
+  // footer
+  document.getElementById('ftr-submit').className='btn-gold'+(id==='E'?' show':'');
+  document.getElementById('ftr-progress').textContent='';
+  document.getElementById('ftr-book').className='hdr-btn'+((['D','E'].includes(id)&&bookUnlocked)?' show':'');
   if(id==='A')initA();
   if(id==='D')initD();
   if(id==='E')initE();
-  saveState();
+  save();
 }
-
-window.goStagePrev=function(){
+window.goBack=function(){
   const prev={B:'A',C:'B',D:'C',E:'D'};
-  if(prev[curStage])showStage(prev[curStage]);
+  if(prev[curStg])showStage(prev[curStg]);
   else window.location.href='index.html';
 };
 
-// ══ STATE ══
-let matches={}, bookUnlocked=false, bookPage=0;
-function saveState(){localStorage.setItem('rm_s1',JSON.stringify({curStage,matches,bookUnlocked,bookPage}));}
-function loadState(){try{const d=JSON.parse(localStorage.getItem('rm_s1')||'{}');curStage=d.curStage||'A';matches=d.matches||{};bookUnlocked=d.bookUnlocked||false;bookPage=d.bookPage||0;}catch(e){}}
-
-// ══ NOTIF ══
+/* ══ NOTIF ══ */
 let _nt;
 function showNotif(m,ok=false){const el=document.getElementById('notif');el.textContent=m;el.className='notif show'+(ok?' ok':'');clearTimeout(_nt);_nt=setTimeout(()=>el.classList.remove('show'),3000);}
 
-// ══ STAGE A — Crime scene ══
-const SPEECH_1=`<p>הבוקר לא יצאתי לסיור הבוקר הקבוע שלי, כי הגיעו להחליף את הגדר הישנה בחלק הצפוני של השמורה. זה לקח את רוב שעות היום, אז יצאתי רק לסיור הערב. במהלך הסיור עברתי כמו תמיד באזור אגמון הסלע ומצאתי את הבור, בדיוק במקום שבו לפני כמה ימים טמנתי את התיבה עם המפה העתיקה.</p>
+/* ══ STAGE A ══ */
+const SPEECH=[
+`<p>הבוקר לא יצאתי לסיור הבוקר הקבוע שלי, כי הגיעו להחליף את הגדר הישנה בחלק הצפוני של השמורה. זה לקח את רוב שעות היום, אז יצאתי רק לסיור הערב. במהלך הסיור עברתי כמו תמיד באזור אגמון הסלע ומצאתי את הבור, בדיוק במקום שבו לפני כמה ימים טמנתי את התיבה עם המפה העתיקה.</p>
 <p>לפני כמה ימים שמעתי שהיתה פריצה בתחנת הפיקוח של שמורה סמוכה והחלטתי עוד באותו ערב לקחת את המפה הסודית, שהיתה שמורה עד אז במגירה בתחנת הפיקוח, ולהחביא אותה כאן. הכנסתי את המפה לתוך תיבה נעולה והטמנתי את התיבה בתוך בור שחפרתי באדמה ליד הסלע הסמוך לאגמון.</p>
-<p>יש כאן רק בור אחד, אז אני מבין שהגנב ידע בדיוק איפה לחפור. אולי אחת החיות עקבה אחריי באותו הערב וכך ידעה איפה קברתי אותה? תעזרו לי לתפוס את הגנב ולהחזיר את מפת האוצרות העתיקה.</p>`;
-
-const SPEECH_2=`<p>בשמורה חיות 12 חיות. לרוב כולנו חיים כאן בשלווה ובשלום.</p>
+<p>יש כאן רק בור אחד, אז אני מבין שהגנב ידע בדיוק איפה לחפור. אולי אחת החיות עקבה אחריי באותו הערב וכך ידעה איפה קברתי אותה? תעזרו לי לתפוס את הגנב ולהחזיר את מפת האוצרות העתיקה.</p>`,
+`<p>בשמורה חיות 12 חיות. לרוב כולנו חיים כאן בשלווה ובשלום.</p>
 <p>בתחנת הפיקוח יש ספר פרופילים של כל דיירי השמורה. הספר נמצא במגירה... אבל... המגירה נעולה ואני לא זוכר בדיוק את הקוד.</p>
-<p>עשיתי כבר כמה ניסיונות לפתוח את המגירה ולא הצלחתי. אני צריך את עזרתכם.</p>`;
+<p>עשיתי כבר כמה ניסיונות לפתוח את המגירה ולא הצלחתי. אני צריך את עזרתכם.</p>`
+];
+let speechIdx=0;
+let stageAInit=false;
 
-let stageAStep=0;
 function initA(){
-  stageAStep=0;
-  // show right panel after 3s
+  if(stageAInit)return;
+  stageAInit=true;
+  // show right panel + map after 3s
   setTimeout(()=>{
     document.getElementById('rp-A').classList.add('show');
-    document.getElementById('ma-A').classList.add('show');
+    document.getElementById('la-A').classList.add('show');
   },300);
-  // show "המשך" button after 10s
+  // show "continue" button after 10s
   setTimeout(()=>{
-    const rp=document.getElementById('rp-A');
-    rp.querySelector('.r-panel-txt').insertAdjacentHTML('afterend',
-      '<button class="btn-sm" id="btn-cont-A" onclick="advanceA()">המשך ←</button>');
+    const cont=document.createElement('button');
+    cont.className='btn-sm';cont.textContent='המשך';
+    cont.onclick=advanceToRanger;
+    document.getElementById('rp-A').appendChild(cont);
   },10000);
 }
 
-window.advanceA=function(){
-  if(stageAStep===0){
-    stageAStep=1;
-    // hide map+text, bring in ranger
-    document.getElementById('rp-A').style.opacity='0';
-    document.getElementById('ma-A').style.opacity='0';
-    setTimeout(()=>{
-      document.getElementById('rp-A').style.display='none';
-      document.getElementById('ma-A').style.display='none';
-      document.getElementById('ranger').classList.add('in');
-      setTimeout(()=>showSpeech(1),800);
-    },600);
-  } else if(stageAStep===2){
-    stageAStep=3;
-    // speech 2
-    showSpeech(2);
+function advanceToRanger(){
+  // fade out map+text
+  document.getElementById('rp-A').style.opacity='0';
+  document.getElementById('la-A').style.opacity='0';
+  setTimeout(()=>{
+    document.getElementById('rp-A').style.display='none';
+    document.getElementById('la-A').style.display='none';
+    // slide ranger in
+    document.getElementById('ranger-wrap').classList.add('in');
+    setTimeout(showSpeechPanel,900);
+  },500);
+}
+
+function showSpeechPanel(){
+  speechIdx=0;
+  const bz=document.getElementById('bubble-zone');
+  bz.classList.add('visible');
+  setSpeechText(SPEECH[0]);
+  setTimeout(()=>bz.classList.add('show'),30);
+}
+
+function setSpeechText(html){
+  const el=document.getElementById('speech-txt');
+  el.classList.add('fading');
+  setTimeout(()=>{
+    el.innerHTML=html;
+    el.classList.remove('fading');
+  },350);
+}
+
+window.speechNext=function(){
+  speechIdx++;
+  if(speechIdx<SPEECH.length){
+    setSpeechText(SPEECH[speechIdx]);
+    if(speechIdx===SPEECH.length-1){
+      document.getElementById('speech-cont').textContent='לפיצוח הקוד למנעול המגירה';
+    }
+  } else {
+    showStage('B');
   }
 };
 
-function showSpeech(n){
-  const bw=document.getElementById('bw-A');
-  const bt=document.getElementById('bt-A');
-  bw.style.display='block';
-  bw.style.opacity='0';
-  bt.innerHTML= n===1 ? SPEECH_1 : SPEECH_2;
-  // replace old continue button
-  const old=bw.querySelector('.btn-speech-cont');
-  if(old)old.remove();
-  bt.insertAdjacentHTML('afterend',
-    `<button class="btn-sm btn-speech-cont" onclick="speechCont(${n})">המשך ←</button>`);
-  setTimeout(()=>bw.style.opacity='1',50);
-  stageAStep = n===1 ? 1 : 3;
-}
-
-window.speechCont=function(n){
-  if(n===1){stageAStep=2;advanceA();}
-  else{showStage('B');}
-};
-
-// ══ STAGE B — Lock puzzle ══
-window.digitInput=function(i){
+/* ══ STAGE B — Lock ══ */
+window.digitIn=function(i){
   const el=document.getElementById('d'+i);
-  el.value=el.value.replace(/[^0-9]/g,'').slice(0,1);
+  el.value=el.value.replace(/\D/g,'').slice(0,1);
   if(el.value&&i<2)document.getElementById('d'+(i+1)).focus();
 };
 window.digitKey=function(e,i){
-  if(e.key==='Backspace'&&!document.getElementById('d'+i).value&&i>0)
-    document.getElementById('d'+(i-1)).focus();
+  if(e.key==='Backspace'&&!document.getElementById('d'+i).value&&i>0)document.getElementById('d'+(i-1)).focus();
   if(e.key==='Enter')checkCode();
 };
 window.checkCode=function(){
   const code=[0,1,2].map(i=>document.getElementById('d'+i).value).join('');
   const msg=document.getElementById('lock-msg');
   if(code==='042'){
-    msg.className='lock-msg ok';msg.textContent='המנעול נפתח! ✓';
+    msg.className='lock-msg ok';msg.textContent='המנעול נפתח!';
     document.getElementById('lock-success').classList.add('show');
-    bookUnlocked=true;saveState();
+    bookUnlocked=true;save();
   } else {
     msg.className='lock-msg err';msg.textContent='המנעול לא נפתח. נסו שוב.';
-    setTimeout(()=>msg.className='lock-msg',800);
+    setTimeout(()=>msg.className='lock-msg',600);
   }
 };
 
-// ══ STAGE C — Book ══
+/* ══ STAGE C — Book ══ */
 const BOOK_PAGES=[
-  {img:'book_cover.jpg', label:'כריכה'},
-  // Pages 1-3: current residents (4 per page) — placeholders until images uploaded
-  {img:'book_p1.jpg', label:'דיירים נוכחיים 1'},
-  {img:'book_p2.jpg', label:'דיירים נוכחיים 2'},
-  {img:'book_p3.jpg', label:'דיירים נוכחיים 3'},
-  // Page 4: past residents
-  {img:'book_p4.jpg', label:'דיירי עבר'},
+  {img:'book_cover.jpg',lbl:'כריכה'},
+  {img:'book_p1.jpg',lbl:'דיירים נוכחיים — עמוד 1'},
+  {img:'book_p2.jpg',lbl:'דיירים נוכחיים — עמוד 2'},
+  {img:'book_p3.jpg',lbl:'דיירים נוכחיים — עמוד 3'},
+  {img:'book_p4.jpg',lbl:'דיירי עבר'},
 ];
 
 function buildBook(){
-  const cont=document.getElementById('book-container');
-  cont.innerHTML='';
+  const c=document.getElementById('book-container');
+  c.innerHTML='';
   BOOK_PAGES.forEach((p,i)=>{
     const div=document.createElement('div');
     div.className='book-page'+(i===bookPage?' show':'');
-    div.id='bpage-'+i;
-    div.innerHTML=`<img src="${p.img}" alt="${p.label}" onerror="this.style.opacity='.15';this.parentNode.insertAdjacentHTML('afterbegin','<div style=\\'color:var(--gold);font-family:Secular One,sans-serif;font-size:1.2rem;padding:2rem\\'>${p.label}</div>')">`;
-    cont.appendChild(div);
+    div.id='bp-'+i;
+    const img=document.createElement('img');
+    img.src=p.img;img.alt=p.lbl;
+    img.onerror=function(){this.style.display='none';div.innerHTML=`<div class="book-fallback">${p.lbl}<br><span style="font-size:.8rem;color:var(--dim)">(תמונה עוד לא הועלתה)</span></div>`;};
+    div.appendChild(img);
+    c.appendChild(div);
   });
   updateBookNav();
 }
-
 function updateBookNav(){
-  document.getElementById('page-num').textContent=`${bookPage+1} / ${BOOK_PAGES.length}`;
+  document.getElementById('page-num').textContent=(bookPage+1)+' / '+BOOK_PAGES.length;
   document.getElementById('btn-prev').disabled=bookPage===0;
   document.getElementById('btn-next').disabled=bookPage===BOOK_PAGES.length-1;
-  // show "continue" button on last page
-  document.getElementById('btn-to-evidence').style.display=bookPage===BOOK_PAGES.length-1?'block':'none';
+  document.getElementById('btn-to-ev').style.display=bookPage===BOOK_PAGES.length-1?'block':'none';
 }
-
-window.flipPage=function(dir){
-  document.getElementById('bpage-'+bookPage).classList.remove('show');
-  bookPage=Math.max(0,Math.min(BOOK_PAGES.length-1,bookPage+dir));
-  document.getElementById('bpage-'+bookPage).classList.add('show');
-  updateBookNav();
-  saveState();
+window.flipPage=function(d){
+  document.getElementById('bp-'+bookPage).classList.remove('show');
+  bookPage=Math.max(0,Math.min(BOOK_PAGES.length-1,bookPage+d));
+  document.getElementById('bp-'+bookPage).classList.add('show');
+  updateBookNav();save();
 };
-
 window.openBook=function(){bookPage=0;buildBook();showStage('C');};
-window.openFloatBook=function(){bookPage=0;buildBook();showStage('C');};
+window.returnToBook=function(){buildBook();showStage('C');};
 window.goToEvidence=function(){showStage('D');};
 
-// ══ STAGE D — Evidence display ══
+/* ══ STAGE D — Evidence ══ */
 const EVIDENCE=[
-  // footprints c1-c12
-  ...Array.from({length:12},(_,i)=>({file:`clues/c${i+1}.png`,label:''})),
-  // c13 — unknown raccoon footprint
-  {file:'clues/c13.png',label:'עקבה לא מזוהה'},
-  // extra evidence c14-c18
-  {file:'clues/c14.png',label:''},  // feather — eagle's
-  {file:'clues/c15.png',label:''},  // bear claw — naturally shed
-  {file:'clues/c16.png',label:'חתיכת פרווה שנתפסה בענף'},
-  {file:'clues/c17.png',label:'קרע אגרסיבי בצמח'},
-  {file:'clues/c18.png',label:'עצם לעוסה'},
+  ...Array.from({length:12},(_,i)=>({f:`clues/c${i+1}.png`,l:''})),
+  {f:'clues/c13.png',l:'עקבה לא מזוהה'},
+  {f:'clues/c14.png',l:''},
+  {f:'clues/c15.png',l:''},
+  {f:'clues/c16.png',l:'חתיכת פרווה שנתפסה בענף'},
+  {f:'clues/c17.png',l:'קרע אגרסיבי בצמח'},
+  {f:'clues/c18.png',l:'עצם לעוסה'},
 ];
-
+let evBuilt=false;
 function initD(){
-  const grid=document.getElementById('ev-grid');
-  if(grid.children.length)return; // already built
-  grid.innerHTML='';
+  if(evBuilt)return;evBuilt=true;
+  const g=document.getElementById('ev-grid');
   EVIDENCE.forEach((e,i)=>{
     const d=document.createElement('div');
     d.className='ev-card';
-    const num=`C${String(i+1).padStart(2,'0')}`;
-    d.innerHTML=`
-      <img src="${e.file}" alt="${num}" onerror="this.style.display='none';this.parentNode.classList.add('no-img')">
-      <div class="ev-lbl-sm">${e.label||num}</div>`;
-    grid.appendChild(d);
+    const num='C'+String(i+1).padStart(2,'0');
+    const img=document.createElement('img');
+    img.src=e.f;img.alt=num;
+    img.onerror=function(){
+      this.style.display='none';
+      const ph=document.createElement('div');
+      ph.className='ev-placeholder';
+      ph.style.cssText='display:flex;width:100%;aspect-ratio:1;align-items:center;justify-content:center;background:rgba(0,0,0,.3);border-radius:3px;font-size:1.2rem;';
+      ph.textContent='?';
+      d.insertBefore(ph,d.firstChild);
+    };
+    const lbl=document.createElement('div');
+    lbl.className='ev-lbl-sm';
+    lbl.textContent=e.l||num;
+    d.appendChild(img);d.appendChild(lbl);
+    g.appendChild(d);
   });
-  document.getElementById('rp-D').classList.add('show');
-  // show bottom text + button after 10s
-  setTimeout(()=>{
-    document.getElementById('ev-area').classList.add('show');
-    setTimeout(()=>document.getElementById('rp-D-btn').style.display='block',10000);
-  },5000);
+  // show ev area after 5s, bottom text after 15s
+  setTimeout(()=>document.getElementById('ev-area').classList.add('show'),5000);
+  setTimeout(()=>document.getElementById('rp-D-extra').style.display='block',15000);
 }
-
 window.goToMatch=function(){showStage('E');};
 
-// ══ STAGE E — Match footprints ══
+/* ══ STAGE E — Match ══ */
 const ANIMALS=[
   {id:'lion',   name:'אריה',    img:'animals/lion.png',     clue:1},
   {id:'elephant',name:'פיל',   img:'animals/elephant.png', clue:2},
@@ -580,115 +777,81 @@ const ANIMALS=[
   {id:'zebra',  name:'זברה',   img:'animals/zebra.png',    clue:11},
   {id:'sloth',  name:'עצלן',   img:'animals/sloth.png',    clue:12},
 ];
-const CLUE_COUNT=13;
+const CLUE_N=13;
 let selClue=null;
 
-function initE(){
-  selClue=null;
-  renderMatch();
-  updateProgress();
-}
-
+function initE(){selClue=null;renderMatch();updateProg();}
 function renderMatch(){
-  // animals col
   let ah='';
   ANIMALS.forEach(a=>{
-    const cn=Object.entries(matches).find(([id])=>id===a.id)?.[1];
-    ah+=`<div class="a-row${cn?' matched':''}" id="ar-${a.id}" onclick="pickAnimal('${a.id}')">
-      <img src="${a.img}" alt="${a.name}" onerror="this.style.opacity='.2'">
+    const cn=matches[a.id];
+    ah+=`<div class="a-row${cn?' matched':''}" onclick="pickAnimal('${a.id}')">
+      <img src="${a.img}" alt="${a.name}" onerror="this.style.opacity='.15'">
       <span class="a-name">${a.name}</span>
       <div class="a-slot${cn?' filled':''}">
-        ${cn?`<img src="clues/c${cn}.png" alt="" onerror="this.style.opacity='.2'">`:' '}
+        ${cn?`<img src="clues/c${cn}.png" onerror="this.style.opacity='.1'">`:' '}
       </div>
     </div>`;
   });
   document.getElementById('col-animals').innerHTML=ah;
-
-  // clues col
   let ch='';
-  for(let i=1;i<=CLUE_COUNT;i++){
+  for(let i=1;i<=CLUE_N;i++){
     const used=Object.values(matches).includes(i);
-    const sel=selClue===i;
-    ch+=`<div class="c-card${used?' used':''}${sel?' sel':''}" id="cc-${i}" onclick="pickClue(${i})">
-      <img src="clues/c${i}.png" alt="" onerror="this.style.opacity='.15'">
-      <div class="c-num">${i===CLUE_COUNT?'?':i}</div>
+    ch+=`<div class="c-card${used?' used':''}${selClue===i?' sel':''}" onclick="pickClue(${i})">
+      <img src="clues/c${i}.png" onerror="this.style.opacity='.12'">
+      <div class="c-num">${i===CLUE_N?'?':i}</div>
     </div>`;
   }
   document.getElementById('col-clues').innerHTML=ch;
 }
-
-window.pickClue=function(n){
-  if(Object.values(matches).includes(n))return;
-  selClue=selClue===n?null:n;
-  renderMatch();
-};
+window.pickClue=function(n){if(Object.values(matches).includes(n))return;selClue=selClue===n?null:n;renderMatch();};
 window.pickAnimal=function(id){
   if(!selClue){showNotif('בחרו קודם עקבה מהרשימה מימין');return;}
-  if(selClue===CLUE_COUNT){showNotif('עקבה זו תישלח למעבדה לזיהוי');selClue=null;renderMatch();return;}
-  if(matches[id])delete matches[id]; // allow re-assign
-  matches[id]=selClue;selClue=null;saveState();renderMatch();updateProgress();
+  if(selClue===CLUE_N){showNotif('עקבה זו תישלח למעבדה לזיהוי');selClue=null;renderMatch();return;}
+  matches[id]=selClue;selClue=null;save();renderMatch();updateProg();
 };
-
-function updateProgress(){
-  const done=Object.keys(matches).length;
-  document.getElementById('progress').textContent=`${done}/12`;
-  const fb=document.getElementById('footer-btn');
-  if(done>=12)fb.classList.add('show');else fb.classList.remove('show');
+function updateProg(){
+  const n=Object.keys(matches).length;
+  document.getElementById('ftr-progress').textContent=n+'/12';
+  document.getElementById('ftr-submit').className='btn-gold'+(n>=12?' show':'');
 }
-
 window.submitMatch=function(){
-  let ok=0;
-  ANIMALS.forEach(a=>{if(matches[a.id]===a.clue)ok++;});
-  if(ok<12){
-    showNotif(`${ok}/12 נכון — יש שגיאות, נסו שוב`);return;
-  }
-  // success
-  showNotif('כל ההתאמות נכונות! ✓',true);
+  const ok=ANIMALS.filter(a=>matches[a.id]===a.clue).length;
+  if(ok<12){showNotif(ok+'/12 נכון — בדקו שוב');return;}
+  showNotif('כל ההתאמות נכונות!',true);
   setTimeout(()=>{
-    // show lab result popup then move to stage2
-    const s=document.createElement('div');
-    s.className='success-bubble show';
-    s.innerHTML=`<div><strong style="color:var(--gold-l)">✅ כל הכבוד!</strong> המעבדה אימתה את כל 12 ההתאמות.</div>
-    <div style="margin-top:.4rem">אבל שימו לב — נמצאה <strong>עקבה לא מזוהה</strong> שאינה שייכת לאף אחד מדיירי השמורה. כדאי לשלוח אותה למעבדה לניתוח.</div>
-    <button class="btn-sm" style="margin-top:.6rem" onclick="window.location.href='stage2.html'">לדו"ח המעבדה ←</button>`;
-    document.body.appendChild(s);
-  },1000);
+    const b=document.createElement('div');
+    b.style.cssText='position:fixed;bottom:4rem;left:50%;transform:translateX(-50%);z-index:450;background:rgba(6,20,6,.96);border:1px solid rgba(0,220,80,.35);border-radius:12px;padding:1rem 1.5rem;max-width:500px;width:90%;text-align:center;font-family:Special Elite,serif;font-size:clamp(.9rem,1.7vw,1.05rem);color:var(--cream);line-height:1.7;';
+    b.innerHTML='כל ההתאמות אומתו על ידי המעבדה. אבל שימו לב — נמצאה <strong style="color:var(--gold-l)">עקבה לא מזוהה</strong> שאינה שייכת לאף אחד מדיירי השמורה. שלחו אותה למעבדה לניתוח.<br><button class="btn-sm" style="margin-top:.6rem" onclick="window.location.href=\'stage2.html\'">לדו"ח המעבדה</button>';
+    document.body.appendChild(b);
+  },800);
 };
 
-// ══ INSTRUCTIONS ══
+/* ══ INSTRUCTIONS ══ */
 const INST={
-  A:{t:'זירת הפשע',b:'<ul><li>עיינו בזירת הפשע ובמפת השמורה.</li><li>האזינו לעדות הפקח.</li><li>לחצו "המשך" לקידום כל שלב.</li></ul>'},
-  B:{t:'פיצוח הקוד',b:'<ul><li>נתחו את 5 הניסיונות הכושלים של הפקח.</li><li>הזינו את הקוד התלת-ספרתי בשדות.</li><li>הספרה הראשונה (משמאל) היא 0.</li></ul>'},
-  C:{t:'ספר הפרופילים',b:'<ul><li>דפדפו בין עמודי הספר עם החצים.</li><li>קראו על כל דיירי השמורה.</li><li>בעמוד האחרון — לחצו להמשך.</li></ul>'},
-  D:{t:'ראיות מהזירה',b:'<ul><li>אלה כל הראיות שנאספו על ידי המז"פ.</li><li>13 עקבות + 5 ראיות נוספות.</li><li>לאחר קריאה — לחצו "לבדיקת הראיות".</li></ul>'},
-  E:{t:'התאמת עקבות',b:'<ul><li>לחצו על עקבה בצד ימין.</li><li>אחר כך לחצו על החיה המתאימה לה בצד שמאל.</li><li>אחרי 12 התאמות — שלחו לאישור המעבדה.</li><li>עקבה 13 (סימן שאלה) — לא שייכת לאף חיה מהשמורה.</li></ul>'},
+  A:{t:'זירת הפשע',b:'<ul><li>עיינו בזירה ובמפת השמורה.</li><li>האזינו לעדות הפקח ולחצו "המשך" בכל שלב.</li></ul>'},
+  B:{t:'פיצוח הקוד',b:'<ul><li>נתחו את 5 ניסיונות הפקח.</li><li>הזינו קוד תלת-ספרתי. ה-0 הוא הספרה השמאלית הראשונה.</li></ul>'},
+  C:{t:'ספר הפרופילים',b:'<ul><li>דפדפו בין עמודי הספר עם החצים.</li><li>בעמוד האחרון לחצו להמשך.</li></ul>'},
+  D:{t:'ראיות מהזירה',b:'<ul><li>13 עקבות ועוד 5 ראיות נוספות.</li><li>לאחר עיון לחצו "לבדיקת הראיות".</li></ul>'},
+  E:{t:'התאמת עקבות',b:'<ul><li>לחצו על עקבה מימין, אחר כך על החיה המתאימה משמאל.</li><li>עקבה 13 (?) אינה שייכת לאף חיה בשמורה.</li><li>אחרי 12 התאמות שלחו לאישור המעבדה.</li></ul>'},
 };
-window.showInst=function(){const d=INST[curStage]||{t:'הוראות',b:''};document.getElementById('inst-title').textContent=d.t;document.getElementById('inst-body').innerHTML=d.b;document.getElementById('inst-ov').classList.add('show');};
+window.showInst=function(){const d=INST[curStg]||{t:'',b:''};document.getElementById('inst-title').textContent=d.t;document.getElementById('inst-body').innerHTML=d.b;document.getElementById('inst-ov').classList.add('show');};
 window.closeInst=()=>document.getElementById('inst-ov').classList.remove('show');
 
-// ══ DEV ══
+/* ══ DEV ══ */
 window.openDev=function(){const c=prompt('קוד DEV:');if(c===DEV_CODE)document.getElementById('dev-panel').classList.add('open');else if(c!==null)showNotif('קוד שגוי');};
 window.closeDev=()=>document.getElementById('dev-panel').classList.remove('open');
-window.devGo=function(id){closeDev();window.location.href=id===''?'index.html':id+'.html';};
-window.devJump=function(s){closeDev();showStage(s);};
-window.devSolve=function(){
-  closeDev();
-  ANIMALS.forEach(a=>{matches[a.id]=a.clue;});
-  bookUnlocked=true;saveState();
-  if(curStage==='E'){renderMatch();updateProgress();}
-  showNotif('כל ההתאמות מולאו ✓',true);
-};
-window.devReset=function(){if(!confirm('איפוס מלא?'))return;closeDev();localStorage.clear();window.location.href='index.html';};
+window.devGo=function(id){closeDev();window.location.href=(id==='index'?'index':id)+'.html';};
+window.devJump=function(s){closeDev();if(s==='C'){buildBook();}showStage(s);};
+window.devSolve=function(){closeDev();ANIMALS.forEach(a=>{matches[a.id]=a.clue;});bookUnlocked=true;save();if(curStg==='E'){renderMatch();updateProg();}showNotif('פתרון מלא הוכנס',true);};
+window.devReset=function(){if(!confirm('איפוס?'))return;closeDev();localStorage.clear();window.location.href='index.html';};
 
-// ══ INIT ══
-loadState();
-startTimer();
-
-// If returning mid-game, restore stage
-if(curStage==='B'&&!bookUnlocked){showStage('B');}
-else if(curStage==='C'||curStage==='B'){buildBook();showStage('C');}
-else if(curStage==='D'){showStage('D');}
-else if(curStage==='E'){showStage('E');}
+/* ══ INIT ══ */
+load();startTimer();
+if(curStg==='C'){buildBook();showStage('C');}
+else if(curStg==='B'&&!bookUnlocked){showStage('B');}
+else if(curStg==='D'){showStage('D');}
+else if(curStg==='E'){showStage('E');}
 else{showStage('A');}
 </script>
 </body>
