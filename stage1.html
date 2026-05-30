@@ -116,59 +116,74 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 }
 .btn-sm:hover{border-color:var(--gold-l);background:rgba(201,168,76,.1);}
 
-/* ══ RANGER + BUBBLE (stage A ranger scene) ══ */
+/* ══ RANGER ══ */
 #ranger-wrap{
-  position:absolute;bottom:0;left:0;width:33%;height:100%;
+  position:absolute;bottom:0;left:0;width:32%;height:100%;
   display:flex;align-items:flex-end;
-  opacity:0;transform:translateX(-108%);
+  opacity:0;transform:translateX(-110%);
   transition:transform 1.4s cubic-bezier(.22,1,.36,1), opacity .3s;
+  z-index:20;
 }
 #ranger-wrap.in{opacity:1;transform:translateX(0);}
 #ranger-wrap.out{transform:translateX(-110%);transition:transform 1.1s cubic-bezier(.77,0,.18,1);}
 #ranger-wrap img{width:100%;max-height:100%;object-fit:contain;object-position:bottom;}
 
-/* speech bubble area — right 2/3 */
+/* ══ SPEECH BUBBLE ZONE — right 68% ══ */
 #bubble-zone{
-  position:absolute;top:0;left:33%;right:0;height:100%;
-  display:none;flex-direction:column;justify-content:flex-start;
-  padding:.5rem 1rem .5rem .4rem;
+  position:absolute;top:0;left:32%;right:0;
+  height:100%;
+  display:none;flex-direction:column;
+  justify-content:center;
+  padding:1.5rem 1.5rem 1.5rem 1rem;
   opacity:0;transition:opacity .5s;
+  z-index:21;
 }
 #bubble-zone.visible{display:flex;}
 #bubble-zone.show{opacity:1;}
-.bubble-title{
-  font-family:'Secular One',sans-serif;
-  font-size:clamp(1rem,2vw,1.3rem);color:var(--gold);
-  margin-bottom:.3rem;text-align:right;flex-shrink:0;
-}
-/* speech bubble image as background */
-.speech-outer{
+
+/* Pure CSS speech bubble — big, clear, with tail pointing left toward ranger */
+.speech-bubble{
   position:relative;
-  width:100%;flex:1;min-height:0;
-  display:flex;align-items:stretch;
-}
-/* speech1 has bubble in upper ~65% of image, tail points bottom-left */
-.speech-bg{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  object-fit:contain;object-position:top;
-}
-.speech-content{
-  position:relative;z-index:2;
-  width:100%;
-  /* content area is the gray rectangle — top ~10% to ~65% of image height */
-  padding:8% 8% 38% 8%;
+  background:rgba(245,240,225,.93);
+  border-radius:18px;
+  border:2px solid rgba(80,70,40,.25);
+  box-shadow:0 8px 40px rgba(0,0,0,.55);
+  padding:1.8rem 2rem 1.4rem 2rem;
+  display:flex;flex-direction:column;gap:.9rem;
+  max-height:85%;
   overflow-y:auto;
-  display:flex;flex-direction:column;gap:.5rem;
 }
+/* tail pointing left (toward ranger) */
+.speech-bubble::before{
+  content:'';
+  position:absolute;
+  left:-28px;
+  bottom:22%;
+  width:0;height:0;
+  border-top:16px solid transparent;
+  border-bottom:16px solid transparent;
+  border-right:28px solid rgba(245,240,225,.93);
+}
+.speech-bubble::after{
+  content:'';
+  position:absolute;
+  left:-32px;
+  bottom:calc(22% - 2px);
+  width:0;height:0;
+  border-top:18px solid transparent;
+  border-bottom:18px solid transparent;
+  border-right:30px solid rgba(80,70,40,.2);
+  z-index:-1;
+}
+
 .speech-txt{
   font-family:'Special Elite',serif;
-  font-size:clamp(1rem,1.9vw,1.3rem);
-  color:#111;line-height:1.85;text-align:right;
+  font-size:clamp(1.1rem,2.1vw,1.45rem);
+  color:#1a160a;line-height:1.9;text-align:right;
   flex:1;
 }
-.speech-txt p{margin-bottom:.6rem;}
-/* fade transition between speech texts */
+.speech-txt p{margin-bottom:.7rem;}
+.speech-txt p:last-child{margin-bottom:0;}
 .speech-txt{transition:opacity .35s;}
 .speech-txt.fading{opacity:0;}
 
@@ -394,14 +409,12 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   <!-- ranger entering from left — shown first -->
   <div id="ranger-wrap"><img src="ranger.png" alt="פקח השמורה" onerror="this.style.opacity='.5'"></div>
 
-  <!-- speech bubble zone — right 2/3 -->
+  <!-- speech bubble zone — right 68% — pure CSS bubble -->
   <div id="bubble-zone">
-    <div class="bubble-title">פקח השמורה</div>
-    <div class="speech-outer">
-      <img class="speech-bg" src="speech1.png" alt="">
-      <div class="speech-content">
-        <div class="speech-txt" id="speech-txt"></div>
-        <button class="btn-sm" id="speech-cont" onclick="speechNext()">המשך</button>
+    <div class="speech-bubble">
+      <div class="speech-txt" id="speech-txt"></div>
+      <div style="text-align:left">
+        <button class="btn-sm" id="speech-cont" onclick="speechNext()" style="color:var(--jd);background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;">המשך</button>
       </div>
     </div>
   </div>
@@ -583,7 +596,7 @@ function showStage(id){
   document.getElementById('stg-'+id).classList.add('active');
   curStg=id;
   document.getElementById('hdr-title').textContent=TITLES[id]||'';
-  document.getElementById('btn-back').className='hdr-btn'+(['A'].includes(id)?' hidden':'');
+  document.getElementById('btn-back').className='hdr-btn-user'+(['A'].includes(id)?' hidden':'');
   // footer
   document.getElementById('ftr-submit').className='btn-gold'+(id==='E'?' show':'');
   document.getElementById('ftr-progress').textContent='';
