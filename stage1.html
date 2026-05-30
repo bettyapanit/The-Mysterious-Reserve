@@ -63,6 +63,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 #timer.warn{color:#f55;text-shadow:0 0 14px rgba(255,80,80,.6);animation:twarn .7s ease-in-out infinite;}
 @keyframes twarn{0%,100%{opacity:1}50%{opacity:.4}}
 
+@keyframes wblink{0%,100%{opacity:1}50%{opacity:.2}}
 /* ══ STAGE WRAPPER ══ */
 .stage{position:fixed;inset:0;top:3.2rem;bottom:3.5rem;opacity:0;pointer-events:none;transition:opacity .45s;}
 .stage.active{opacity:1;pointer-events:all;}
@@ -316,6 +317,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 .book-arrow:disabled{opacity:.22;pointer-events:none;}
 .book-page-num{font-family:'Special Elite',serif;font-size:.85rem;color:var(--dim);}
 .book-fallback{color:var(--gold);font-family:'Secular One',sans-serif;font-size:1.1rem;padding:1.5rem;text-align:center;}
+.book-hint{font-family:'Rubik',sans-serif;font-size:.78rem;color:var(--dim);text-align:center;flex-shrink:0;padding:.2rem;}
 
 /* ══ STAGE D — Evidence ══ */
 .ev-area{
@@ -423,14 +425,16 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 <!-- ══ TIMER ══ -->
 <div id="timer">60:00</div>
 
+<!-- PERSISTENT RANGER — sits above all stages -->
+<div id="ranger-wrap"><img src="ranger.png" alt="פקח השמורה" onerror="this.style.opacity='.5'"></div>
+
 <!-- ══════════════════════════════════════
      STAGE A — Crime scene + Ranger speech
 ═══════════════════════════════════════ -->
 <div class="stage active" id="stg-A">
   <div class="bg bg-crime"></div>
 
-  <!-- ranger entering from left — shown first -->
-  <div id="ranger-wrap"><img src="ranger.png" alt="פקח השמורה" onerror="this.style.opacity='.5'"></div>
+  <!-- ranger-wrap moved to body level -->
 
   <!-- speech bubble zone — right 68%, speech1.png as transparent overlay -->
   <div id="bubble-zone">
@@ -466,14 +470,11 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 ═══════════════════════════════════════ -->
 <div class="stage" id="stg-B">
   <div class="bg bg-station"></div>
-  <!-- ranger stays on left -->
-  <div style="position:absolute;bottom:0;left:0;width:33%;max-width:320px;height:100%;display:flex;align-items:flex-end;pointer-events:none;">
-    <img src="ranger.png" alt="" style="width:100%;max-height:100%;object-fit:contain;object-position:bottom;">
-  </div>
-  <!-- lock puzzle right 2/3 -->
-  <div class="lock-wrap" style="position:absolute;top:0;left:33%;right:0;height:100%;display:flex;align-items:center;padding:.8rem 1.2rem .8rem .6rem;">
-    <div class="lock-box">
-      <div class="lock-title">פיצוח הקוד לפתיחת המגירה</div>
+  <!-- ranger handled by persistent #ranger-wrap -->
+  <!-- lock puzzle — compact, centered, with subtitle -->
+  <div id="lock-subtitle" class="sub-title-2" style="display:none">תחנת הפקחים — פיצוח הקוד לפתיחת המגירה <button onclick="showLockInst()" style="font-size:.7rem;margin-right:.6rem;padding:.15rem .55rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:10px;cursor:pointer;font-family:Rubik,sans-serif;">הוראות</button></div>
+  <div id="lock-animate-wrap" style="display:none;position:absolute;top:3rem;left:33%;right:2%;bottom:0;display:none;align-items:flex-start;justify-content:center;padding:.8rem 1rem .5rem;">
+  <div class="lock-box" style="width:auto;max-width:650px;">
       <div class="lock-intro">אלה התוצאות של 5 הניסיונות הקודמים של הפקח לנחש את הקוד.<br>השתמשו בהיגיון כדי לפסול את המספרים השגויים ולמצוא את הקוד המדויק:</div>
       <div class="lock-attempts">
         <div class="lock-row"><span class="lock-guess">682</span><span class="lock-result">ספרה אחת נכונה והיא נמצאת במיקום המדויק שלה.</span></div>
@@ -493,15 +494,15 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
       </div>
       <div class="lock-msg" id="lock-msg"></div>
     </div>
-  </div>
-  <!-- success bubble bottom — speech2 -->
-  <div id="lock-success">
-    <div class="success-outer">
-      <img class="success-bg" src="speech2.png" alt="">
-      <div class="success-content">
-        <div class="success-txt">כל הכבוד! הצלחתם לנחש את הקוד ולפתוח את המגירה!<br><span style="font-size:.9em;color:var(--gold-l)">עכשיו אתם יכולים להוציא ממנה את ספר הפרופילים של דיירי השמורה.</span></div>
-        <button class="btn-sm" onclick="openBook()">הוציאו את ספר הפרופילים</button>
+  </div></div>
+  <!-- success bubble — pure CSS, bottom center -->
+  <div id="lock-success" style="display:none;position:absolute;bottom:1.5rem;left:33%;right:2%;z-index:30;">
+    <div style="background:rgba(245,240,220,.92);border:2px solid rgba(80,70,30,.3);border-radius:14px;padding:1.1rem 1.4rem 1rem;box-shadow:0 4px 24px rgba(0,0,0,.5);max-width:560px;margin:0 auto;text-align:right;">
+      <div style="font-family:'Special Elite',serif;font-size:clamp(1rem,1.8vw,1.2rem);color:#111;line-height:1.75;margin-bottom:.7rem;">
+        כל הכבוד! הצלחתם לנחש את הקוד ולפתוח את המגירה!<br>
+        עכשיו אתם יכולים להוציא ממנה את ספר הפרופילים של דיירי השמורה.
       </div>
+      <button class="btn-sm" onclick="openBook()" style="color:var(--jd);background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;font-size:.95rem;padding:.5rem 1.4rem;">הוציאו את ספר הפרופילים מהמגירה</button>
     </div>
   </div>
 </div>
@@ -518,7 +519,8 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
       <span class="book-page-num" id="page-num">1 / 1</span>
       <button class="book-arrow" id="btn-next" onclick="flipPage(1)">&#8592;</button>
     </div>
-    <button class="btn-sm" id="btn-to-ev" style="display:none;align-self:center;" onclick="goToEvidence()">להמשך החקירה — הראיות מהזירה</button>
+    <div class="book-hint" id="book-hint">לחצו על החצים לדיפדוף בעמודי הספר</div>
+    <button class="btn-sm" id="btn-to-ev" style="display:none;align-self:center;" onclick="bookDone()">סיימנו לעיין בספר — חזרה לזירת הפשע</button>
   </div>
 </div>
 
@@ -564,6 +566,34 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 </div>
 
 <!-- ══ FOOTER ══ -->
+<!-- Floating persistent buttons (map + book) -->
+<div id="float-btns" style="position:fixed;bottom:3.7rem;left:.6rem;z-index:460;display:none;gap:.5rem;flex-direction:row;align-items:center;">
+  <button id="float-map-btn" class="btn-sm" onclick="openMapPopup()" style="display:none;font-size:.78rem;padding:.3rem .85rem;">מפת השמורה</button>
+  <button id="float-book-btn" class="btn-sm" onclick="openBookPopup()" style="display:none;font-size:.78rem;padding:.3rem .85rem;">ספר הפרופילים</button>
+</div>
+
+<!-- Map popup -->
+<div id="map-popup" style="display:none;position:fixed;inset:0;z-index:550;background:rgba(0,0,0,.85);flex-direction:column;align-items:center;justify-content:center;gap:.8rem;padding:1rem;">
+  <img src="reserve_map.png" alt="מפת השמורה" style="max-width:90%;max-height:82vh;object-fit:contain;border-radius:8px;box-shadow:0 6px 40px rgba(0,0,0,.7);">
+  <button class="btn-sm" onclick="closeMapPopup()">סגירת המפה</button>
+</div>
+
+<!-- Book popup -->
+<div id="book-popup" style="display:none;position:fixed;inset:0;z-index:550;background:rgba(0,0,0,.85);flex-direction:column;align-items:center;justify-content:center;gap:.5rem;padding:.6rem;">
+  <div id="book-popup-container" style="flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;"></div>
+  <div style="display:flex;align-items:center;gap:1.2rem;flex-shrink:0;">
+    <button class="book-arrow" id="popup-prev" onclick="flipPopupPage(-1)">&#8594;</button>
+    <span id="popup-page-num" style="font-family:'Special Elite',serif;font-size:.85rem;color:var(--dim)"></span>
+    <button class="book-arrow" id="popup-next" onclick="flipPopupPage(1)">&#8592;</button>
+    <button class="btn-sm" onclick="closeBookPopup()" style="font-size:.78rem;padding:.3rem .8rem;margin-right:1rem;">סגירה ✕</button>
+  </div>
+</div>
+
+<!-- Waiting screen overlay (A→B transition) -->
+<div id="wait-B" style="display:none;position:fixed;inset:0;z-index:480;background:rgba(0,0,0,.92);align-items:center;justify-content:center;">
+  <div style="font-family:'Special Elite',serif;font-size:clamp(1.4rem,3vw,2rem);color:var(--gold-l);text-align:center;text-shadow:0 0 30px rgba(201,168,76,.6);animation:wblink 1.4s ease-in-out infinite;line-height:1.9;">כבר מגיעים לתחנת הפקחים...</div>
+</div>
+
 <div id="ftr">
   <button id="ftr-instr" onclick="showInst()">הוראות</button>
   <button id="ftr-book" onclick="returnToBook()">ספר הפרופילים</button>
@@ -652,6 +682,15 @@ function showStage(id){
   const fbb=document.getElementById('float-book-btn');
   if(fbb)fbb.style.display=(id==='E'&&bookUnlocked)?'block':'none';
   if(id==='A')initA();
+  if(id==='B'){
+    // subtitle + lock appear after 3s from showStage call (if not from transitionToB)
+    setTimeout(()=>{
+      const sub=document.getElementById('lock-subtitle');
+      const lw=document.getElementById('lock-animate-wrap');
+      if(sub&&sub.style.display==='none')sub.style.display='block';
+      if(lw&&lw.style.display==='none')lw.style.display='flex';
+    },100);
+  }
   if(id==='D')initD();
   if(id==='E')initE();
   save();
@@ -740,6 +779,42 @@ window.doneWithMap=function(){
   },450);
 };
 
+/* ══ TRANSITION A→B ══ */
+window.transitionToB=function(){
+  // Fade out the crime scene BG (not the ranger)
+  const bgA=document.querySelector('#stg-A .bg');
+  if(bgA)bgA.style.opacity='0';
+  // Show wait screen after .6s
+  setTimeout(()=>{
+    const wb=document.getElementById('wait-B');
+    wb.style.display='flex';
+    wb.style.opacity='0';
+    setTimeout(()=>{wb.style.transition='opacity .5s';wb.style.opacity='1';},30);
+    // After 5s fade to station
+    setTimeout(()=>{
+      wb.style.opacity='0';
+      setTimeout(()=>{
+        wb.style.display='none';
+        // Show stage B — bg fades in behind ranger
+        showStage('B');
+        // Subtitle + lock appear after 3s
+        setTimeout(()=>{
+          const sub=document.getElementById('lock-subtitle');
+          const lw=document.getElementById('lock-animate-wrap');
+          if(sub){sub.style.display='block';}
+          if(lw){lw.style.display='flex';}
+        },3000);
+      },600);
+    },5000);
+  },600);
+};
+
+window.showLockInst=function(){
+  document.getElementById('inst-title').textContent='הוראות — פיצוח הקוד';
+  document.getElementById('inst-body').innerHTML='<ul><li>זהו למעשה משחק "בול פגיעה".</li><li>בדקו אחד-אחד את ניסיונות הפקח לפתיחת המנעול ונתחו את התוצאות.</li><li>הזינו למטה קוד תלת-ספרתי ובדקו אם הוא פותח את המגירה.</li></ul>';
+  document.getElementById('inst-ov').classList.add('show');
+};
+
 window.openMapPopup=function(){
   const p=document.getElementById('map-popup');
   p.style.display='flex';
@@ -747,6 +822,37 @@ window.openMapPopup=function(){
 window.closeMapPopup=function(){
   const p=document.getElementById('map-popup');
   p.style.display='none';
+};
+
+/* ══ BOOK POPUP (from floating button) ══ */
+let popupPage=0;
+window.openBookPopup=function(){
+  popupPage=0;
+  buildBookPopup();
+  const p=document.getElementById('book-popup');
+  p.style.display='flex';
+};
+window.closeBookPopup=function(){
+  document.getElementById('book-popup').style.display='none';
+};
+window.flipPopupPage=function(d){
+  popupPage=Math.max(0,Math.min(BOOK_PAGES.length-1,popupPage+d));
+  buildBookPopup();
+};
+function buildBookPopup(){
+  const cont=document.getElementById('book-popup-container');
+  const p=BOOK_PAGES[popupPage];
+  cont.innerHTML='';
+  const img=document.createElement('img');
+  img.src=p.img;img.alt=p.lbl;
+  img.style.cssText='max-height:100%;max-width:100%;object-fit:contain;border-radius:8px;box-shadow:0 6px 36px rgba(0,0,0,.7);';
+  img.onerror=function(){this.style.display='none';cont.insertAdjacentHTML('beforeend',`<div style="color:var(--gold);font-family:'Secular One',sans-serif;font-size:1.1rem;padding:2rem">${p.lbl}</div>`);};
+  cont.appendChild(img);
+  document.getElementById('popup-page-num').textContent=(popupPage+1)+' / '+BOOK_PAGES.length;
+  const prev=document.getElementById('popup-prev');
+  const next=document.getElementById('popup-next');
+  if(prev)prev.disabled=popupPage===0;
+  if(next)next.disabled=popupPage===BOOK_PAGES.length-1;
 };
 
 window.speechNext=function(){
@@ -773,7 +879,7 @@ window.speechNext=function(){
       btn.textContent='המשך';
     }
   } else {
-    showStage('B');
+    transitionToB();
   }
 };
 
@@ -792,7 +898,7 @@ window.checkCode=function(){
   const msg=document.getElementById('lock-msg');
   if(code==='042'){
     msg.className='lock-msg ok';msg.textContent='המנעול נפתח!';
-    document.getElementById('lock-success').classList.add('show');
+    document.getElementById('lock-success').style.display='block';
     bookUnlocked=true;save();
   } else {
     msg.className='lock-msg err';msg.textContent='המנעול לא נפתח. נסו שוב.';
@@ -827,7 +933,10 @@ function updateBookNav(){
   document.getElementById('page-num').textContent=(bookPage+1)+' / '+BOOK_PAGES.length;
   document.getElementById('btn-prev').disabled=bookPage===0;
   document.getElementById('btn-next').disabled=bookPage===BOOK_PAGES.length-1;
-  document.getElementById('btn-to-ev').style.display=bookPage===BOOK_PAGES.length-1?'block':'none';
+  const isLast=bookPage===BOOK_PAGES.length-1;
+  document.getElementById('btn-to-ev').style.display=isLast?'block':'none';
+  const hint=document.getElementById('book-hint');
+  if(hint)hint.style.display=isLast?'none':'block';
 }
 window.flipPage=function(d){
   document.getElementById('bp-'+bookPage).classList.remove('show');
@@ -838,6 +947,14 @@ window.flipPage=function(d){
 window.openBook=function(){bookPage=0;buildBook();showStage('C');};
 window.returnToBook=function(){buildBook();showStage('C');};
 window.goToEvidence=function(){showStage('D');};
+window.bookDone=function(){
+  // Show floating book button
+  const fbb=document.getElementById('float-book-btn');
+  if(fbb)fbb.style.display='inline-block';
+  const fb=document.getElementById('float-btns');
+  if(fb)fb.style.display='flex';
+  showStage('D');
+};
 
 /* ══ STAGE D — Evidence ══ */
 const EVIDENCE=[
