@@ -472,9 +472,9 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   <div class="bg bg-station"></div>
   <!-- ranger handled by persistent #ranger-wrap -->
   <!-- lock puzzle — compact, centered, with subtitle -->
-  <div id="lock-subtitle" class="sub-title-2" style="display:none">תחנת הפקחים — פיצוח הקוד לפתיחת המגירה <button onclick="showLockInst()" style="font-size:.7rem;margin-right:.6rem;padding:.15rem .55rem;background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:10px;cursor:pointer;font-family:Rubik,sans-serif;">הוראות</button></div>
-  <div id="lock-animate-wrap" style="display:none;position:absolute;top:3rem;left:33%;right:2%;bottom:0;display:none;align-items:flex-start;justify-content:center;padding:.8rem 1rem .5rem;">
-  <div class="lock-box" style="width:auto;max-width:650px;">
+  <div id="lock-subtitle" class="sub-title-2" style="display:none">תחנת הפקחים — פיצוח הקוד לפתיחת המגירה <button onclick="showLockInst()" style="font-size:.82rem;margin-right:.8rem;padding:.3rem .85rem;background:rgba(201,168,76,.15);border:1px solid var(--gold);color:var(--gold);border-radius:10px;cursor:pointer;font-family:'Rubik',sans-serif;font-weight:500;">הוראות</button></div>
+  <div id="lock-animate-wrap" style="display:none;position:absolute;top:3rem;left:28%;right:2%;bottom:0;display:none;align-items:flex-start;justify-content:center;padding:.8rem 1.5rem .5rem;">
+  <div class="lock-box" style="width:auto;max-width:720px;">
       <div class="lock-intro">אלה התוצאות של 5 הניסיונות הקודמים של הפקח לנחש את הקוד.<br>השתמשו בהיגיון כדי לפסול את המספרים השגויים ולמצוא את הקוד המדויק:</div>
       <div class="lock-attempts">
         <div class="lock-row"><span class="lock-guess">682</span><span class="lock-result">ספרה אחת נכונה והיא נמצאת במיקום המדויק שלה.</span></div>
@@ -495,14 +495,30 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
       <div class="lock-msg" id="lock-msg"></div>
     </div>
   </div></div>
-  <!-- success bubble — pure CSS, bottom center -->
-  <div id="lock-success" style="display:none;position:absolute;bottom:1.5rem;left:33%;right:2%;z-index:30;">
-    <div style="background:rgba(245,240,220,.92);border:2px solid rgba(80,70,30,.3);border-radius:14px;padding:1.1rem 1.4rem 1rem;box-shadow:0 4px 24px rgba(0,0,0,.5);max-width:560px;margin:0 auto;text-align:right;">
-      <div style="font-family:'Special Elite',serif;font-size:clamp(1rem,1.8vw,1.2rem);color:#111;line-height:1.75;margin-bottom:.7rem;">
-        כל הכבוד! הצלחתם לנחש את הקוד ולפתוח את המגירה!<br>
-        עכשיו אתם יכולים להוציא ממנה את ספר הפרופילים של דיירי השמורה.
+  <!-- success bubble — speech2.png image-based, bottom left of screen -->
+  <div id="lock-success" style="display:none;position:absolute;bottom:0;left:33%;width:62%;z-index:30;">
+    <!-- speech2 image: 4961x3508, bubble rect at bottom 74%-91.5% of image, left 65% of width -->
+    <!-- We show full image but position text in the bubble area -->
+    <div style="position:relative;width:100%;padding-top:70.7%">
+      <img src="speech2.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:fill;pointer-events:none;">
+      <!-- text area: rect starts at 74% image height, ends at 91.5% -->
+      <!-- in padding-top container: top=74%, bottom=100%-91.5%=8.5% -->
+      <!-- bubble is left ~4% to 64% of image width -->
+      <div style="position:absolute;top:74%;bottom:8%;left:4%;right:36%;
+                  display:flex;flex-direction:column;justify-content:space-between;
+                  padding:.3rem .6rem .2rem .6rem;overflow:hidden;">
+        <div style="font-family:'Special Elite',serif;font-size:clamp(.95rem,1.7vw,1.2rem);
+                    color:#111;line-height:1.6;text-align:right;">
+          כל הכבוד! הצלחתם לנחש את הקוד ולפתוח את המגירה!<br>
+          עכשיו אתם יכולים להוציא ממנה את ספר הפרופילים של דיירי השמורה.
+        </div>
+        <button onclick="openBook()" style="align-self:flex-end;margin-left:5%;
+          color:var(--jd);background:linear-gradient(135deg,var(--gold-d),var(--gold));
+          border:none;font-size:.85rem;padding:.4rem 1rem;border-radius:14px;cursor:pointer;
+          font-family:'Rubik',sans-serif;font-weight:600;white-space:nowrap;">
+          הוציאו את ספר הפרופילים מהמגירה
+        </button>
       </div>
-      <button class="btn-sm" onclick="openBook()" style="color:var(--jd);background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;font-size:.95rem;padding:.5rem 1.4rem;">הוציאו את ספר הפרופילים מהמגירה</button>
     </div>
   </div>
 </div>
@@ -749,11 +765,11 @@ function setSpeechText(html){
 }
 
 window.doneWithMap=function(){
-  // Show floating map button
+  // Show floating map button immediately
   const fmb=document.getElementById('float-map-btn');
-  if(fmb)fmb.style.display='inline-block';
+  if(fmb){fmb.style.display='inline-block';}
   const fbar=document.getElementById('float-btns');
-  if(fbar)fbar.style.display='flex';
+  if(fbar){fbar.style.display='flex';}
 
   // Hide map area
   const ma=document.getElementById('map-area');
@@ -944,7 +960,12 @@ window.flipPage=function(d){
   document.getElementById('bp-'+bookPage).classList.add('show');
   updateBookNav();save();
 };
-window.openBook=function(){bookPage=0;buildBook();showStage('C');};
+window.openBook=function(){
+  // Hide success bubble
+  const ls=document.getElementById('lock-success');
+  if(ls)ls.style.display='none';
+  bookPage=0;buildBook();showStage('C');
+};
 window.returnToBook=function(){buildBook();showStage('C');};
 window.goToEvidence=function(){showStage('D');};
 window.bookDone=function(){
@@ -1076,7 +1097,12 @@ window.closeInst=()=>document.getElementById('inst-ov').classList.remove('show')
 window.openDev=function(){const c=prompt('קוד DEV:');if(c===DEV_CODE)document.getElementById('dev-panel').classList.add('open');else if(c!==null)showNotif('קוד שגוי');};
 window.closeDev=()=>document.getElementById('dev-panel').classList.remove('open');
 window.devGo=function(id){closeDev();window.location.href=(id==='index'?'index':id)+'.html';};
-window.devJump=function(s){closeDev();if(s==='C'){buildBook();}showStage(s);};
+window.devJump=function(s){
+  closeDev();
+  const ls=document.getElementById('lock-success');if(ls)ls.style.display='none';
+  if(s==='C'){buildBook();}
+  showStage(s);
+};
 window.devSolve=function(){closeDev();ANIMALS.forEach(a=>{matches[a.id]=a.clue;});bookUnlocked=true;save();if(curStg==='E'){renderMatch();updateProg();}showNotif('פתרון מלא הוכנס',true);};
 window.devReset=function(){if(!confirm('איפוס?'))return;closeDev();localStorage.clear();window.location.href='index.html';};
 
