@@ -147,10 +147,10 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 */
 #bubble-zone{
   position:absolute;
-  /* Right 68% of screen, vertically centered */
-  top:0;bottom:0;left:32%;right:1%;
+  /* Narrower bubble, shifted left so text has room */
+  top:0;bottom:0;left:33%;right:4%;
   display:none;flex-direction:column;
-  justify-content:center;   /* vertically center the speech bubble */
+  justify-content:center;
   align-items:stretch;
   padding:.5rem;
   opacity:0;transition:opacity .5s;
@@ -162,11 +162,12 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 
 .speech-outer{
   position:relative;
-  width:100%;
-  /* Force exact image aspect ratio: 4961/3508 → height = width * 3508/4961 = 70.7% */
-  padding-top:70.7%;
-  /* Cap at available viewport height */
-  max-height:95vh;
+  /* Bubble takes 72% of zone width, centered */
+  width:82%;
+  margin:0 auto;
+  /* Force exact image aspect ratio: 4961/3508 = 70.7% */
+  padding-top:58%;   /* 70.7% * 82% ≈ 58% of zone width */
+  max-height:88vh;
   flex-shrink:0;
 }
 /* The actual image — fills the padded container exactly */
@@ -185,20 +186,20 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 */
 .speech-content{
   position:absolute;
-  /* Bubble rect: top=8.4%, tail starts at 64.3% → bottom = 100%-64.3% = 35.7% */
-  top:9%;
+  /* Bubble rect: top=8.4%, tail starts at 64.3% */
+  top:10%;
   bottom:37%;
-  left:5%;right:5%;
+  left:4%;right:4%;
   overflow-y:auto;
   display:flex;flex-direction:column;
   justify-content:space-between;
-  gap:.4rem;
-  padding:.5rem .7rem .3rem .7rem;
+  gap:.3rem;
+  padding:.4rem .5rem .3rem .5rem;
   z-index:2;
 }
 .speech-txt{
   font-family:'Special Elite',serif;
-  font-size:clamp(1.15rem,2.1vw,1.5rem);
+  font-size:clamp(1.2rem,2.3vw,1.65rem);
   color:#111;line-height:1.75;text-align:right;
   flex:1;
 }
