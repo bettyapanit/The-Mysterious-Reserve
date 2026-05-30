@@ -99,15 +99,13 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 .l-area.show{opacity:1;}
 /* ── Level-2 subtitle (below main title, centered) ── */
 .sub-title-2{
-  position:absolute;top:.5rem;
-  left:0;right:0;
-  text-align:center;
+  display:block;text-align:center;
   font-family:'Secular One',sans-serif;
   font-size:clamp(.9rem,1.8vw,1.1rem);
   color:rgba(201,168,76,.75);
   letter-spacing:.05em;
-  z-index:5;
 }
+.sub-title-2.abs{position:absolute;top:.5rem;left:0;right:0;z-index:5;}
 .section-lbl{
   font-family:'Secular One',sans-serif;
   font-size:clamp(.85rem,1.7vw,1rem);
@@ -224,13 +222,13 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 }
 .lock-title{
   font-family:'Secular One',sans-serif;
-  font-size:clamp(1.2rem,2.4vw,1.6rem);
-  color:var(--gold);margin-bottom:.7rem;
+  font-size:clamp(1.3rem,2.6vw,1.75rem);
+  color:var(--gold);margin-bottom:.75rem;
 }
 .lock-intro{
   font-family:'Special Elite',serif;
-  font-size:clamp(1.05rem,2vw,1.35rem);
-  color:var(--cream);line-height:1.8;margin-bottom:1rem;
+  font-size:clamp(1.1rem,2.1vw,1.45rem);
+  color:var(--cream);line-height:1.85;margin-bottom:1.1rem;
 }
 .lock-attempts{margin-bottom:1rem;}
 .lock-row{
@@ -239,11 +237,11 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   font-family:'Special Elite',serif;
 }
 .lock-guess{
-  color:var(--gold-l);font-size:clamp(1.1rem,2vw,1.4rem);
+  color:var(--gold-l);font-size:clamp(1.2rem,2.2vw,1.55rem);
   font-weight:700;letter-spacing:.1em;direction:ltr;display:inline-block;min-width:3.5ch;
 }
 .lock-result{
-  color:var(--cream);font-size:clamp(.95rem,1.7vw,1.15rem);
+  color:var(--cream);font-size:clamp(1rem,1.8vw,1.25rem);
 }
 .lock-input-row{
   display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-top:.8rem;
@@ -331,7 +329,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 .ev-lbl-main{font-family:'Secular One',sans-serif;font-size:clamp(.9rem,1.9vw,1.1rem);color:var(--gold);}
 .ev-grid{
   flex:1;overflow-y:auto;
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
   gap:.5rem;align-content:start;
 }
 .ev-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:.3rem;text-align:center;cursor:pointer;transition:border-color .18s;}
@@ -341,78 +339,99 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 .ev-placeholder{display:none;}
 .ev-lbl-sm{font-size:.7rem;color:var(--dim);line-height:1.3;min-height:1.4em;}
 
-/* ══ STAGE E — Match: 2-column pairs left, clues grid right ══ */
+/* ══ STAGE E — Match: pairs right half, clues left half, NO SCROLL ══ */
 .match-layout{
   position:absolute;inset:0;
   display:flex;flex-direction:row;
-  gap:.5rem;
-  padding:.35rem .5rem;
+  gap:.6rem;
+  padding:.3rem .4rem;
   z-index:2;
+  overflow:hidden;
 }
-/* Left ~52%: animal pairs in 2 columns */
+
+/* RIGHT ~50%: 2 columns × 6 rows of pairs, fills height exactly */
 .pairs-area{
-  width:52%;flex-shrink:0;
+  width:50%;flex-shrink:0;
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:.4rem 1rem;  /* row-gap col-gap */
-  overflow-y:auto;
-  align-content:start;
+  grid-template-rows:repeat(6,1fr);
+  gap:.35rem .7rem;
+  overflow:hidden;
 }
-/* Each pair = animal card + slot side by side */
+/* Each pair = [animal card] [empty slot] side by side in a row */
 .a-pair{
-  display:flex;flex-direction:column;
-  align-items:center;gap:.2rem;
+  display:flex;flex-direction:row;
+  align-items:stretch;
+  gap:.25rem;
+  min-height:0;
 }
+/* Animal card — left of pair */
 .a-card{
+  flex:1;min-width:0;
   background:rgba(10,22,10,.88);
-  border:1.5px solid rgba(201,168,76,.22);
-  border-radius:8px;padding:.3rem .25rem .2rem;
-  display:flex;flex-direction:column;align-items:center;gap:.15rem;
-  cursor:pointer;transition:border-color .18s;
-  width:100%;
+  border:1.5px solid rgba(201,168,76,.25);
+  border-radius:7px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.1rem;padding:.15rem .1rem;
+  cursor:default;
+  overflow:hidden;
 }
-.a-card:hover{border-color:var(--gold);}
 .a-card.matched{border-color:rgba(0,220,80,.5);background:rgba(0,180,60,.08);}
-.a-card img.a-img{width:clamp(36px,5vw,58px);aspect-ratio:1;object-fit:contain;}
-.a-card .a-name{font-family:'Special Elite',serif;font-size:clamp(.7rem,1.2vw,.88rem);color:var(--cream);text-align:center;}
-/* Clue slot below animal */
+.a-card img.a-img{
+  flex:1;min-height:0;
+  width:100%;max-width:100%;
+  object-fit:contain;
+}
+.a-card .a-name{
+  font-family:'Special Elite',serif;
+  font-size:clamp(.6rem,1vw,.82rem);
+  color:var(--cream);text-align:center;
+  flex-shrink:0;line-height:1.1;
+}
+/* Clue slot — right of pair */
 .a-slot{
-  width:clamp(36px,5vw,56px);height:clamp(36px,5vw,56px);
-  border:1.5px dashed rgba(201,168,76,.35);border-radius:5px;
+  flex:1;min-width:0;
+  border:1.5px dashed rgba(201,168,76,.35);
+  border-radius:7px;
   display:flex;align-items:center;justify-content:center;
   background:rgba(0,0,0,.25);
   cursor:pointer;transition:border-color .18s;
+  overflow:hidden;
 }
 .a-slot:hover{border-color:var(--gold);}
 .a-slot.filled{border-color:rgba(0,220,80,.5);background:rgba(0,180,60,.07);}
 .a-slot img{width:90%;height:90%;object-fit:contain;}
 
-/* Right ~48%: clue grid */
+/* LEFT ~50%: clue grid fills whole half */
 .clues-area{
   flex:1;min-width:0;
   display:flex;flex-direction:column;
-  gap:.3rem;
   overflow:hidden;
 }
 .clue-row{
   flex:1;min-height:0;
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(clamp(52px,7vw,72px),1fr));
-  gap:.3rem;
-  overflow-y:auto;
-  align-content:start;
+  grid-template-columns:repeat(auto-fill,minmax(1fr,1fr));
+  /* 13 clues in ~50% width — aim for ~4-5 cols × 3 rows */
+  grid-template-columns:repeat(4,1fr);
+  grid-auto-rows:1fr;
+  gap:.35rem;
+  overflow:hidden;
 }
 .c-card{
   background:rgba(20,35,20,.85);
-  border:1.5px solid rgba(201,168,76,.2);
-  border-radius:6px;padding:.25rem;text-align:center;cursor:pointer;
+  border:1.5px solid rgba(201,168,76,.22);
+  border-radius:7px;padding:.3rem .2rem .2rem;
+  text-align:center;cursor:pointer;
   transition:all .15s;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;
 }
 .c-card:hover{border-color:var(--gold-l);background:rgba(201,168,76,.1);}
-.c-card.sel{border-color:var(--gold);background:rgba(201,168,76,.2);box-shadow:0 0 8px rgba(201,168,76,.4);}
+.c-card.sel{border-color:var(--gold);background:rgba(201,168,76,.22);box-shadow:0 0 8px rgba(201,168,76,.4);}
 .c-card.used{opacity:.28;pointer-events:none;}
-.c-card img{width:100%;aspect-ratio:1;object-fit:contain;display:block;}
-.c-num{font-size:.58rem;color:var(--gold);margin-top:.12rem;font-weight:600;}
+.c-card img{flex:1;min-height:0;width:100%;object-fit:contain;display:block;}
+.c-num{font-size:.62rem;color:var(--gold);font-weight:600;flex-shrink:0;margin-top:.1rem;}
 
 /* ══ FOOTER ══ */
 #ftr{
@@ -525,9 +544,9 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   <div class="bg bg-station"></div>
   <!-- ranger handled by persistent #ranger-wrap -->
   <!-- lock puzzle — compact, centered, with subtitle -->
-  <div id="lock-subtitle" class="sub-title-2" style="display:none">תחנת הפקחים — פיצוח הקוד לפתיחת המגירה <button onclick="showLockInst()" style="font-size:.82rem;margin-right:.8rem;padding:.3rem .85rem;background:rgba(201,168,76,.15);border:1px solid var(--gold);color:var(--gold);border-radius:10px;cursor:pointer;font-family:'Rubik',sans-serif;font-weight:500;">הוראות</button></div>
-  <div id="lock-animate-wrap" style="display:none;position:absolute;top:3rem;left:22%;right:2%;bottom:0;display:none;align-items:flex-start;justify-content:center;padding:.8rem 2rem .5rem;">
-  <div class="lock-box" style="width:auto;max-width:820px;">
+  <div id="lock-subtitle" class="sub-title-2 abs" style="display:none">תחנת הפקחים — פיצוח הקוד לפתיחת המגירה <button onclick="showLockInst()" style="font-size:.82rem;margin-right:.8rem;padding:.3rem .85rem;background:rgba(201,168,76,.15);border:1px solid var(--gold);color:var(--gold);border-radius:10px;cursor:pointer;font-family:'Rubik',sans-serif;font-weight:500;">הוראות</button></div>
+  <div id="lock-animate-wrap" style="display:none;position:absolute;top:3rem;left:18%;right:1%;bottom:0;display:none;align-items:flex-start;justify-content:center;padding:1rem 2.5rem .5rem;">
+  <div class="lock-box" style="width:auto;max-width:950px;">
       <div class="lock-intro">אלה התוצאות של 5 הניסיונות הקודמים של הפקח לנחש את הקוד.<br>השתמשו בהיגיון כדי לפסול את המספרים השגויים ולמצוא את הקוד המדויק:</div>
       <div class="lock-attempts">
         <div class="lock-row"><span class="lock-guess">682</span><span class="lock-result">ספרה אחת נכונה והיא נמצאת במיקום המדויק שלה.</span></div>
@@ -552,18 +571,18 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   <div id="lock-success" style="display:none;position:absolute;bottom:2rem;left:30%;width:65%;z-index:30;">
     <div style="position:relative;width:100%;padding-top:70.7%">
       <img src="speech2.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:fill;pointer-events:none;">
-      <div style="position:absolute;top:72%;bottom:7%;left:4%;right:35%;
-                  display:flex;flex-direction:column;justify-content:space-between;
-                  padding:.4rem .7rem .3rem .7rem;overflow:hidden;gap:.3rem;">
-        <div style="font-family:'Special Elite',serif;font-size:clamp(1.2rem,2.1vw,1.5rem);
-                    color:#111;line-height:1.65;text-align:right;">
+      <div style="position:absolute;top:74%;bottom:8.5%;left:5%;right:37%;
+                  display:flex;flex-direction:column;justify-content:space-evenly;
+                  padding:.2rem .5rem;overflow:hidden;">
+        <div style="font-family:'Special Elite',serif;font-size:clamp(1.15rem,2vw,1.4rem);
+                    color:#111;line-height:1.6;text-align:right;">
           כל הכבוד! הצלחתם לנחש את הקוד ולפתוח את המגירה!<br>
           עכשיו אתם יכולים להוציא ממנה את ספר הפרופילים של דיירי השמורה.
         </div>
-        <button onclick="openBook()" style="align-self:flex-end;margin-left:18%;
+        <button onclick="openBook()" style="align-self:center;
           color:var(--jd);background:linear-gradient(135deg,var(--gold-d),var(--gold));
-          border:none;font-size:.95rem;padding:.5rem 1.2rem;border-radius:14px;cursor:pointer;
-          font-family:'Rubik',sans-serif;font-weight:600;white-space:nowrap;">
+          border:none;font-size:.9rem;padding:.4rem 1.1rem;border-radius:14px;cursor:pointer;
+          font-family:'Rubik',sans-serif;font-weight:600;white-space:nowrap;margin-top:.15rem;">
           הוציאו את ספר הפרופילים מהמגירה
         </button>
       </div>
@@ -597,16 +616,16 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 <div class="stage" id="stg-D">
   <div class="bg bg-crime"></div>
   <!-- right 1/3: typewriter text -->
-  <div class="r-panel" id="rp-D" style="opacity:1;z-index:10;justify-content:center;">
+  <div class="r-panel" id="rp-D" style="opacity:1;z-index:10;justify-content:center;display:flex;flex-direction:column;gap:.8rem;">
     <div class="r-txt" id="rp-D-typewriter"></div>
-    <div id="rp-D-btn" style="display:none;margin-top:.8rem;">
-      <div class="r-txt" style="font-size:clamp(.95rem,1.7vw,1.15rem);">צוות המעבדה מבקש את עזרתכם כדי לעשות סדר בכל הראיות ולהתאים את העקבות לחיות השמורה.</div>
+    <div id="rp-D-btn" style="display:none;">
+      <div class="r-txt">צוות המעבדה מבקש את עזרתכם כדי לעשות סדר בכל הראיות ולהתאים את העקבות לחיות השמורה.</div>
       <button class="btn-sm" style="margin-top:.6rem;font-size:.95rem;padding:.5rem 1.4rem;" onclick="goToMatch()">לבדיקת הראיות</button>
     </div>
   </div>
   <!-- left 2/3: evidence grid -->
   <div class="ev-area" id="ev-area">
-    <div style="font-family:'Secular One',sans-serif;font-size:clamp(.9rem,1.8vw,1.1rem);color:rgba(201,168,76,.75);letter-spacing:.05em;text-align:center;flex-shrink:0;">ראיות מהזירה</div>
+    <div class="sub-title-2" style="position:static;margin-bottom:.2rem;">ראיות מהזירה</div>
     <div class="ev-grid" id="ev-grid"></div>
   </div>
 </div>
@@ -617,12 +636,12 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 <div class="stage" id="stg-E">
   <div class="bg bg-crime" style="filter:brightness(.4) saturate(.6);"></div>
   <div class="match-layout">
-    <!-- LEFT: animal pairs (2 columns) -->
-    <div class="pairs-area" id="col-animals"></div>
-    <!-- RIGHT: clue cards grid -->
+    <!-- LEFT: clue cards grid (fills left half) -->
     <div class="clues-area">
       <div class="clue-row" id="col-clues"></div>
     </div>
+    <!-- RIGHT: 2-col × 6-row animal pairs -->
+    <div class="pairs-area" id="col-animals"></div>
   </div>
 </div>
 
@@ -635,7 +654,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 
 <!-- ══ FOOTER ══ -->
 <!-- Floating persistent buttons (map + book) -->
-<div id="float-btns" style="display:none;gap:.4rem;flex-direction:row;align-items:center;">
+<div id="float-btns" style="display:none;gap:.4rem;flex-direction:row;align-items:center;flex-shrink:0;">
   <button id="float-map-btn" class="btn-sm" onclick="openMapPopup()" style="display:none;font-size:.8rem;padding:.35rem .95rem;">מפת השמורה</button>
   <button id="float-book-btn" class="btn-sm" onclick="openBookPopup()" style="display:none;font-size:.8rem;padding:.35rem .95rem;">ספר הפרופילים</button>
 </div>
@@ -735,6 +754,9 @@ function showStage(id){
   curStg=id;
   document.getElementById('hdr-title').textContent=TITLES[id]||'';
   document.getElementById('btn-back').className='hdr-btn-user'+(['A'].includes(id)?' hidden':'');
+  // Ranger visible only in stage A
+  const rwMain=document.getElementById('ranger-wrap');
+  if(rwMain){rwMain.style.opacity=id==='A'?'1':'0';rwMain.style.transition='opacity .6s';}
   // footer
   const fs=document.getElementById('ftr-submit');if(fs)fs.className='btn-gold'+(id==='E'?' show':'');
   document.getElementById('ftr-progress').textContent='';
@@ -759,12 +781,7 @@ function showStage(id){
       if(lw&&lw.style.display==='none')lw.style.display='flex';
     },100);
   }
-  if(id==='D'){
-    // Restore ranger if hidden during C→D transition
-    const rw=document.getElementById('ranger-wrap');
-    if(rw&&rw.style.opacity==='0'){rw.style.transition='opacity 1s';rw.style.opacity='1';}
-    initD();
-  }
+  if(id==='D')initD();
   if(id==='E')initE();
   save();
 }
@@ -1157,14 +1174,15 @@ let selClue=null;
 
 function initE(){selClue=null;renderMatch();updateProg();}
 function renderMatch(){
-  // Animal pairs: animal card + slot below, in 2-column grid
+  // 12 animal pairs — each pair: [animal card] [slot] in a row
+  // pairs-area is a 2-col × 6-row grid so 12 pairs fill it perfectly
   let ah='';
   ANIMALS.forEach(a=>{
     const cn=matches[a.id];
     ah+=`<div class="a-pair">
-      <div class="a-card${cn?' matched':''}" onclick="pickAnimal('${a.id}')">
+      <div class="a-card${cn?' matched':''}">
         <img class="a-img" src="${a.img}" alt="${a.name}"
-          onerror="this.src='';this.style.display='none';this.insertAdjacentHTML('afterend','<div style=\"width:clamp(36px,5vw,58px);height:clamp(36px,5vw,58px);display:flex;align-items:center;justify-content:center;font-size:1.5rem;\">🐾</div>')">
+          onerror="this.style.opacity='.12'">
         <div class="a-name">${a.name}</div>
       </div>
       <div class="a-slot${cn?' filled':''}" onclick="pickAnimal('${a.id}')">
@@ -1173,7 +1191,7 @@ function renderMatch(){
     </div>`;
   });
   document.getElementById('col-animals').innerHTML=ah;
-  // Clue grid (right side)
+  // 13 clue cards — 4 columns × (3-4 rows) fills left half
   let ch='';
   for(let i=1;i<=CLUE_N;i++){
     const used=Object.values(matches).includes(i);
@@ -1187,7 +1205,7 @@ function renderMatch(){
 }
 window.pickClue=function(n){if(Object.values(matches).includes(n))return;selClue=selClue===n?null:n;renderMatch();};
 window.pickAnimal=function(id){
-  if(!selClue){showNotif('בחרו קודם עקבה מהרשימה מימין');return;}
+  if(!selClue){showNotif('בחרו קודם עקבה מהרשימה');return;}
   if(selClue===CLUE_N){showNotif('עקבה זו תישלח למעבדה לזיהוי');selClue=null;renderMatch();return;}
   matches[id]=selClue;selClue=null;save();renderMatch();updateProg();
 };
