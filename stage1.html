@@ -147,13 +147,15 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 */
 #bubble-zone{
   position:absolute;
-  /* sit in right 68%, vertically centered with some top padding */
-  top:2%;bottom:5%;left:32%;right:1%;
+  /* Right 68% of screen, vertically centered */
+  top:0;bottom:0;left:32%;right:1%;
   display:none;flex-direction:column;
-  justify-content:center;
-  padding:0;
+  justify-content:center;   /* vertically center the speech bubble */
+  align-items:stretch;
+  padding:.5rem;
   opacity:0;transition:opacity .5s;
   z-index:21;
+  overflow:hidden;
 }
 #bubble-zone.visible{display:flex;}
 #bubble-zone.show{opacity:1;}
@@ -161,18 +163,18 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 .speech-outer{
   position:relative;
   width:100%;
-  /* Maintain image aspect ratio: 4961/3508 ≈ 1.414 wide */
-  /* So height = width / 1.414. Use padding-top trick */
-  padding-top:0;
-  flex:1;min-height:0;max-height:100%;
+  /* Force exact image aspect ratio: 4961/3508 → height = width * 3508/4961 = 70.7% */
+  padding-top:70.7%;
+  /* Cap at available viewport height */
+  max-height:95vh;
+  flex-shrink:0;
 }
-/* The actual image — fills the outer, keeps ratio */
+/* The actual image — fills the padded container exactly */
 .speech-bg{
   position:absolute;
   top:0;left:0;
   width:100%;height:100%;
-  object-fit:contain;
-  object-position:top center;
+  object-fit:fill;   /* fill exactly since we set correct ratio */
   pointer-events:none;
 }
 /* Text area — positioned inside the gray bubble rectangle
@@ -183,23 +185,24 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 */
 .speech-content{
   position:absolute;
+  /* Bubble rect: top=8.4%, tail starts at 64.3% → bottom = 100%-64.3% = 35.7% */
   top:9%;
-  bottom:28%;   /* leave 28% for tail */
+  bottom:37%;
   left:5%;right:5%;
   overflow-y:auto;
   display:flex;flex-direction:column;
-  justify-content:flex-start;
-  gap:.5rem;
-  padding:.4rem .6rem .4rem 1rem;
+  justify-content:space-between;
+  gap:.4rem;
+  padding:.5rem .7rem .3rem .7rem;
   z-index:2;
 }
 .speech-txt{
   font-family:'Special Elite',serif;
-  font-size:clamp(1.05rem,1.85vw,1.3rem);
+  font-size:clamp(1.15rem,2.1vw,1.5rem);
   color:#111;line-height:1.75;text-align:right;
   flex:1;
 }
-.speech-txt p{margin-bottom:.55rem;}
+.speech-txt p{margin-bottom:.45rem;}
 .speech-txt p:last-child{margin-bottom:0;}
 .speech-txt{transition:opacity .35s;}
 .speech-txt.fading{opacity:0;}
@@ -662,7 +665,7 @@ function showNotif(m,ok=false){const el=document.getElementById('notif');el.text
 
 /* ══ STAGE A ══ */
 // speechIdx: -1=intro (before map), 0,1=main testimony
-const SPEECH_INTRO=`<p>שלום יובל וצוות הבלשים, אני פקח השמורה. זוהי זירת הפשע, אגמון הסלע בשמורת עדן הסודית, מקום המחבוא הסודי שממנו נגנבה מפת האוצרות העתיקה. לפני שאספר לכם כל מה שקרה כדאי שתכירו קצת את מפת השמורה. כך יהיה לכם יותר קל להבין את הסיפור.</p>`;
+const SPEECH_INTRO=`<p>שלום יובל וצוות הבלשים, אני פקח השמורה.<br>זוהי זירת הפשע, אגמון הסלע בשמורת עדן הסודית,<br>מקום המחבוא הסודי שממנו נגנבה מפת האוצרות העתיקה.<br>לפני שאספר לכם כל מה שקרה כדאי שתכירו<br>קצת את מפת השמורה. כך יהיה לכם יותר קל להבין את הסיפור.</p>`;
 
 const SPEECH=[
 `<p>הבוקר לא יצאתי לסיור הבוקר הקבוע שלי, כי הגיעו להחליף את הגדר הישנה בחלק הצפוני של השמורה. זה לקח את רוב שעות היום, אז יצאתי רק לסיור הערב. במהלך הסיור עברתי כמו תמיד באזור אגמון הסלע ומצאתי את הבור, בדיוק במקום שבו לפני כמה ימים טמנתי את התיבה עם המפה העתיקה.</p>
