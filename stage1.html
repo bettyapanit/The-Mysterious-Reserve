@@ -357,50 +357,44 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   display:grid;
   grid-template-columns:1fr 1fr;
   grid-template-rows:repeat(6,1fr);
-  gap:.22rem .45rem;
+  gap:.2rem .4rem;
   overflow:hidden;
+  align-items:center;
 }
 /* Each pair = [animal card] [empty slot] side by side in a row */
 .a-pair{
   display:flex;flex-direction:row;
-  align-items:stretch;
+  align-items:center;
+  justify-content:center;
   gap:.15rem;
-  min-height:0;
+  min-height:0;min-width:0;
   overflow:hidden;
 }
 /* Animal card — left of pair */
 .a-card{
-  flex:1;min-width:0;
+  flex:1;min-width:0;min-height:0;
+  aspect-ratio:1;
   background:rgba(10,22,10,.88);
   border:1.5px solid rgba(201,168,76,.25);
   border-radius:5px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:.05rem;padding:.1rem .08rem;
-  cursor:default;
-  overflow:hidden;
+  padding:.06rem;cursor:default;overflow:hidden;
 }
 .a-card.matched{border-color:rgba(0,220,80,.5);background:rgba(0,180,60,.08);}
 .a-card img.a-img{
-  width:100%;aspect-ratio:1;
+  width:100%;height:100%;
   object-fit:contain;
-  flex:1;min-height:0;
-  max-height:100%;
-}
-.a-card .a-name{
-  font-family:'Special Elite',serif;
-  font-size:clamp(.6rem,1vw,.82rem);
-  color:var(--cream);text-align:center;
-  flex-shrink:0;line-height:1.1;
 }
 /* Clue slot — right of pair */
 .a-slot{
-  flex:1;min-width:0;aspect-ratio:1;
+  flex:1;min-width:0;min-height:0;
+  aspect-ratio:1;
   border:1.5px dashed rgba(201,168,76,.35);
   border-radius:5px;
-  display:flex;align-items:center;justify-content:center;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:rgba(0,0,0,.25);
   cursor:pointer;transition:border-color .18s,background .18s;
-  overflow:hidden;max-height:100%;
+  overflow:hidden;
 }
 .a-slot:hover,.a-slot.drag-over{border-color:var(--gold);background:rgba(201,168,76,.12);}
 .a-slot.filled{border-color:rgba(0,220,80,.5);background:rgba(0,180,60,.07);cursor:pointer;}
@@ -438,7 +432,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 .c-card.sel{border-color:var(--gold);background:rgba(201,168,76,.22);box-shadow:0 0 8px rgba(201,168,76,.4);}
 .c-card.used{display:none;}
 .c-card img{width:100%;aspect-ratio:1;object-fit:contain;display:block;pointer-events:none;}
-.c-num{font-size:.55rem;color:var(--gold);font-weight:600;flex-shrink:0;line-height:1;}
+.c-num{font-size:.72rem;color:var(--gold);font-weight:700;flex-shrink:0;line-height:1;margin-top:.1rem;}
 
 /* ══ FOOTER ══ */
 #ftr{
@@ -700,7 +694,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   <div class="spacer"></div>
   <button id="ftr-instr" onclick="showInst()" style="display:none;font-size:.8rem;padding:.35rem .85rem;">הוראות</button>
   <button id="ftr-submit" onclick="submitMatch()">שלחו לאישור המעבדה</button>
-  <span id="ftr-progress"></span>
+  <span id="ftr-progress" style="display:none"></span>
 </div>
 
 <div class="notif" id="notif"></div>
@@ -1195,7 +1189,18 @@ const ANIMALS=[
 const CLUE_N=13;
 let selClue=null;
 
-function initE(){selClue=null;renderMatch();updateProg();}
+function initE(){
+  selClue=null;renderMatch();
+  setTimeout(()=>{
+    document.getElementById('inst-title').textContent='התאמת עקבות לחיות';
+    document.getElementById('inst-body').innerHTML=
+      '<p style="margin-bottom:.55rem">עליכם להתאים בין העקבות לחיות השמורה.</p>'+
+      '<p style="margin-bottom:.55rem">גררו את העקבה לחלון שלצד החיה המתאימה לה.</p>'+
+      '<p>כשאתם בטוחים שסיימתם — שלחו את ההתאמות לבדיקת המעבדה בכפתור למטה.</p>';
+    document.getElementById('inst-ov').classList.add('show');
+  },400);
+}
+
 function renderMatch(){
   const colA=document.getElementById('col-animals');
   const colC=document.getElementById('col-clues');
@@ -1206,7 +1211,6 @@ function renderMatch(){
       <div class="a-card${cn?' matched':''}">
         <img class="a-img" src="${a.img}" alt="${a.name}"
           onerror="this.parentNode.style.background='rgba(201,168,76,.08)'">
-        <div class="a-name">${a.name}</div>
       </div>
       <div class="a-slot${cn?' filled':''}"
         ondragover="event.preventDefault();this.classList.add('drag-over')"
@@ -1214,7 +1218,7 @@ function renderMatch(){
         ondrop="dropClue(event,'${a.id}')"
         onclick="${cn?`returnClue('${a.id}')`:''}"
         title="${cn?'לחצו להחזרת העקבה':'גררו עקבה לכאן'}">
-        ${cn?`<img src="clues/c${cn}.png" onerror="this.style.opacity='.1'">`:' '}
+        ${cn?`<div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><img src="clues/c${cn}.png" onerror="this.style.opacity='.1'" style="width:85%;height:85%;object-fit:contain;"><span style="position:absolute;bottom:1px;left:0;right:0;text-align:center;font-size:.5rem;color:var(--gold);font-weight:700;font-family:Rubik,sans-serif;">${EVIDENCE[cn-1]?EVIDENCE[cn-1].n:''}</span></div>`:' '}
       </div>
     </div>`;
   });
@@ -1254,7 +1258,7 @@ window.returnClue=function(animalId){
 };
 function updateProg(){
   const n=Object.keys(matches).length;
-  document.getElementById('ftr-progress').textContent=n+'/12';
+  // progress counter removed
   document.getElementById('ftr-submit').className='btn-gold'+(n>=12?' show':'');
 }
 window.submitMatch=function(){
@@ -1264,13 +1268,29 @@ window.submitMatch=function(){
     if(errEl){errEl.style.display='block';setTimeout(()=>errEl.style.display='none',3000);}
     return;
   }
-  showNotif('כל ההתאמות נכונות!',true);
-  setTimeout(()=>{
-    const b=document.createElement('div');
-    b.style.cssText='position:fixed;bottom:4rem;left:50%;transform:translateX(-50%);z-index:450;background:rgba(6,20,6,.96);border:1px solid rgba(0,220,80,.35);border-radius:12px;padding:1rem 1.5rem;max-width:500px;width:90%;text-align:center;font-family:Special Elite,serif;font-size:clamp(.9rem,1.7vw,1.05rem);color:var(--cream);line-height:1.7;';
-    b.innerHTML='כל ההתאמות אומתו על ידי המעבדה. אבל שימו לב — נמצאה <strong style="color:var(--gold-l)">עקבה לא מזוהה</strong> שאינה שייכת לאף אחד מדיירי השמורה. שלחו אותה למעבדה לניתוח.<br><button class="btn-sm" style="margin-top:.6rem" onclick="window.location.href=\'stage2.html\'">לדו"ח המעבדה</button>';
-    document.body.appendChild(b);
-  },800);
+  // Show centered success popup
+  const popup=document.createElement('div');
+  popup.style.cssText='position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:1rem;';
+  popup.innerHTML=`<div style="background:rgba(4,14,4,.97);border:2px solid rgba(0,220,80,.4);border-radius:16px;padding:2rem 2.4rem;max-width:560px;width:100%;text-align:center;font-family:'Special Elite',serif;font-size:clamp(1.1rem,2vw,1.4rem);color:var(--cream);line-height:1.9;">
+    <div style="color:var(--gold-l);font-family:'Secular One',sans-serif;font-size:clamp(1.2rem,2.2vw,1.6rem);margin-bottom:.8rem;">יפה מאוד!</div>
+    <p>כל ההתאמות אומתו על ידי המעבדה.</p>
+    <p>הם גם מכינים לכם עכשיו דו"ח ניתוח מעמיק על כל העקבות.</p>
+    <p>אבל שימו לב — נותרה לכם עקבה אחת לא מזוהה שאינה שייכת לאף אחד מדיירי השמורה.</p>
+    <p>צריך לשלוח אותה גם אותה למעבדה לניתוח מעמיק.</p>
+    <p>כדאי שתגיעו למעבדה בעצמכם.</p>
+    <button onclick="goToLab()" style="margin-top:1.2rem;font-family:'Rubik',sans-serif;font-weight:600;font-size:1rem;padding:.8rem 2rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--jd);border:none;border-radius:8px;cursor:pointer;">אל מעבדת המז"פ</button>
+  </div>`;
+  document.body.appendChild(popup);
+};
+
+window.goToLab=function(){
+  // Wait screen then stage2
+  document.querySelectorAll('.popup-overlay').forEach(p=>p.remove());
+  const wb=document.createElement('div');
+  wb.style.cssText='position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;';
+  wb.innerHTML='<div style="font-family:'Special Elite',serif;font-size:clamp(1.4rem,3vw,2rem);color:var(--gold-l);text-align:center;text-shadow:0 0 30px rgba(201,168,76,.6);animation:wblink 1.4s ease-in-out infinite;line-height:1.9;">בדרך למעבדת הזיהוי הפלילי...<br>מיד מגיעים.</div>';
+  document.body.appendChild(wb);
+  setTimeout(()=>window.location.href='stage2.html',5000);
 };
 
 /* ══ INSTRUCTIONS ══ */
@@ -1295,6 +1315,17 @@ window.devJump=function(s){
   showStage(s);
 };
 window.devSolve=function(){closeDev();ANIMALS.forEach(a=>{matches[a.id]=a.clue;});bookUnlocked=true;save();if(curStg==='E'){renderMatch();updateProg();}showNotif('פתרון מלא הוכנס',true);};
+window.goToLab=function(){
+  // Remove any success popup
+  document.querySelectorAll('[style*="z-index:460"]').forEach(el=>el.remove());
+  // Show wait screen
+  const wb=document.createElement('div');
+  wb.style.cssText='position:fixed;inset:0;z-index:490;background:#000;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .5s;';
+  wb.innerHTML='<div style="font-family:Special Elite,serif;font-size:clamp(1.4rem,3vw,2rem);color:var(--gold-l);text-align:center;text-shadow:0 0 30px rgba(201,168,76,.6);animation:wblink 1.4s ease-in-out infinite;line-height:1.9;">בדרך למעבדת הזיהוי הפלילי...<br>מיד מגיעים.</div>';
+  document.body.appendChild(wb);
+  setTimeout(()=>wb.style.opacity='1',30);
+  setTimeout(()=>{window.location.href='stage2.html';},5000);
+};
 window.devReset=function(){if(!confirm('איפוס?'))return;closeDev();localStorage.clear();window.location.href='index.html';};
 
 /* ══ INIT ══ */
