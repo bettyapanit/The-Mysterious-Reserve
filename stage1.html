@@ -1207,33 +1207,40 @@ function renderMatch(){
   let ah='';
   ANIMALS.forEach(a=>{
     const cn=matches[a.id];
-    ah+=`<div class="a-pair">
-      <div class="a-card${cn?' matched':''}">
-        <img class="a-img" src="${a.img}" alt="${a.name}"
-          onerror="this.parentNode.style.background='rgba(201,168,76,.08)'">
-      </div>
-      <div class="a-slot${cn?' filled':''}"
-        ondragover="event.preventDefault();this.classList.add('drag-over')"
-        ondragleave="this.classList.remove('drag-over')"
-        ondrop="dropClue(event,'${a.id}')"
-        onclick="${cn?`returnClue('${a.id}')`:''}"
-        title="${cn?'לחצו להחזרת העקבה':'גררו עקבה לכאן'}">
-        ${cn?`<div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><img src="clues/c${cn}.png" onerror="this.style.opacity='.1'" style="width:85%;height:85%;object-fit:contain;"><span style="position:absolute;bottom:1px;left:0;right:0;text-align:center;font-size:.5rem;color:var(--gold);font-weight:700;font-family:Rubik,sans-serif;">${EVIDENCE[cn-1]?EVIDENCE[cn-1].n:''}</span></div>`:' '}
-      </div>
-    </div>`;
+    const slotContent=cn
+      ? '<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">'
+        +'<img src="clues/c'+cn+'.png" style="flex:1;min-height:0;width:100%;object-fit:contain;">'
+        +'<div style="font-size:.55rem;color:var(--gold-l);font-weight:700;line-height:1;">'+(EVIDENCE[cn-1]?EVIDENCE[cn-1].n:'')+'</div>'
+        +'</div>'
+      : ' ';
+    const slotClick=cn ? 'returnClue(\''+a.id+'\')' : '';
+    ah+='<div class="a-pair">'
+      +'<div class="a-card'+(cn?' matched':'')+'">'
+      +'<img class="a-img" src="'+a.img+'" alt="'+a.name+'" onerror="this.parentNode.style.background=\'rgba(201,168,76,.08)\'">'
+      +'</div>'
+      +'<div class="a-slot'+(cn?' filled':'')+'"'
+      +' ondragover="event.preventDefault();this.classList.add(\'drag-over\')"'
+      +' ondragleave="this.classList.remove(\'drag-over\')"'
+      +' ondrop="dropClue(event,\''+a.id+'\')"'
+      +' onclick="'+slotClick+'"'
+      +' title="'+(cn?'לחצו להחזרת העקבה':'גררו עקבה לכאן')+'">'
+      +slotContent
+      +'</div>'
+      +'</div>';
   });
   colA.innerHTML=ah;
+
   let ch='';
   for(let i=1;i<=CLUE_N;i++){
     const used=Object.values(matches).includes(i);
     const ev=EVIDENCE[i-1];
-    ch+=`<div class="c-card${used?' used':''}"
-      draggable="true"
-      ondragstart="dragStart(event,${i})"
-      ondragend="dragEnd(event)">
-      <img src="clues/c${i}.png" onerror="this.style.opacity='.12'">
-      <div class="c-num">${ev?ev.n:'C-'+String(i).padStart(2,'0')}</div>
-    </div>`;
+    ch+='<div class="c-card'+(used?' used':'')+'"'
+      +' draggable="true"'
+      +' ondragstart="dragStart(event,'+i+')"'
+      +' ondragend="dragEnd(event)">'
+      +'<img src="clues/c'+i+'.png" onerror="this.style.opacity=\'.12\'">'
+      +'<div class="c-num">'+(ev?ev.n:'C-'+String(i).padStart(2,'0'))+'</div>'
+      +'</div>';
   }
   colC.innerHTML=ch;
 }
@@ -1288,7 +1295,7 @@ window.goToLab=function(){
   document.querySelectorAll('.popup-overlay').forEach(p=>p.remove());
   const wb=document.createElement('div');
   wb.style.cssText='position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;';
-  wb.innerHTML='<div style="font-family:'Special Elite',serif;font-size:clamp(1.4rem,3vw,2rem);color:var(--gold-l);text-align:center;text-shadow:0 0 30px rgba(201,168,76,.6);animation:wblink 1.4s ease-in-out infinite;line-height:1.9;">בדרך למעבדת הזיהוי הפלילי...<br>מיד מגיעים.</div>';
+  wb.innerHTML='<div style="font-family:Special Elite,serif;font-size:clamp(1.4rem,3vw,2rem);color:var(--gold-l);text-align:center;text-shadow:0 0 30px rgba(201,168,76,.6);animation:wblink 1.4s ease-in-out infinite;line-height:1.9;">בדרך למעבדת הזיהוי הפלילי...<br>מיד מגיעים.</div>';
   document.body.appendChild(wb);
   setTimeout(()=>window.location.href='stage2.html',5000);
 };
