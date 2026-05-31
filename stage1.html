@@ -628,7 +628,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   </div>
   <!-- left 2/3: evidence grid -->
   <div class="ev-area" id="ev-area">
-    <div class="sub-title-2" style="position:static;margin-bottom:.2rem;">ראיות מהזירה</div>
+    <div style="font-family:'Secular One',sans-serif;font-size:clamp(.9rem,1.8vw,1.1rem);color:rgba(201,168,76,.75);letter-spacing:.05em;text-align:center;flex-shrink:0;margin-bottom:.3rem;">ראיות מהזירה</div>
     <div class="ev-grid" id="ev-grid"></div>
   </div>
 </div>
@@ -764,12 +764,12 @@ function showStage(id){
   curStg=id;
   document.getElementById('hdr-title').textContent=TITLES[id]||'';
   document.getElementById('btn-back').className='hdr-btn-user'+(['A'].includes(id)?' hidden':'');
-  // Ranger: visible in A and B (station), hidden in C/D/E
+  // Ranger visibility managed by initA/transitionToB, not showStage
+  // Only force-hide for C/D/E
   const rwMain=document.getElementById('ranger-wrap');
-  if(rwMain){
-    const showRanger=['A','B'].includes(id);
-    rwMain.style.transition='opacity .6s';
-    rwMain.style.opacity=showRanger?'1':'0';
+  if(rwMain&&!['A','B'].includes(id)){
+    rwMain.style.transition='opacity .5s';
+    rwMain.style.opacity='0';
   }
   // footer
   const fs=document.getElementById('ftr-submit');if(fs)fs.className='btn-gold'+(id==='E'?' show':'');
@@ -777,14 +777,7 @@ function showStage(id){
   const ftb=document.getElementById('ftr-book');if(ftb)ftb.className='hdr-btn'+((['D','E'].includes(id)&&bookUnlocked)?' show':'');
   // instructions only relevant for E (match stage)
   const fi=document.getElementById('ftr-instr');if(fi)fi.style.display=id==='E'?'block':'none';
-  // floating map button
-  const fb=document.getElementById('float-btns');
-  const showMap=(['D','E','C'].includes(id));
-  if(fb)fb.style.display=showMap?'flex':'none';
-  const fmb=document.getElementById('float-map-btn');
-  if(fmb)fmb.style.display=showMap?'block':'none';
-  const fbb=document.getElementById('float-book-btn');
-  if(fbb)fbb.style.display=(id==='E'&&bookUnlocked)?'block':'none';
+  // Float buttons stay visible once they appear — no hiding here
   if(id==='A')initA();
   if(id==='B'){
     // subtitle + lock appear after 3s from showStage call (if not from transitionToB)
