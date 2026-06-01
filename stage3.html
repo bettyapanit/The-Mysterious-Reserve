@@ -4,260 +4,252 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 <title>גביית עדויות</title>
-<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Special+Elite&family=Rubik:wght@300;400;500;600&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Special+Elite&family=Rubik:wght@300;400;500;600&family=Caveat:wght@600;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#8a6820;--jd:#0a1508;--cream:#f5edd8;--dim:#a8c4aa;--gs:#00ff41;--gd:#00a82a;--border:rgba(201,168,76,.28);}
+:root{--gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#8a6820;--jd:#0a1508;--cream:#f5edd8;--dim:#a8c4aa;--border:rgba(201,168,76,.28);}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;font-family:'Rubik',sans-serif;background:#000;color:var(--cream);overflow:hidden;}
 
-/* ── SCREENS ── */
 .screen{position:fixed;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .6s;z-index:10;}
 .screen.active{opacity:1;pointer-events:all;}
 
-/* ── BACKGROUND ── */
 .bg{position:fixed;inset:0;z-index:0;background:url('jungle.jpg') center/cover no-repeat;}
 .bg-overlay{position:fixed;inset:0;z-index:1;background:rgba(0,0,0,.7);}
 
-/* ── WAIT SCREEN ── */
-#s-wait{align-items:center;justify-content:center;}
+/* Wait screens */
+#s-wait,#s-wait2{align-items:center;justify-content:center;}
 .wait-text{position:relative;z-index:2;font-family:'Special Elite',serif;font-size:clamp(1.3rem,2.8vw,1.9rem);color:var(--gold-l);text-align:center;line-height:2;text-shadow:0 0 30px rgba(201,168,76,.6);animation:wblink 1.3s ease-in-out infinite;}
 @keyframes wblink{0%,100%{opacity:1}55%{opacity:.2}}
 
-/* ── BRIDGE SCREEN ── */
+/* Bridge screen */
 #s-bridge{align-items:center;justify-content:center;}
-.bridge-box{position:relative;z-index:2;background:rgba(4,14,4,.92);border:1px solid var(--border);border-radius:14px;padding:2rem 2.2rem;max-width:580px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.7);}
-.bridge-title{font-family:'Secular One',sans-serif;font-size:clamp(1.1rem,2.8vw,1.6rem);color:var(--gold);margin-bottom:1.2rem;line-height:1.5;}
-.bridge-body{font-family:'Special Elite',serif;font-size:clamp(.95rem,2.2vw,1.2rem);color:var(--cream);line-height:1.9;margin-bottom:1.5rem;}
+.bridge-box{position:relative;z-index:2;background:rgba(4,14,4,.92);border:1px solid var(--border);border-radius:14px;padding:2rem 2.2rem;max-width:560px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.7);}
+.bridge-title{font-family:'Secular One',sans-serif;font-size:clamp(1.1rem,2.8vw,1.5rem);color:var(--gold);margin-bottom:1rem;}
+.bridge-body{font-family:'Special Elite',serif;font-size:clamp(.95rem,2.2vw,1.15rem);color:var(--cream);line-height:1.9;margin-bottom:1.4rem;}
 .bridge-body strong{color:var(--gold-l);}
-.bridge-sub{font-size:.9rem;color:var(--dim);margin-bottom:1.5rem;line-height:1.7;}
-.btn-gold{font-family:'Rubik',sans-serif;font-weight:600;font-size:1.1rem;padding:.85rem 2.2rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--jd);border:none;border-radius:8px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.4);transition:transform .2s,box-shadow .2s;}
-.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,.6);}
+.btn-gold{font-family:'Rubik',sans-serif;font-weight:600;font-size:1.05rem;padding:.8rem 2rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--jd);border:none;border-radius:8px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.4);transition:transform .2s;}
+.btn-gold:hover{transform:translateY(-2px);}
 
-/* ── WAIT RETURN SCREEN ── */
-#s-wait2{align-items:center;justify-content:center;}
-
-/* ── TESTIMONY SCREEN ── */
+/* Testimony screen */
 #s-testimony{flex-direction:column;overflow:hidden;}
+.t-header{position:relative;z-index:2;background:rgba(6,12,6,.95);border-bottom:1px solid var(--border);padding:.5rem 1rem;flex-shrink:0;display:flex;align-items:center;gap:.7rem;backdrop-filter:blur(4px);}
+.t-title{font-family:'Secular One',sans-serif;font-size:clamp(.9rem,2.5vw,1.2rem);color:var(--gold);}
+.t-prog{font-family:'Rubik',sans-serif;font-size:.8rem;color:var(--dim);margin-right:auto;}
 
-/* Header */
-.t-header{position:relative;z-index:2;background:rgba(6,12,6,.95);border-bottom:1px solid var(--border);padding:.55rem 1rem;flex-shrink:0;display:flex;align-items:center;gap:.8rem;backdrop-filter:blur(4px);}
-.t-title{font-family:'Secular One',sans-serif;font-size:clamp(.95rem,2.5vw,1.3rem);color:var(--gold);}
-.t-progress{font-family:'Rubik',sans-serif;font-size:.82rem;color:var(--dim);margin-right:auto;}
+/* TWO COLUMN GRID — no scroll */
+.t-body{position:relative;z-index:2;flex:1;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;gap:.4rem;padding:.5rem .8rem 4rem;align-content:start;}
+
+.t-item{background:rgba(8,18,8,.78);border:1px solid rgba(45,90,45,.32);border-radius:8px;padding:.55rem .8rem;display:flex;align-items:flex-start;gap:.55rem;transition:border-color .2s;}
+.t-item.answered-true{border-color:rgba(0,200,80,.4);background:rgba(0,50,20,.3);}
+.t-item.answered-false{border-color:rgba(200,50,50,.4);background:rgba(50,0,0,.3);}
+
+.t-animal{font-family:'Secular One',sans-serif;font-size:.75rem;color:var(--gold);flex-shrink:0;min-width:50px;padding-top:.1rem;line-height:1.3;}
+.t-text{font-family:'Special Elite',serif;font-size:clamp(.78rem,1.5vw,.9rem);color:var(--cream);line-height:1.55;flex:1;}
+.t-btns{display:flex;flex-direction:column;gap:.25rem;flex-shrink:0;}
+.t-btn{font-family:'Rubik',sans-serif;font-size:.7rem;font-weight:600;padding:.22rem .55rem;border-radius:16px;cursor:pointer;border:1px solid;transition:all .18s;white-space:nowrap;}
+.t-btn.tbtn-t{border-color:rgba(0,200,80,.35);color:rgba(0,220,80,.65);background:transparent;}
+.t-btn.tbtn-t.sel{background:rgba(0,200,80,.22);border-color:rgba(0,220,80,.65);color:#00e050;}
+.t-btn.tbtn-f{border-color:rgba(200,50,50,.35);color:rgba(200,80,80,.65);background:transparent;}
+.t-btn.tbtn-f.sel{background:rgba(200,50,50,.22);border-color:rgba(220,80,80,.65);color:#e05050;}
+
+.t-footer{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(6,12,6,.95);border-top:1px solid var(--border);padding:.45rem .8rem;display:flex;align-items:center;gap:.6rem;backdrop-filter:blur(4px);}
 
 /* Instructions popup */
-.inst-ov{position:fixed;inset:0;z-index:510;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .3s;}
+.inst-ov{position:fixed;inset:0;z-index:510;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .3s;}
 .inst-ov.show{opacity:1;pointer-events:all;}
-.inst-box{background:rgba(4,14,4,.97);border:1px solid var(--border);border-radius:14px;max-width:560px;width:100%;padding:2rem 2rem;}
-.inst-title{font-family:'Secular One',sans-serif;font-size:1.4rem;color:var(--gold);margin-bottom:1rem;text-align:center;}
-.inst-body{font-family:'Rubik',sans-serif;font-size:1rem;color:var(--cream);line-height:1.9;margin-bottom:1.5rem;}
-.inst-body p{margin-bottom:.6rem;}
+.inst-box{background:rgba(4,14,4,.97);border:1px solid var(--border);border-radius:14px;max-width:520px;width:100%;padding:1.8rem 2rem;}
+.inst-title{font-family:'Secular One',sans-serif;font-size:1.4rem;color:var(--gold);margin-bottom:.9rem;text-align:center;}
+.inst-body{font-family:'Rubik',sans-serif;font-size:1rem;color:var(--cream);line-height:1.85;margin-bottom:1.4rem;}
+.inst-body p{margin-bottom:.55rem;}
 
-/* Testimony list */
-.t-scroll{position:relative;z-index:2;flex:1;overflow-y:auto;padding:.6rem .8rem 5rem;-webkit-overflow-scrolling:touch;}
-.t-scroll::-webkit-scrollbar{width:4px;}
-.t-scroll::-webkit-scrollbar-thumb{background:rgba(201,168,76,.25);}
+/* Alert popup (before note) */
+.alert-ov{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .4s;}
+.alert-ov.show{opacity:1;pointer-events:all;}
+.alert-box{background:rgba(4,14,4,.97);border:2px solid rgba(201,168,76,.5);border-radius:14px;padding:2rem 2.2rem;max-width:460px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.8);}
+.alert-icon{font-size:2.5rem;margin-bottom:.7rem;}
+.alert-title{font-family:'Secular One',sans-serif;font-size:1.4rem;color:var(--gold-l);margin-bottom:.8rem;}
+.alert-body{font-family:'Rubik',sans-serif;font-size:1rem;color:var(--cream);line-height:1.8;margin-bottom:1.4rem;}
 
-.t-item{background:rgba(8,18,8,.82);border:1px solid rgba(45,90,45,.35);border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;display:flex;align-items:flex-start;gap:.8rem;transition:border-color .2s;}
-.t-item.answered-true{border-color:rgba(0,200,80,.4);background:rgba(0,50,20,.35);}
-.t-item.answered-false{border-color:rgba(200,50,50,.4);background:rgba(50,0,0,.35);}
-
-.t-animal{font-family:'Secular One',sans-serif;font-size:.82rem;color:var(--gold);flex-shrink:0;min-width:60px;padding-top:.1rem;}
-.t-text{font-family:'Special Elite',serif;font-size:clamp(.9rem,2vw,1.05rem);color:var(--cream);line-height:1.7;flex:1;}
-
-.t-btns{display:flex;flex-direction:column;gap:.35rem;flex-shrink:0;}
-.t-btn{font-family:'Rubik',sans-serif;font-size:.78rem;font-weight:600;padding:.3rem .7rem;border-radius:20px;cursor:pointer;border:1px solid;transition:all .2s;white-space:nowrap;}
-.t-btn.true-btn{border-color:rgba(0,200,80,.4);color:rgba(0,220,80,.7);background:transparent;}
-.t-btn.true-btn.sel{background:rgba(0,200,80,.25);border-color:rgba(0,220,80,.7);color:#00e050;}
-.t-btn.false-btn{border-color:rgba(200,50,50,.4);color:rgba(200,80,80,.7);background:transparent;}
-.t-btn.false-btn.sel{background:rgba(200,50,50,.25);border-color:rgba(220,80,80,.7);color:#e05050;}
-
-/* Footer */
-.t-footer{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(6,12,6,.95);border-top:1px solid var(--border);padding:.5rem .8rem;display:flex;align-items:center;gap:.6rem;backdrop-filter:blur(4px);}
-
-/* Anonymous testimony popup */
-.anon-ov{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .5s;}
+/* Anonymous note popup */
+.anon-ov{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .5s;}
 .anon-ov.show{opacity:1;pointer-events:all;}
-.anon-wrap{position:relative;max-width:620px;width:100%;filter:drop-shadow(0 8px 32px rgba(0,0,0,.8));}
-.anon-note-bg{position:relative;width:100%;border-radius:6px;overflow:hidden;}
-.anon-bg-img{width:100%;display:block;border-radius:6px;mix-blend-mode:multiply;}
-.anon-bg-backing{position:absolute;inset:0;background:white;border-radius:6px;z-index:-1;}
-.anon-content{position:absolute;inset:0;padding:1.8rem 2.2rem 1.4rem;display:flex;flex-direction:column;justify-content:center;}
-.anon-text{font-family:'Caveat',cursive;font-size:clamp(1rem,2.2vw,1.3rem);color:#1a2010;line-height:2;direction:rtl;text-align:right;}
-.anon-sig{font-family:'Caveat',cursive;font-size:clamp(.85rem,1.8vw,1.05rem);color:#3a4030;text-align:left;margin-top:.8rem;font-style:italic;}
-/* Fallback if image fails */
-.anon-fallback{display:none;background:rgba(240,230,210,.95);border-radius:10px;padding:1.8rem 2rem;max-width:620px;width:100%;}
-.anon-fallback .anon-text{font-family:'Caveat',cursive;font-size:clamp(1rem,2.2vw,1.3rem);color:#1a2010;line-height:2;text-align:right;}
-.anon-fallback .anon-sig{font-family:'Caveat',cursive;font-size:.95rem;color:#3a4030;text-align:left;margin-top:.8rem;font-style:italic;}
-.anon-btn-wrap{margin-top:1rem;text-align:center;}
+.anon-outer{display:flex;flex-direction:column;align-items:center;gap:1rem;max-width:640px;width:100%;}
+.anon-wrap{position:relative;width:100%;}
+/* The note with image bg */
+.anon-note{position:relative;width:100%;min-height:240px;border-radius:6px;overflow:hidden;}
+.anon-bg-backing{position:absolute;inset:0;background:#f5edd8;border-radius:6px;}
+.anon-bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:6px;mix-blend-mode:multiply;}
+.anon-content{position:relative;z-index:2;padding:1.6rem 2rem 1.4rem;}
+.anon-text{font-family:'Dancing Script',cursive;font-size:clamp(.95rem,2.1vw,1.2rem);color:#1a200e;line-height:1.7;direction:rtl;text-align:right;}
+.anon-sig{font-family:'Dancing Script',cursive;font-size:clamp(.85rem,1.8vw,1rem);color:#3a4025;text-align:left;margin-top:.7rem;font-style:italic;}
+/* Fallback */
+.anon-fallback{display:none;background:rgba(240,232,210,.95);border-radius:10px;padding:1.6rem 2rem;}
 
 /* Dev */
-.dev-btn-f{position:fixed;top:.6rem;left:.5rem;width:26px;height:26px;background:transparent;border:none;cursor:pointer;z-index:700;opacity:.08;font-size:13px;display:flex;align-items:center;justify-content:center;}
+.dev-btn-f{position:fixed;top:.6rem;left:.5rem;width:26px;height:26px;background:transparent;border:none;cursor:pointer;z-index:900;opacity:.08;font-size:13px;display:flex;align-items:center;justify-content:center;}
 .dev-btn-f:hover{opacity:.4;}
-.dev-panel{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;opacity:0;pointer-events:none;transition:opacity .3s;padding:2rem;}
+.dev-panel{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:950;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.65rem;opacity:0;pointer-events:none;transition:opacity .3s;padding:2rem;}
 .dev-panel.open{opacity:1;pointer-events:all;}
-.dev-ttl{font-family:'Rubik',sans-serif;color:#0f0;font-size:1.1rem;}
-.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;width:100%;max-width:280px;}
-.dev-bi{background:#080808;border:1px solid #1a1a1a;color:#0f0;font-family:monospace;font-size:.76rem;padding:.5rem;border-radius:5px;cursor:pointer;text-align:center;}
+.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;width:100%;max-width:280px;}
+.dev-bi{background:#080808;border:1px solid #1a1a1a;color:#0f0;font-family:monospace;font-size:.74rem;padding:.45rem;border-radius:5px;cursor:pointer;text-align:center;}
 .dev-bi:hover{background:#0a160a;border-color:#0f0;}
-.dev-close{background:transparent;border:1px solid #333;color:#555;font-size:.76rem;padding:.35rem 1.1rem;border-radius:5px;cursor:pointer;}
+.dev-close{background:transparent;border:1px solid #333;color:#555;font-size:.74rem;padding:.32rem 1rem;border-radius:5px;cursor:pointer;}
 </style>
 </head>
 <body>
 <div class="bg"></div>
 <div class="bg-overlay"></div>
 
-<!-- Dev -->
 <button class="dev-btn-f" onclick="openDev()">🔧</button>
 <div class="dev-panel" id="dev-panel">
-  <div class="dev-ttl">DEV MODE</div>
+  <div style="color:#0f0;font-family:monospace;font-size:1rem;margin-bottom:.3rem;">DEV</div>
   <div class="dev-grid">
     <div class="dev-bi" onclick="devSkipWait()">דלג המתנה</div>
     <div class="dev-bi" onclick="devSkipBridge()">דלג גשר</div>
     <div class="dev-bi" onclick="devSkipWait2()">דלג המתנה 2</div>
     <div class="dev-bi" onclick="devFillAll()">סמן הכל</div>
-    <div class="dev-bi" onclick="devShowAnon()" style="grid-column:1/-1">הצג עדות אנונימית</div>
+    <div class="dev-bi" onclick="devShowAlert()" style="grid-column:1/-1">הצג התראת פתק</div>
   </div>
   <button class="dev-close" onclick="closeDev()">סגור</button>
 </div>
 
-<!-- ══ WAIT SCREEN (from lab) ══ -->
+<!-- ══ WAIT (from lab) ══ -->
 <div class="screen active" id="s-wait">
   <div class="wait-text">חוזרים לשמורה לגבות עדויות...<br><span style="font-size:.85em;color:var(--cream);">מיד מגיעים.</span></div>
 </div>
 
-<!-- ══ BRIDGE SCREEN ══ -->
+<!-- ══ BRIDGE ══ -->
 <div class="screen" id="s-bridge">
   <div class="bridge-box">
     <div class="bridge-title">🔍 מצב החקירה</div>
     <div class="bridge-body">
       <strong>יש לכם כרגע 5 חשודים בחקירה.</strong><br><br>
       הראיות מהזירה מצביעות, אבל עדיין לא מספיק כדי לדעת בוודאות מי עומד מאחורי הגניבה.<br><br>
-      כדי להתקדם — כדאי לחזור לשמורה ולגבות עדויות מהחיות עצמן. אולי מישהו ראה משהו אותו לילה. אולי מישהו שמע.
+      כדי להתקדם — כדאי לחזור לשמורה ולגבות עדויות מהחיות. אולי מישהו ראה משהו אותו לילה. אולי מישהו שמע.
     </div>
-    <div class="bridge-sub">יש לקרוא את כל העדויות בקפידה.</div>
-    <button class="btn-gold" onclick="goToWait2()">חוזרים לשמורה</button>
+    <button class="btn-gold" onclick="goBridge()">חוזרים לשמורה</button>
   </div>
 </div>
 
-<!-- ══ WAIT RETURN SCREEN ══ -->
+<!-- ══ WAIT 2 (returning to reserve) ══ -->
 <div class="screen" id="s-wait2">
-  <div class="wait-text" id="wait2-text">בדרך לשמורה...<br><span style="font-size:.85em;color:var(--cream);">מיד שם.</span></div>
+  <div class="wait-text">בדרך חזרה לשמורה...<br><span style="font-size:.85em;color:var(--cream);">מיד שם.</span></div>
 </div>
 
-<!-- ══ TESTIMONY SCREEN ══ -->
+<!-- ══ TESTIMONIES ══ -->
 <div class="screen" id="s-testimony">
   <div class="t-header">
-    <div class="t-title">🗣️ גביית עדויות</div>
-    <div class="t-progress" id="t-progress">0 / 13 עדויות סומנו</div>
+    <div class="t-title">🗣️ עדויות תושבי השמורה</div>
+    <div class="t-prog" id="t-prog">0 / 13 סומנו</div>
   </div>
-  <div class="t-scroll" id="t-scroll">
-    <!-- Testimonies rendered by JS -->
+  <div class="t-body" id="t-body">
+    <!-- Rendered by JS -->
   </div>
   <div class="t-footer">
-    <button class="btn-gold" id="inst-btn" onclick="showInst()" style="font-size:.85rem;padding:.4rem 1.1rem;">הוראות</button>
+    <button class="btn-gold" onclick="showInst()" style="font-size:.82rem;padding:.38rem 1rem;">הוראות</button>
     <div style="flex:1;"></div>
   </div>
 </div>
 
-<!-- ══ INSTRUCTIONS POPUP ══ -->
+<!-- ══ INSTRUCTIONS ══ -->
 <div class="inst-ov" id="inst-ov">
   <div class="inst-box">
-    <div class="inst-title">גביית עדויות</div>
+    <div class="inst-title">עדויות תושבי השמורה</div>
     <div class="inst-body">
       <p>לפניכם עדויות של תושבי השמורה על אירועי הלילה שבו נגנבה המפה.</p>
       <p>קראו כל עדות בקפידה וסמנו ליד כל משפט האם לדעתכם מדובר באמת או בשקר.</p>
-      <p>אפשר להחליף את הבחירה בכל שלב — פשוט לחצו על הכפתור האחר.</p>
+      <p>אפשר להחליף את הבחירה בכל שלב.</p>
     </div>
     <div style="text-align:center;">
-      <button class="btn-gold" onclick="closeInst()" style="font-size:1rem;padding:.7rem 2rem;">קדימה, לחקירה.</button>
+      <button class="btn-gold" onclick="closeInst()" style="font-size:1rem;padding:.65rem 1.9rem;">קדימה, לחקירה.</button>
     </div>
   </div>
 </div>
 
-<!-- ══ ANONYMOUS TESTIMONY POPUP ══ -->
+<!-- ══ ALERT POPUP (surprise note) ══ -->
+<div class="alert-ov" id="alert-ov">
+  <div class="alert-box">
+    <div class="alert-icon">📜</div>
+    <div class="alert-title">שימו לב!</div>
+    <div class="alert-body">מישהו השאיר לכם פתק!</div>
+    <button class="btn-gold" onclick="openNote()" style="font-size:1rem;padding:.7rem 2rem;">לפתיחת הפתק</button>
+  </div>
+</div>
+
+<!-- ══ ANONYMOUS NOTE ══ -->
 <div class="anon-ov" id="anon-ov">
-  <!-- Note with image background -->
-  <div style="display:flex;flex-direction:column;align-items:center;gap:1rem;max-width:640px;width:100%;">
-    <div class="anon-wrap" id="anon-wrap">
-      <div class="anon-note-bg" id="anon-note-bg" style="min-height:260px;">
+  <div class="anon-outer">
+    <!-- Note with image background -->
+    <div class="anon-wrap">
+      <div class="anon-note" id="anon-note">
         <div class="anon-bg-backing"></div>
-        <img class="anon-bg-img" src="note_bg.png" alt="" id="anon-bg-img"
-          onerror="document.getElementById('anon-note-bg').style.display='none';document.getElementById('anon-fallback').style.display='block';">
+        <img class="anon-bg-img" src="note_bg.png" alt=""
+          onerror="this.style.display='none';document.getElementById('anon-note').style.background='rgba(240,232,210,.95)';">
         <div class="anon-content">
           <div class="anon-text">
-            ראיתי שלוש דמויות ליד גבול השמורה קצת לפני חצות.<br><br>
-            הראשונה — גוף קטן, רגליים קצרות. חפרה בקרקע בזריזות ובשקט.<br><br>
-            השנייה — גוף כבד ומסיבי. התקדמה בכוח, לא דאגה לרעש שעשתה.<br><br>
-            השלישית — זנב ארוך עם טבעות. ידיה הזריזות אחזו בתיבה.
+            ראיתי בסביבות שתיים בלילה שלוש דמויות ליד הגדר הדרום-מערבית של השמורה.<br><br>
+            הראשונה, גוף קטן עם רגליים קצרות, הגיעה ראשונה ועמדה ליד הגדר.<br><br>
+            השנייה, גוף גדול ומסיבי, שברה חור בגדר בכוח.<br><br>
+            השלישית, עם זנב ארוך ומפוספס, קפצה דרך החור ונעלמה מעבר לגדר.<br><br>
+            השתיים הראשונות רצו בחזרה צפונה דרך החורשה.
           </div>
-          <div class="anon-sig">— עד אנונימי. מבקש לא להיחשף.</div>
+          <div class="anon-sig">עד אנונימי. מבקש לא להיחשף.</div>
         </div>
-      </div>
-      <!-- Fallback -->
-      <div class="anon-fallback" id="anon-fallback">
-        <div class="anon-text">
-          ראיתי שלוש דמויות ליד גבול השמורה קצת לפני חצות.<br><br>
-          הראשונה — גוף קטן, רגליים קצרות. חפרה בקרקע בזריזות ובשקט.<br><br>
-          השנייה — גוף כבד ומסיבי. התקדמה בכוח, לא דאגה לרעש שעשתה.<br><br>
-          השלישית — זנב ארוך עם טבעות. ידיה הזריזות אחזו בתיבה.
-        </div>
-        <div class="anon-sig">— עד אנונימי. מבקש לא להיחשף.</div>
       </div>
     </div>
-    <button class="btn-gold" onclick="goNext()" style="font-size:1rem;padding:.75rem 2.2rem;">המשך לשלב הבא</button>
+    <button class="btn-gold" onclick="closeNote()" style="font-size:.95rem;padding:.65rem 1.8rem;">קראנו, אפשר לסגור את הפתק</button>
   </div>
 </div>
 
 <script>
 const DEV_CODE = '7763';
 
-// ── TESTIMONIES DATA ──
+// ── TESTIMONIES (Galit's exact wording, alphabetical, raccoon last) ──
 const TESTIMONIES = [
-  {id:'lion',    name:'אריה',    text:'ישנתי כל הלילה. שמעתי רעשי חפירה מכיוון המדרון הדרומי.'},
-  {id:'badger',  name:'גירית',   text:'ישנתי כל הלילה. לא יצאתי מהנורה שלי.'},
-  {id:'boar',    name:'חזיר בר', text:'האריה משקר — הוא לא ישן. הגירית ישנה כל הלילה לידי.'},
-  {id:'raccoon', name:'רקון',    text:'לא הייתי בשמורה בכלל הלילה הזה.'},
-  {id:'zebra',   name:'זברה',    text:'לא ישנתי טוב. ראיתי את הפיל יוצא לפנות בוקר — זה רגיל אצלו.'},
-  {id:'elephant',name:'פיל',    text:'יצאתי לאגמון לפנות בוקר כמו כל יום. בדרך חזרה ראיתי את הגורילה יוצאת מהיער.'},
-  {id:'gorilla', name:'גורילה',  text:'יצאתי לחפש מזון מוקדם. ראיתי את הגירית חוזרת מכיוון המדרון הדרומי.'},
-  {id:'chimp',   name:'שימפנזה', text:'שמעתי גם אני רעשי חפירה מהמדרון הדרומי. האריה צודק.'},
-  {id:'eagle',   name:'נץ',      text:'בשחר ראיתי שלושה יצורים קטנים בגבול השמורה.'},
-  {id:'bear',    name:'דב',      text:'ישנתי כל הלילה בשטח חפירת הדב. שום דבר חריג.'},
-  {id:'tiger',   name:'טיגריס',  text:'הייתי בסיור לילי מרוחק. לא ראיתי כלום חריג.'},
-  {id:'pelican', name:'שקנאי',   text:'ישנתי על הסלע הגבוה ליד האגמון. לא הבחנתי בכלום.'},
-  {id:'sloth',   name:'עצלן',    text:'ישנתי כל הלילה על העץ שלי. לא זזתי ממנו.'},
+  {id:'lion',    name:'אריה',    text:'ישנתי כל הלילה. קצת לפני חצות התעוררתי ושמעתי רעשי חפירה מכיוון אגמון הסלע, וראיתי את הגורילה ישנה.'},
+  {id:'gorilla', name:'גורילה',  text:'ישנתי רוב הלילה. התעוררתי פעם אחת באמצע הלילה כי שמעתי רעשים מכיוון עץ האלון העתיק.'},
+  {id:'badger',  name:'גירית',   text:'ישנתי כל הלילה, לא שמעתי כלום. לא יצאתי מהמחילה שלי.'},
+  {id:'bear',    name:'דב',      text:'ישנתי כל הלילה. לא שמעתי כלום. לא יצאתי מהמאורה.'},
+  {id:'zebra',   name:'זברה',    text:'לא ישנתי טוב. התעוררתי כמה פעמים. פעם אחת ראיתי שתי דמויות חוזרות לאזור השינה. אח"כ ראיתי את הפיל יוצא.'},
+  {id:'boar',    name:'חזיר בר', text:'ראיתי את האריה יוצא לפני חצות. הגירית ישנה לידי כל הלילה.'},
+  {id:'tiger',   name:'טיגריס',  text:'ישנתי כל הלילה. פעם אחת התעוררתי כי שמעתי רעש של משהו נשבר מכיוון החורשה הדרומית.'},
+  {id:'eagle',   name:'נץ',      text:'עשיתי סיור לילי וראיתי מלמעלה שלוש דמויות רצות דרומה דרך החורשה. ראיתי גם את השימפנזה, הטיגריס, הפיל, הזברה, השקנאי והגורילה ישנים.'},
+  {id:'elephant',name:'פיל',    text:'ישנתי כל הלילה. קמתי לפנות בוקר ויצאתי לאגמון הסלע, כמו בכל יום. ראיתי בור שמישהו חפר שם.'},
+  {id:'pelican', name:'שקנאי',   text:'אני ישן ליד בריכת הערבות. התעוררתי פעמיים. בשתי הפעמים שמעתי קולות חפירה.'},
+  {id:'chimp',   name:'שימפנזה', text:'ישנתי כל הלילה. קמתי לפנות בוקר ויצאתי לאגמון הסלע, כמו בכל יום. ראיתי בור שמישהו חפר שם.'},
+  {id:'sloth',   name:'עצלן',    text:'ישנתי כל הלילה, ליד האריה. אני לא מתעורר מכלום, לא שומע כלום.'},
+  {id:'raccoon', name:'רקון',    text:'אני בכלל לא הייתי כאן. אני גר בשמורה הסמוכה מדרום. אין לי קשר לפשע הזה.'},
 ];
 
-let answers = {}; // id -> 'true' | 'false'
+let answers = {};
+let alertShown = false;
 
-// ── NAVIGATION ──
+// Navigation
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-// ── WAIT → BRIDGE ──
+// WAIT → BRIDGE after 3.5s
 setTimeout(() => showScreen('s-bridge'), 3500);
 
-// ── BRIDGE → WAIT2 ──
-window.goToWait2 = function() {
+window.goBridge = function() {
   showScreen('s-wait2');
   setTimeout(() => {
     showScreen('s-testimony');
     renderTestimonies();
-    // Show instructions after a beat
-    setTimeout(() => document.getElementById('inst-ov').classList.add('show'), 600);
+    setTimeout(() => document.getElementById('inst-ov').classList.add('show'), 700);
   }, 3000);
 };
 
-// ── INSTRUCTIONS ──
+// Instructions
 window.showInst = () => document.getElementById('inst-ov').classList.add('show');
 window.closeInst = () => document.getElementById('inst-ov').classList.remove('show');
 
-// ── RENDER TESTIMONIES ──
+// Render 2-column grid
 function renderTestimonies() {
-  const container = document.getElementById('t-scroll');
-  container.innerHTML = '';
+  const body = document.getElementById('t-body');
+  body.innerHTML = '';
   TESTIMONIES.forEach(t => {
     const div = document.createElement('div');
     div.className = 't-item';
@@ -266,21 +258,18 @@ function renderTestimonies() {
       <div class="t-animal">${t.name}</div>
       <div class="t-text">${t.text}</div>
       <div class="t-btns">
-        <button class="t-btn true-btn" id="tb-true-${t.id}" onclick="setAnswer('${t.id}','true')">✓ אמת</button>
-        <button class="t-btn false-btn" id="tb-false-${t.id}" onclick="setAnswer('${t.id}','false')">✗ שקר</button>
+        <button class="t-btn tbtn-t" id="tb-t-${t.id}" onclick="setAnswer('${t.id}','true')">✓ אמת</button>
+        <button class="t-btn tbtn-f" id="tb-f-${t.id}" onclick="setAnswer('${t.id}','false')">✗ שקר</button>
       </div>`;
-    container.appendChild(div);
+    body.appendChild(div);
   });
   updateProgress();
 }
 
 window.setAnswer = function(id, val) {
-  // Toggle — clicking same again removes selection
-  if (answers[id] === val) {
-    delete answers[id];
-  } else {
-    answers[id] = val;
-  }
+  // Toggle: click same = remove
+  if (answers[id] === val) delete answers[id];
+  else answers[id] = val;
   updateUI(id);
   updateProgress();
   checkAllAnswered();
@@ -289,41 +278,44 @@ window.setAnswer = function(id, val) {
 function updateUI(id) {
   const a = answers[id];
   const item = document.getElementById('ti-' + id);
-  const trueBtn = document.getElementById('tb-true-' + id);
-  const falseBtn = document.getElementById('tb-false-' + id);
+  const tBtn = document.getElementById('tb-t-' + id);
+  const fBtn = document.getElementById('tb-f-' + id);
   if (!item) return;
   item.className = 't-item' + (a === 'true' ? ' answered-true' : a === 'false' ? ' answered-false' : '');
-  trueBtn.className = 't-btn true-btn' + (a === 'true' ? ' sel' : '');
-  falseBtn.className = 't-btn false-btn' + (a === 'false' ? ' sel' : '');
+  tBtn.className = 't-btn tbtn-t' + (a === 'true' ? ' sel' : '');
+  fBtn.className = 't-btn tbtn-f' + (a === 'false' ? ' sel' : '');
 }
 
 function updateProgress() {
   const n = Object.keys(answers).length;
-  document.getElementById('t-progress').textContent = n + ' / 13 עדויות סומנו';
+  document.getElementById('t-prog').textContent = n + ' / 13 סומנו';
 }
 
 function checkAllAnswered() {
-  if (Object.keys(answers).length >= 13) {
-    // Surprise! Show anonymous testimony after a short delay
-    setTimeout(showAnonTestimony, 800);
+  if (Object.keys(answers).length >= 13 && !alertShown) {
+    alertShown = true;
+    setTimeout(showAlert, 800);
   }
 }
 
-// ── ANONYMOUS TESTIMONY ──
-function showAnonTestimony() {
-  document.getElementById('anon-ov').classList.add('show');
+// Alert popup → then note
+function showAlert() {
+  document.getElementById('alert-ov').classList.add('show');
 }
 
-// ── GO NEXT ──
-window.goNext = function() {
-  window.location.href = 'stage4.html';
+window.openNote = function() {
+  document.getElementById('alert-ov').classList.remove('show');
+  setTimeout(() => document.getElementById('anon-ov').classList.add('show'), 200);
 };
 
-// ── DEV ──
+window.closeNote = function() {
+  document.getElementById('anon-ov').classList.remove('show');
+};
+
+// Dev
 window.openDev = function() {
   const code = prompt('קוד:');
   if (code === DEV_CODE) document.getElementById('dev-panel').classList.add('open');
-  else if (code !== null) alert('קוד שגוי');
 };
 window.closeDev = () => document.getElementById('dev-panel').classList.remove('open');
 window.devSkipWait = () => { closeDev(); showScreen('s-bridge'); };
@@ -334,7 +326,7 @@ window.devFillAll = function() {
   TESTIMONIES.forEach(t => { answers[t.id] = 'true'; updateUI(t.id); });
   updateProgress();
 };
-window.devShowAnon = () => { closeDev(); showAnonTestimony(); };
+window.devShowAlert = () => { closeDev(); alertShown = true; showAlert(); };
 </script>
 </body>
 </html>

@@ -306,11 +306,11 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 /* ══ STAGE C — Book ══ */
 #stg-C{display:flex;flex-direction:column;align-items:center;padding:.5rem 1rem;}
 #stg-C .bg-station{position:absolute;inset:0;z-index:0;opacity:.35;}
-.book-area{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:.3rem 0 .3rem 33%;}
-.book-container{flex:1;min-height:0;position:relative;width:100%;max-width:min(720px,92vw);display:flex;align-items:center;justify-content:center;}
+.book-area{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;padding:.5rem 1.5rem;}
+.book-container{flex:1;min-height:0;min-width:0;position:relative;width:100%;max-width:min(800px,95vw);display:flex;align-items:center;justify-content:center;}
 .book-page{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s;}
 .book-page.show{opacity:1;pointer-events:all;}
-.book-page img{max-height:100%;max-width:100%;object-fit:contain;border-radius:8px;box-shadow:0 6px 36px rgba(0,0,0,.7);}
+.book-page img{max-height:100%;max-width:100%;width:100%;height:100%;object-fit:contain;border-radius:8px;box-shadow:0 6px 36px rgba(0,0,0,.7);}
 .book-nav{display:flex;align-items:center;gap:1.2rem;flex-shrink:0;}
 .book-arrow{width:38px;height:38px;background:rgba(10,21,10,.85);border:1px solid var(--border);color:var(--gold);border-radius:50%;cursor:pointer;font-size:1.15rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .book-arrow:hover{border-color:var(--gold-l);}
@@ -334,7 +334,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   display:grid;grid-template-columns:repeat(6,1fr);
   gap:.5rem;align-content:start;
 }
-.ev-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:.2rem;text-align:center;cursor:pointer;transition:border-color .18s;max-width:90px;}
+.ev-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:.3rem;text-align:center;cursor:pointer;transition:border-color .18s;}
 .ev-card:hover{border-color:var(--gold);}
 .ev-card img{width:100%;aspect-ratio:1;object-fit:contain;display:block;}
 .ev-card.img-err .ev-placeholder{display:flex;width:100%;aspect-ratio:1;align-items:center;justify-content:center;background:rgba(0,0,0,.3);border-radius:3px;}
@@ -353,11 +353,11 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 
 /* RIGHT ~50%: 2 columns × 6 rows of pairs, fills height exactly */
 .pairs-area{
-  width:50%;flex-shrink:0;
+  width:66%;flex-shrink:0;
   display:grid;
-  grid-template-columns:1fr 1fr;
-  grid-template-rows:repeat(6,1fr);
-  gap:.22rem .45rem;
+  grid-template-columns:1fr 1fr 1fr;
+  grid-template-rows:repeat(4,1fr);
+  gap:.2rem .3rem;
   overflow:hidden;
 }
 /* Each pair = [animal card] [empty slot] side by side in a row */
@@ -414,10 +414,10 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 .clue-row{
   flex:1;min-height:0;
   display:grid;
-  /* 13 clues: 5 cols × 3 rows (last row has 3) — fits without scroll */
-  grid-template-columns:repeat(5,1fr);
+  /* 13 clues in 33% strip: 4 cols × 4 rows (last has 1) */
+  grid-template-columns:repeat(4,1fr);
   grid-auto-rows:1fr;
-  gap:.22rem;
+  gap:.15rem;
   overflow:hidden;
   align-content:start;
 }
@@ -481,8 +481,8 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 /* ══ INSTRUCTIONS ══ */
 .inst-ov{position:fixed;inset:0;z-index:510;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .28s;}
 .inst-ov.show{opacity:1;pointer-events:all;}
-.inst-box{background:rgba(6,18,6,.97);border:1px solid var(--border);border-radius:12px;max-width:440px;width:100%;padding:1.3rem 1.5rem;}
-.inst-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:1rem;margin-bottom:.65rem;text-align:center;}
+.inst-box{background:rgba(6,18,6,.97);border:1px solid var(--border);border-radius:14px;max-width:580px;width:100%;padding:2rem 2rem;}
+.inst-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:1.5rem;margin-bottom:1rem;text-align:center;}
 .inst-body{font-family:'Rubik',sans-serif;font-size:.86rem;color:var(--cream);line-height:1.8;}
 .inst-body li{margin-bottom:.32rem;}
 </style>
@@ -1125,33 +1125,32 @@ let evBuilt=false;
 const D_TEXT='צוות המז"פ (זיהוי פלילי) כבר הספיק להגיע לכאן לפניכם ולאסוף את הראיות. בגלל הגשם שירד אתמול בערב והקרבה למי האגמון, האדמה מסביב רטובה ומז"פ מצאו לא מעט עקבות וראיות נוספות. יש סיכוי טוב שגם הגנב השאיר אחריו עקבות. אלה הראיות שנאספו.';
 function initD(){
   if(evBuilt)return;evBuilt=true;
-  // Make sure evidence and button are hidden at start
   const evArea=document.getElementById('ev-area');
   const dBtn=document.getElementById('rp-D-btn');
   if(evArea)evArea.classList.remove('show');
   if(dBtn)dBtn.style.display='none';
-  // Typewriter — char by char through ALL of D_TEXT including last sentence
   const twEl=document.getElementById('rp-D-typewriter');
   if(twEl){
-    let i=0;
-    // Use innerHTML so newlines/breaks render correctly
+    let typed='';
+    let idx=0;
     twEl.textContent='';
     function twNext(){
-      if(i>=D_TEXT.length){
-        twEl.textContent=D_TEXT;
-        // Only AFTER all text typed: show evidence + button
+      if(idx>=D_TEXT.length){
+        // All chars typed — just show evidence, no content change
         setTimeout(()=>{
           if(evArea)evArea.classList.add('show');
           if(dBtn)dBtn.style.display='block';
-        },600);
+        },500);
         return;
       }
-      twEl.textContent=D_TEXT.slice(0,i+1);
-      const ch=D_TEXT[i++];
-      const d=ch==='.'?400:ch===','?150:ch===' '?50:35+Math.random()*18;
-      setTimeout(twNext,d);
+      const ch=D_TEXT[idx];
+      idx++;
+      typed+=ch;
+      twEl.textContent=typed;
+      const delay=ch==='.'?420:ch===','?160:ch===' '?48:33+Math.random()*16;
+      setTimeout(twNext,delay);
     }
-    setTimeout(twNext,500);
+    setTimeout(twNext,600);
   }
   const g=document.getElementById('ev-grid');
   EVIDENCE.forEach((e,i)=>{
@@ -1205,9 +1204,10 @@ function initE(){
   setTimeout(()=>{
     document.getElementById('inst-title').textContent='התאמת עקבות לחיות';
     document.getElementById('inst-body').innerHTML=
-      '<p style="margin-bottom:.55rem;">עליכם להתאים בין העקבות לחיות השמורה.</p>'+
-      '<p style="margin-bottom:.55rem;">גררו את העקבה לחלון שלצד החיה המתאימה לה.</p>'+
-      '<p>כשאתם בטוחים שסיימתם להתאים את העקבות הנכונות לכל החיות — שלחו את ההתאמות לבדיקת המעבדה בכפתור למטה.</p>';
+      '<p style="margin-bottom:.7rem;">לפניכם תמונות של כל העקבות שנמצאו בזירה, וכן תמונות של 12 דיירי השמורה.</p>'+
+      '<p style="margin-bottom:.7rem;">עליכם להתאים בין העקבות לחיות. גררו כל עקבה לחלון שלצד החיה אליה היא שייכת.</p>'+
+      '<p style="margin-bottom:.7rem;">כדי להתחרט ולהחזיר עקבה כלשהי חזרה למאגר בצד ימין יש ללחוץ עליה.</p>'+
+      '<p>כשאתם בטוחים שסיימתם להתאים את העקבות לכל החיות — שלחו את ההתאמות לבדיקת המעבדה בכפתור מצד שמאל למטה.</p>';
     document.getElementById('inst-ov').classList.add('show');
   },400);
 }
@@ -1283,22 +1283,49 @@ window.submitMatch=function(){
     if(errEl){errEl.style.display='block';setTimeout(()=>errEl.style.display='none',3000);}
     return;
   }
-  // Centered success popup
+  // Centered success popup with typewriter
   const overlay=document.createElement('div');
   overlay.style.cssText='position:fixed;inset:0;z-index:460;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:1.2rem;';
-  overlay.innerHTML=`<div style="background:rgba(4,16,4,.97);border:2px solid rgba(0,220,80,.4);border-radius:16px;padding:2rem 2.2rem;max-width:580px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.8);">
-    <div style="font-family:Special Elite,serif;font-size:clamp(1rem,2.2vw,1.35rem);color:var(--cream);line-height:1.95;direction:rtl;">
-      <p style="color:var(--gold-l);font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;margin-bottom:.8rem;">יפה מאוד!</p>
-      <p>הצלחתם להתאים את העקבות לחיות השמורה.</p>
-      <p style="margin-top:.5rem;">כל ההתאמות אומתו על ידי המעבדה.</p>
-      <p style="margin-top:.5rem;">עכשיו צוות המעבדה יוכל להכין עבורכם דו"ח ניתוח מעמיק על כל העקבות.</p>
-      <p style="margin-top:.7rem;">אבל שימו לב — נותרה לכם עקבה אחת לא מזוהה שלא שלחתם למעבדה,<br>ואינה שייכת לאף אחד מדיירי השמורה.</p>
-      <p style="margin-top:.5rem;">צריך לשלוח גם אותה לצוות המעבדה לצורך ניתוח מעמיק.</p>
-      <p style="margin-top:.5rem;">כדאי שתגיעו למעבדה בעצמכם כדי להבין מה קורה כאן.</p>
+  overlay.innerHTML=`<div style="background:rgba(4,16,4,.97);border:2px solid rgba(0,220,80,.4);border-radius:16px;padding:2rem 2.2rem;max-width:600px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.8);">
+    <div id="success-tw" style="font-family:'Special Elite',serif;font-size:clamp(.95rem,2vw,1.2rem);color:var(--cream);line-height:1.9;direction:rtl;text-align:right;min-height:8em;"></div>
+    <div id="success-btn-wrap" style="display:none;text-align:center;margin-top:1.4rem;">
+      <button onclick="goToLab()" style="font-family:Rubik,sans-serif;font-weight:600;font-size:1.05rem;padding:.8rem 2.2rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--jd);border:none;border-radius:8px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.5);">אל מעבדת המז"פ</button>
     </div>
-    <button onclick="goToLab()" style="margin-top:1.4rem;font-family:Rubik,sans-serif;font-weight:600;font-size:1.1rem;padding:.85rem 2.4rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--jd);border:none;border-radius:8px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.5);">אל מעבדת המז"פ</button>
   </div>`;
   document.body.appendChild(overlay);
+  // Typewriter for success text (paragraphs revealed one by one)
+  const SUCCESS_LINES=[
+    {text:'יפה מאוד!',style:'color:var(--gold-l);font-size:clamp(1.2rem,2.8vw,1.7rem);font-weight:700;margin-bottom:.7rem;display:block;'},
+    {text:'הצלחתם להתאים את העקבות לחיות השמורה.',style:'display:block;margin-bottom:.4rem;'},
+    {text:'כל ההתאמות אומתו על ידי המעבדה.',style:'display:block;margin-bottom:.4rem;'},
+    {text:'עכשיו צוות המעבדה יוכל להכין עבורכם דו"ח ניתוח מעמיק על כל העקבות.',style:'display:block;margin-bottom:.6rem;'},
+    {text:'אבל שימו לב: נותרה לכם עקבה אחת לא מזוהה שלא שלחתם למעבדה, ואינה שייכת לאף אחד מדיירי השמורה.',style:'display:block;margin-bottom:.4rem;'},
+    {text:'צריך לשלוח גם אותה לצוות המעבדה לצורך ניתוח מעמיק.',style:'display:block;margin-bottom:.4rem;'},
+    {text:'כדאי שתגיעו למעבדה בעצמכם כדי להבין מה קורה כאן.',style:'display:block;'},
+  ];
+  const twEl=document.getElementById('success-tw');
+  let lineIdx=0;
+  function typeNextLine(){
+    if(lineIdx>=SUCCESS_LINES.length){
+      setTimeout(()=>{const b=document.getElementById('success-btn-wrap');if(b)b.style.display='block';},400);
+      return;
+    }
+    const line=SUCCESS_LINES[lineIdx++];
+    const span=document.createElement('span');
+    span.style.cssText=line.style;
+    twEl.appendChild(span);
+    let ci=0;
+    const txt=line.text;
+    function typeChar(){
+      if(ci>=txt.length){setTimeout(typeNextLine,180);return;}
+      const ch=txt[ci++];
+      span.textContent=txt.slice(0,ci);
+      const d=ch==='!'?350:ch==='.'?300:ch===','?130:ch===' '?45:30+Math.random()*15;
+      setTimeout(typeChar,d);
+    }
+    setTimeout(typeChar,50);
+  }
+  setTimeout(typeNextLine,300);
 };
 
 window.goToLab=function(){
