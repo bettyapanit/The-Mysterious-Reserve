@@ -3,193 +3,429 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>שלב 4 — ההאשמה</title>
-<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600&family=Secular+One&display=swap" rel="stylesheet">
+<title>כתבי האישום</title>
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Special+Elite&family=Rubik:wght@300;400;500;600&family=Frank+Ruhl+Libre:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#7a5810;--dark:#07100a;--border:rgba(201,168,76,.28);--cream:#f5edd8;--dim:#7a9070;--red:#c0392b;}
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;}
-html,body{height:100%;overflow:hidden;background:var(--dark);font-family:'Rubik',sans-serif;color:var(--cream);}
-.bg{position:fixed;inset:0;z-index:0;background:url('crime_scene.jpg') center/cover no-repeat;filter:brightness(.25) saturate(.5);}
-.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh;align-items:center;justify-content:center;padding:1rem;gap:1rem;}
+:root{--gold:#c9a84c;--gold-l:#f0cc6e;--gold-d:#8a6820;--jd:#0a1508;--cream:#f5edd8;--dim:#a8c4aa;--border:rgba(201,168,76,.28);--red:rgba(200,50,50,.85);--green:rgba(0,180,80,.85);}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;font-family:'Rubik',sans-serif;background:#060d06;color:var(--cream);overflow:hidden;}
 
-.stage-label{font-family:'Secular One',sans-serif;font-size:1.1rem;color:var(--gold);text-align:center;}
-.subtitle{font-size:.9rem;color:var(--dim);text-align:center;max-width:560px;line-height:1.7;}
+/* Header */
+.hdr{position:fixed;top:0;left:0;right:0;height:3.2rem;z-index:200;
+  background:rgba(4,9,4,.97);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;padding:0 1rem;
+  backdrop-filter:blur(6px);}
+.hdr-title{font-family:'Secular One',sans-serif;font-size:clamp(1rem,3vw,1.4rem);color:var(--gold);text-align:center;}
 
-/* Selection grid */
-.suspects-wrap{display:flex;flex-direction:column;align-items:center;gap:.8rem;width:100%;max-width:800px;}
-.suspects-row{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;}
+/* Footer */
+.ftr{position:fixed;bottom:0;left:0;right:0;height:3.5rem;z-index:200;
+  background:rgba(4,9,4,.97);border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:.6rem;padding:0 .9rem;
+  backdrop-filter:blur(6px);}
+.btn-sm{font-family:'Rubik',sans-serif;font-size:.78rem;padding:.32rem .85rem;
+  background:rgba(10,22,10,.9);border:1px solid var(--border);
+  color:var(--gold);border-radius:6px;cursor:pointer;transition:all .18s;}
+.btn-sm:hover{background:rgba(30,55,30,.95);border-color:var(--gold);}
+.btn-gold{font-family:'Rubik',sans-serif;font-weight:600;font-size:1rem;
+  padding:.75rem 2rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));
+  color:var(--jd);border:none;border-radius:8px;cursor:pointer;
+  box-shadow:0 4px 20px rgba(201,168,76,.4);transition:transform .2s;}
+.btn-gold:hover{transform:translateY(-2px);}
+.btn-back{font-family:'Rubik',sans-serif;font-size:.82rem;font-weight:500;
+  padding:.36rem 1rem;background:transparent;
+  border:1px solid rgba(201,168,76,.35);color:var(--dim);
+  border-radius:6px;cursor:pointer;transition:all .2s;}
+.btn-back:hover{border-color:var(--gold);color:var(--gold);}
 
-/* Suspect card */
-.scard{
-  width:140px;display:flex;flex-direction:column;align-items:center;gap:.4rem;
-  cursor:pointer;transition:transform .15s;
-}
-.scard:hover{transform:translateY(-3px);}
-.scard-img{
-  width:130px;height:130px;
-  object-fit:cover;object-position:top center;
-  border:2px solid rgba(201,168,76,.2);border-radius:6px;
-  transition:border-color .2s,box-shadow .2s;
-}
-.scard.selected .scard-img{
-  border-color:var(--red);
-  box-shadow:0 0 16px rgba(192,57,43,.5);
-}
-.scard-name{font-size:.78rem;color:var(--dim);text-align:center;font-family:'Secular One',sans-serif;}
-.scard.selected .scard-name{color:var(--gold-l);}
+/* Stage area */
+.stage-area{position:fixed;inset:0;top:3.2rem;bottom:3.5rem;overflow-y:auto;
+  padding:1.2rem 1rem 1.5rem;
+  display:flex;flex-direction:column;align-items:center;gap:1.2rem;}
+.stage-area::-webkit-scrollbar{width:4px;}
+.stage-area::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);}
 
-/* Badge count */
-.badge{
-  font-size:.72rem;color:var(--dim);
-  background:rgba(8,18,6,.85);border:1px solid var(--border);
-  padding:.3rem .8rem;border-radius:20px;
-}
-.badge b{color:var(--gold-l);}
+/* ── SCREEN A: Intro ── */
+#screen-intro{display:flex;flex-direction:column;align-items:center;gap:1.2rem;width:100%;max-width:680px;}
+.intro-card{background:rgba(6,16,6,.88);border:1px solid var(--border);border-radius:12px;
+  padding:1.5rem 1.8rem;width:100%;text-align:center;}
+.intro-card h2{font-family:'Secular One',sans-serif;font-size:clamp(1.1rem,3vw,1.5rem);color:var(--gold);margin-bottom:.9rem;}
+.intro-card p{font-family:'Special Elite',serif;font-size:clamp(.95rem,2vw,1.1rem);color:var(--cream);line-height:1.9;}
+.intro-card strong{color:var(--gold-l);}
+.warning-box{background:rgba(120,30,10,.18);border:1px solid rgba(200,80,40,.35);border-radius:10px;
+  padding:1rem 1.4rem;width:100%;max-width:680px;}
+.warning-box p{font-family:'Rubik',sans-serif;font-size:.95rem;color:rgba(255,180,120,.9);line-height:1.7;text-align:center;}
 
-/* Buttons */
-.btn-row{display:flex;gap:.8rem;}
-.btn{font-family:'Secular One',sans-serif;font-size:.95rem;padding:.72rem 2rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#060d07;border:none;border-radius:8px;cursor:pointer;transition:transform .15s;box-shadow:0 4px 18px rgba(201,168,76,.3);}
-.btn:hover{transform:translateY(-2px);}
-.btn:disabled{opacity:.35;cursor:default;transform:none;}
+/* ── SCREEN B: Select suspects ── */
+#screen-select{display:none;flex-direction:column;align-items:center;gap:1rem;width:100%;}
+.select-title{font-family:'Secular One',sans-serif;font-size:clamp(1rem,2.8vw,1.35rem);color:var(--gold);text-align:center;}
+.select-subtitle{font-family:'Rubik',sans-serif;font-size:.92rem;color:var(--dim);text-align:center;margin-top:-.4rem;}
+.suspects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.6rem;width:100%;max-width:720px;}
+.suspect-card{background:rgba(8,18,8,.85);border:1.5px solid rgba(45,90,45,.3);border-radius:10px;
+  padding:.7rem .6rem;display:flex;flex-direction:column;align-items:center;gap:.45rem;
+  cursor:pointer;transition:all .22s;user-select:none;}
+.suspect-card:hover{border-color:rgba(201,168,76,.4);background:rgba(15,30,15,.9);}
+.suspect-card.selected{border-color:var(--red);background:rgba(60,8,8,.45);}
+.suspect-card.selected .s-badge{display:flex;}
+.s-img{width:64px;height:64px;object-fit:contain;border-radius:6px;}
+.s-name{font-family:'Secular One',sans-serif;font-size:.85rem;color:var(--cream);text-align:center;}
+.s-desc{font-family:'Rubik',sans-serif;font-size:.7rem;color:var(--dim);text-align:center;line-height:1.4;}
+.s-badge{display:none;background:rgba(200,50,50,.9);border-radius:20px;
+  padding:.12rem .6rem;font-family:'Rubik',sans-serif;font-size:.68rem;color:#fff;font-weight:600;}
+.counter-row{display:flex;align-items:center;gap:.6rem;font-family:'Rubik',sans-serif;font-size:.88rem;color:var(--dim);}
+.counter-row span{color:var(--gold-l);font-weight:600;}
 
-/* Overlays */
-.ovl{position:fixed;inset:0;background:rgba(4,9,3,.92);display:flex;align-items:center;justify-content:center;z-index:500;opacity:0;pointer-events:none;transition:opacity .4s;padding:1rem;}
-.ovl.on{opacity:1;pointer-events:all;}
-.cbox{background:rgba(8,18,6,.97);border:1px solid rgba(201,168,76,.4);border-radius:12px;padding:1.5rem 1.4rem;max-width:480px;width:100%;text-align:center;}
-.cbox.err{border-color:var(--red);animation:shake .4s ease;}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.ct{font-family:'Secular One',sans-serif;font-size:1.3rem;color:var(--gold);margin-bottom:.6rem;}
-.ct.r{color:var(--red);}
-.cb{font-size:.92rem;color:var(--cream);line-height:1.85;margin-bottom:1rem;}
-.suspect-imgs{display:flex;gap:.8rem;justify-content:center;margin-bottom:.8rem;}
-.suspect-imgs img{width:80px;height:80px;object-fit:cover;object-position:top;border-radius:5px;border:1px solid var(--border);}
-.btn2{font-family:'Secular One',sans-serif;font-size:.9rem;padding:.65rem 1.6rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#060d07;border:none;border-radius:8px;cursor:pointer;}
+/* ── SCREEN C: Charges ── */
+#screen-charges{display:none;flex-direction:column;align-items:center;gap:1.2rem;width:100%;max-width:700px;}
+.charges-title{font-family:'Secular One',sans-serif;font-size:clamp(1rem,2.8vw,1.4rem);color:var(--gold);text-align:center;}
+.charge-block{background:rgba(6,16,6,.88);border:1px solid rgba(80,40,10,.4);border-radius:12px;
+  padding:1.2rem 1.5rem;width:100%;}
+.charge-block h3{font-family:'Secular One',sans-serif;font-size:1.1rem;color:var(--gold-l);margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem;}
+.charge-block h3 .animal-icon{font-size:1.3rem;}
+.charge-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;}
+.charge-list li{font-family:'Special Elite',serif;font-size:.95rem;color:var(--cream);line-height:1.7;
+  padding:.35rem .5rem .35rem 1rem;border-right:2px solid rgba(201,168,76,.35);
+  background:rgba(0,0,0,.15);border-radius:0 5px 5px 0;}
+.charge-list li::before{content:'⚖ ';}
+.verdict-seal{text-align:center;padding:1.2rem;background:rgba(8,22,8,.88);border:2px solid rgba(0,200,80,.3);
+  border-radius:14px;width:100%;}
+.verdict-seal h2{font-family:'Secular One',sans-serif;font-size:1.3rem;color:#00e060;margin-bottom:.5rem;}
+.verdict-seal p{font-family:'Special Elite',serif;font-size:1rem;color:var(--cream);line-height:1.8;}
+
+/* ── SCREEN D: Wrong selection ── */
+#screen-wrong{display:none;flex-direction:column;align-items:center;gap:1rem;width:100%;max-width:600px;}
+.wrong-card{background:rgba(50,8,8,.55);border:1.5px solid rgba(200,50,50,.4);border-radius:12px;
+  padding:1.5rem 1.8rem;width:100%;text-align:center;}
+.wrong-card h2{font-family:'Secular One',sans-serif;font-size:1.3rem;color:#e05050;margin-bottom:.8rem;}
+.wrong-card p{font-family:'Special Elite',serif;font-size:1rem;color:var(--cream);line-height:1.85;}
+
+/* Popups */
+.popup-ov{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:1rem;display:none;}
+.popup-box{background:rgba(4,14,4,.97);border:1px solid var(--border);border-radius:14px;max-width:90%;max-height:84vh;overflow-y:auto;}
+.popup-box img{max-width:100%;max-height:80vh;object-fit:contain;border-radius:8px;display:block;}
+.popup-close{display:flex;justify-content:center;padding:.8rem;}
 
 /* Dev */
-.db{position:fixed;top:.4rem;left:.4rem;background:transparent;border:none;cursor:pointer;z-index:600;opacity:.1;font-size:1.1rem;}
-.db:hover{opacity:.45;}
-.dp{position:fixed;top:2rem;left:.4rem;background:rgba(5,12,5,.97);border:1px solid rgba(0,255,65,.3);border-radius:8px;padding:.8rem;z-index:601;display:none;flex-direction:column;gap:.4rem;min-width:140px;}
-.dp.open{display:flex;}
-.di{background:transparent;border:1px solid rgba(0,255,65,.25);color:#00ff41;font-family:monospace;font-size:.72rem;padding:.3rem .6rem;border-radius:4px;cursor:pointer;}
-.dc{color:#3a5a3a;font-size:.65rem;text-align:center;cursor:pointer;margin-top:.2rem;}
+.dev-btn-f{position:fixed;top:.6rem;left:.5rem;width:26px;height:26px;background:transparent;border:none;cursor:pointer;z-index:900;opacity:.08;font-size:13px;}
+.dev-btn-f:hover{opacity:.4;}
+.dev-panel{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:950;display:none;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;padding:2rem;}
+.dev-panel.open{display:flex;}
+.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;width:100%;max-width:260px;}
+.dev-bi{background:#080808;border:1px solid #1a1a1a;color:#0f0;font-family:monospace;font-size:.72rem;padding:.4rem;border-radius:4px;cursor:pointer;text-align:center;}
+.dev-bi:hover{border-color:#0f0;}
+.dev-close{background:transparent;border:1px solid #333;color:#555;font-size:.72rem;padding:.3rem .9rem;border-radius:4px;cursor:pointer;}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<div class="app">
-  <div class="stage-label">שלב 4 — ההאשמה</div>
-  <div class="subtitle">על סמך העקבות, העדות וספר הפרופילים — מי לדעתכם הגנבים?<br>בחרו את שלושת החשודים שאחראים לגניבה.</div>
 
-  <div class="suspects-wrap">
-    <!-- Row 1: current residents -->
-    <div class="suspects-row" id="suspects-row"></div>
+<button class="dev-btn-f" onclick="openDev()">🔧</button>
+<div class="dev-panel" id="dev-panel">
+  <div style="color:#0f0;font-family:monospace;font-size:.9rem;margin-bottom:.2rem;">DEV</div>
+  <div class="dev-grid">
+    <div class="dev-bi" onclick="devCorrect()">האשמה נכונה</div>
+    <div class="dev-bi" onclick="devWrong()">האשמה שגויה</div>
+    <div class="dev-bi" onclick="devCharges()">כתב אישום</div>
+    <div class="dev-bi" onclick="devNext()">שלב הבא</div>
   </div>
-
-  <div class="badge">נבחרו: <b id="sel-count">0</b> / 3</div>
-
-  <div class="btn-row">
-    <button class="btn" id="accuse-btn" onclick="accuse()" disabled>האשימו!</button>
-  </div>
+  <button class="dev-close" onclick="closeDev()">סגור</button>
 </div>
 
-<!-- Wrong accusation -->
-<div class="ovl" id="ovl-wrong">
-  <div class="cbox err">
-    <div class="ct r">לא בדיוק...</div>
-    <div class="cb">אחד או יותר מהחשודים שבחרתם אינם הגנבים האמיתיים. חזרו לראיות ונסו שוב.</div>
-    <button class="btn2" onclick="document.getElementById('ovl-wrong').classList.remove('on')">נחזור לחקור</button>
-  </div>
+<!-- ══ HEADER ══ -->
+<div class="hdr">
+  <div class="hdr-title">⚖️ הגשת כתבי אישום</div>
 </div>
 
-<!-- Correct accusation -->
-<div class="ovl" id="ovl-correct">
-  <div class="cbox">
-    <div class="ct">פיצחתם את התעלומה!</div>
-    <div class="suspect-imgs">
-      <img src="animals/badger.jpg" alt="גירית">
-      <img src="animals/wild_boar.png" alt="חזיר בר">
-      <img src="animals/raccoon.png" alt="רקון">
+<!-- ══ STAGE AREA ══ -->
+<div class="stage-area" id="stage-area">
+
+  <!-- Screen A: Intro -->
+  <div id="screen-intro">
+    <div class="intro-card">
+      <h2>הגיע הרגע לסגור את התיק</h2>
+      <p>
+        ניתחתם את הראיות, גבתם עדויות מכל תושבי השמורה, וכעת הגיע הרגע להחליט —
+        <strong>מי הגנבים?</strong><br><br>
+        סמנו את החשודים לדעתכם, וצוות המז"פ יוציא כתב אישום רשמי לכל אחד מהם.
+      </p>
     </div>
-    <div class="cb">
-      <b style="color:var(--gold-l);">גירית, חזיר בר ורקון</b> — שלושה שותפים לפשע.<br><br>
-      הגירית חפרה את הבור בזריזות, חזיר הבר פרץ את הדרך, והרקון — הפולש שסולק מהשמורה לפני שנה — אחז בתיבה עם ידיו הזריזות.<br><br>
-      אך שאלה אחת נותרת: <b style="color:var(--gold-l);">איפה החביאו את התיבה?</b>
+    <div class="warning-box">
+      <p>⚠️ שימו לב — כתב האישום מוגש פעם אחת. בחרו בזהירות.</p>
     </div>
-    <button class="btn2" onclick="goNext()">המשיכו לחפש את התיבה</button>
+    <button class="btn-gold" style="width:100%;max-width:360px;" onclick="showSelect()">
+      לבחירת החשודים
+    </button>
+    <button class="btn-back" onclick="goBack()">
+      ← חזרה לעדויות לבדיקה נוספת
+    </button>
+  </div>
+
+  <!-- Screen B: Select suspects -->
+  <div id="screen-select">
+    <div class="select-title">מי לדעתכם הגנבים?</div>
+    <div class="select-subtitle">לחצו על כל חשוד שאתם רוצים להאשים</div>
+    <div class="counter-row">נבחרו: <span id="sel-count">0</span> חשודים</div>
+    <div class="suspects-grid" id="suspects-grid"></div>
+    <button class="btn-gold" id="submit-btn" disabled style="opacity:.45;margin-top:.5rem;width:100%;max-width:360px;" onclick="submitAccusation()">
+      הגישו את כתב האישום
+    </button>
+    <button class="btn-back" onclick="showIntro()">
+      ← חזרה
+    </button>
+  </div>
+
+  <!-- Screen C: Correct charges -->
+  <div id="screen-charges">
+    <div class="charges-title">✅ כתב האישום הוגש — הגנבים זוהו!</div>
+    <div id="charges-content"></div>
+    <div class="verdict-seal">
+      <h2>🔏 גזר הדין</h2>
+      <p>
+        הגנבים גורשו מהשמורה לצמיתות.<br>
+        אבל שימו לב — <strong style="color:var(--gold-l)">המפה עדיין לא נמצאה.</strong><br>
+        הגנבים הספיקו להחביא אותה לפני שנתפסו.<br>
+        עליכם למצוא אותה בעצמכם.
+      </p>
+    </div>
+    <button class="btn-gold" style="width:100%;max-width:360px;" onclick="goNext()">
+      לשלב הבא — חיפוש מקום המחבוא
+    </button>
+  </div>
+
+  <!-- Screen D: Wrong selection -->
+  <div id="screen-wrong">
+    <div class="wrong-card">
+      <h2>לא בדיוק...</h2>
+      <p>
+        חלק מהאשמות אינן נכונות, או שחסרים חשודים ברשימה.<br><br>
+        חזרו לעדויות, בדקו שוב את ההגיון, ונסו שוב.
+      </p>
+    </div>
+    <button class="btn-gold" onclick="resetAndRetry()">נסו שוב</button>
+    <button class="btn-back" onclick="goBack()">← חזרה לעדויות</button>
+  </div>
+
+</div>
+
+<!-- ══ FOOTER ══ -->
+<div class="ftr">
+  <button class="btn-back" onclick="goBack()" style="font-size:.8rem;padding:.3rem .85rem;">
+    ← חזרה לעדויות
+  </button>
+  <div style="flex:1;"></div>
+  <!-- Float buttons: map + book (always in same slot) -->
+  <div id="float-btns-s4" style="display:flex;gap:.4rem;align-items:center;">
+    <button class="btn-sm" onclick="openMap()">מפת השמורה</button>
+    <button class="btn-sm" onclick="openBook()">ספר הפרופילים</button>
   </div>
 </div>
 
-<button class="db" onclick="toggleDev()">🔧</button>
-<div class="dp" id="dp">
-  <div style="font-size:.65rem;color:#00a82a;">⚙ DEV</div>
-  <button class="di" onclick="devCorrect()">בחר נכון</button>
-  <button class="di" onclick="goNext()">דלג</button>
-  <div class="dc" onclick="toggleDev()">סגור ✕</div>
+<!-- ══ MAP POPUP ══ -->
+<div class="popup-ov" id="map-popup">
+  <div class="popup-box" style="padding:.5rem;">
+    <img src="reserve_map.png" alt="מפת השמורה">
+    <div class="popup-close"><button class="btn-sm" onclick="closeMap()">סגור</button></div>
+  </div>
+</div>
+
+<!-- ══ BOOK POPUP ══ -->
+<div class="popup-ov" id="book-popup">
+  <div class="popup-box" style="padding:1rem;display:flex;flex-direction:column;align-items:center;gap:.8rem;min-width:280px;">
+    <div id="book-popup-cont" style="display:flex;align-items:center;justify-content:center;"></div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button onclick="flipPage(-1)" style="width:36px;height:36px;background:rgba(10,22,10,.9);border:1px solid var(--border);color:var(--gold);border-radius:50%;cursor:pointer;font-size:1rem;">&#8594;</button>
+      <span id="book-page-num" style="font-family:'Secular One',sans-serif;font-size:.85rem;color:var(--dim);"></span>
+      <button onclick="flipPage(1)" style="width:36px;height:36px;background:rgba(10,22,10,.9);border:1px solid var(--border);color:var(--gold);border-radius:50%;cursor:pointer;font-size:1rem;">&#8592;</button>
+    </div>
+    <button class="btn-sm" onclick="closeBook()">סגור</button>
+  </div>
 </div>
 
 <script>
-// All animals that can be accused (current + raccoon from past)
-const SUSPECTS=[
-  {id:'lion',    name:'אריה',    img:'animals/lion.png'},
-  {id:'elephant',name:'פיל',     img:'animals/elephant.png'},
-  {id:'gorilla', name:'גורילה',  img:'animals/gorilla.png'},
-  {id:'croc',    name:'תנין',    img:'animals/crocodile.png'},
-  {id:'eagle',   name:'נשר',     img:'animals/eagle.png'},
-  {id:'badger',  name:'גירית',   img:'animals/badger.jpg'},
-  {id:'boar',    name:'חזיר בר', img:'animals/wild_boar.png'},
-  {id:'tiger',   name:'טיגריס', img:'animals/tiger.png'},
-  {id:'bear',    name:'דב',      img:'animals/bear.png'},
-  {id:'chimp',   name:'שימפנזה',img:'animals/chimpanzee.png'},
-  {id:'pelican', name:'שקנאי',  img:'animals/pelican.png'},
-  {id:'zebra',   name:'זברה',   img:'animals/zebra.png'},
-  {id:'raccoon', name:'רקון',   img:'animals/raccoon.png'},
+const DEV_CODE = '7763';
+
+// Correct suspects (the 3 culprits)
+const CORRECT_IDS = new Set(['badger','boar','raccoon']);
+
+const ALL_ANIMALS = [
+  {id:'lion',    name:'אריה',    img:'animals/Lion.png',       role:'לא חשוד'},
+  {id:'gorilla', name:'גורילה',  img:'animals/Gorilla.png',    role:'חשוד חלקי'},
+  {id:'badger',  name:'גירית',   img:'animals/Badger.png',     role:'חשוד'},
+  {id:'bear',    name:'דב',      img:'animals/Bear.png',       role:'לא חשוד'},
+  {id:'zebra',   name:'זברה',    img:'animals/Zebra.png',      role:'לא חשוד'},
+  {id:'boar',    name:'חזיר בר', img:'animals/Wild Boar.png', role:'חשוד'},
+  {id:'tiger',   name:'טיגריס',  img:'animals/Tiger.png',      role:'לא חשוד'},
+  {id:'eagle',   name:'נץ',      img:'animals/Hawk.png',       role:'לא חשוד'},
+  {id:'elephant',name:'פיל',    img:'animals/Elephant.png',   role:'חשוד חלקי'},
+  {id:'pelican', name:'שקנאי',   img:'animals/Pelican.png',    role:'לא חשוד'},
+  {id:'chimp',   name:'שימפנזה', img:'animals/Chimpanzee.png', role:'לא חשוד'},
+  {id:'sloth',   name:'עצלן',    img:'animals/Sloth.png',      role:'לא חשוד'},
+  {id:'raccoon', name:'רקון',    img:'animals/Raccoon.png',    role:'חשוד'},
 ];
-const CORRECT_IDS=new Set(['badger','boar','raccoon']);
-let selected=new Set();
 
-function build(){
-  const row=document.getElementById('suspects-row');
-  SUSPECTS.forEach(s=>{
-    const card=document.createElement('div');card.className='scard';card.dataset.id=s.id;
-    const img=document.createElement('img');img.className='scard-img';img.src=s.img;img.alt=s.name;
-    const name=document.createElement('div');name.className='scard-name';name.textContent=s.name;
-    card.appendChild(img);card.appendChild(name);
-    card.addEventListener('click',()=>toggleSuspect(s.id,card));
-    row.appendChild(card);
-  });
-}
-
-function toggleSuspect(id,card){
-  if(selected.has(id)){selected.delete(id);card.classList.remove('selected');}
-  else if(selected.size<3){selected.add(id);card.classList.add('selected');}
-  document.getElementById('sel-count').textContent=selected.size;
-  document.getElementById('accuse-btn').disabled=selected.size!==3;
-}
-
-function accuse(){
-  const ok=CORRECT_IDS.size===selected.size&&[...CORRECT_IDS].every(id=>selected.has(id));
-  if(ok) document.getElementById('ovl-correct').classList.add('on');
-  else{
-    const box=document.querySelector('#ovl-wrong .cbox');
-    box.classList.remove('err');void box.offsetWidth;box.classList.add('err');
-    document.getElementById('ovl-wrong').classList.add('on');
+const CHARGES = {
+  badger: {
+    name:'גירית',
+    items:[
+      'חדירה לאגמון הסלע בשעות הלילה ב-24.5',
+      'חפירה בלתי חוקית ליד מקור האגמון',
+      'הוצאת תיבת השמורה הנעולה ממחסה מוגן',
+      'הסעת תיבת השמורה ממקומה לאלון העתיק',
+      'שיקור בעדות בפני חוקרים: "ישנתי כל הלילה"',
+    ]
+  },
+  boar: {
+    name:'חזיר בר',
+    items:[
+      'שיתוף פעולה בגניבה מאורגנת ומתוכננת',
+      'שבירת גדר השמורה באזור הדרום-מערבי',
+      'סיוע לרקון לברוח מחוץ לגבולות השמורה',
+      'שיקור בעדות: "ראיתי את האריה יוצא לפני חצות"',
+    ]
+  },
+  raccoon: {
+    name:'רקון',
+    items:[
+      'קבלת תיבת השמורה הגנובה בשמירה',
+      'בריחה מהשמורה עם הרכוש הגנוב',
+      'שיקור בעדות: "אני בכלל לא הייתי כאן"',
+      'היסטוריה של גניבות קודמת — סולק משמורה סמוכה',
+    ]
   }
+};
+
+let selected = new Set();
+let bpPage = 0;
+const BOOK_PAGES = [
+  {img:'book/cover.jpg',lbl:'ספר הפרופילים'},
+  {img:'book/page1.jpg',lbl:'דיירי השמורה'},
+  {img:'book/page2.jpg',lbl:'דיירי השמורה'},
+];
+
+// ── NAVIGATION ──
+function showIntro() {
+  document.getElementById('screen-intro').style.display = 'flex';
+  document.getElementById('screen-select').style.display = 'none';
+  document.getElementById('screen-charges').style.display = 'none';
+  document.getElementById('screen-wrong').style.display = 'none';
+}
+function showSelect() {
+  buildGrid();
+  document.getElementById('screen-intro').style.display = 'none';
+  document.getElementById('screen-select').style.display = 'flex';
+  document.getElementById('screen-charges').style.display = 'none';
+  document.getElementById('screen-wrong').style.display = 'none';
+}
+function showCharges() {
+  buildCharges();
+  document.getElementById('screen-intro').style.display = 'none';
+  document.getElementById('screen-select').style.display = 'none';
+  document.getElementById('screen-charges').style.display = 'flex';
+  document.getElementById('screen-wrong').style.display = 'none';
+  document.querySelector('.stage-area').scrollTo({top:0, behavior:'smooth'});
+}
+function showWrong() {
+  document.getElementById('screen-intro').style.display = 'none';
+  document.getElementById('screen-select').style.display = 'none';
+  document.getElementById('screen-charges').style.display = 'none';
+  document.getElementById('screen-wrong').style.display = 'flex';
 }
 
-function goNext(){window.location.href='puzzle.html';}
-function toggleDev(){document.getElementById('dp').classList.toggle('open');}
-function devCorrect(){
-  toggleDev();selected.clear();
-  document.querySelectorAll('.scard.selected').forEach(c=>c.classList.remove('selected'));
-  CORRECT_IDS.forEach(id=>{
-    selected.add(id);
-    document.querySelector(`.scard[data-id="${id}"]`)?.classList.add('selected');
+window.resetAndRetry = function() { selected.clear(); showSelect(); };
+window.showIntro = showIntro;
+window.showSelect = showSelect;
+
+// ── GRID ──
+function buildGrid() {
+  const grid = document.getElementById('suspects-grid');
+  grid.innerHTML = '';
+  ALL_ANIMALS.forEach(a => {
+    const card = document.createElement('div');
+    card.className = 'suspect-card' + (selected.has(a.id) ? ' selected' : '');
+    card.id = 'sc-' + a.id;
+    card.innerHTML = `
+      <div class="s-badge">✗ מואשם</div>
+      <img class="s-img" src="${a.img}" alt="${a.name}" onerror="this.style.display='none'">
+      <div class="s-name">${a.name}</div>
+    `;
+    card.onclick = () => toggleSuspect(a.id, card);
+    grid.appendChild(card);
   });
-  document.getElementById('sel-count').textContent=3;
-  document.getElementById('accuse-btn').disabled=false;
+  updateCounter();
 }
 
-build();
+function toggleSuspect(id, card) {
+  if (selected.has(id)) { selected.delete(id); card.classList.remove('selected'); }
+  else { selected.add(id); card.classList.add('selected'); }
+  updateCounter();
+}
+
+function updateCounter() {
+  const n = selected.size;
+  document.getElementById('sel-count').textContent = n;
+  const btn = document.getElementById('submit-btn');
+  if (n > 0) { btn.disabled = false; btn.style.opacity = '1'; }
+  else { btn.disabled = true; btn.style.opacity = '.45'; }
+}
+
+// ── SUBMIT ──
+window.submitAccusation = function() {
+  // Check: must select exactly badger + boar + raccoon
+  const correct = selected.size === 3 &&
+    selected.has('badger') && selected.has('boar') && selected.has('raccoon');
+  if (correct) showCharges();
+  else showWrong();
+};
+
+function buildCharges() {
+  const cont = document.getElementById('charges-content');
+  cont.innerHTML = '';
+  ['badger','boar','raccoon'].forEach(id => {
+    const ch = CHARGES[id];
+    const div = document.createElement('div');
+    div.className = 'charge-block';
+    div.innerHTML = `
+      <h3><img src="animals/${id === 'boar' ? 'Wild Boar' : id.charAt(0).toUpperCase()+id.slice(1)}.png"
+        style="width:36px;height:36px;object-fit:contain;border-radius:4px;vertical-align:middle;">
+        כתב אישום — ${ch.name}</h3>
+      <ul class="charge-list">
+        ${ch.items.map(i => `<li>${i}</li>`).join('')}
+      </ul>`;
+    cont.appendChild(div);
+  });
+}
+
+// ── NAVIGATION ──
+window.goBack = function() {
+  window.location.href = 'stage3.html';
+};
+window.goNext = function() {
+  window.location.href = 'stage5.html';
+};
+
+// ── MAP & BOOK ──
+window.openMap = () => { document.getElementById('map-popup').style.display = 'flex'; };
+window.closeMap = () => { document.getElementById('map-popup').style.display = 'none'; };
+window.openBook = () => { bpPage = 0; buildBookPage(); document.getElementById('book-popup').style.display = 'flex'; };
+window.closeBook = () => { document.getElementById('book-popup').style.display = 'none'; };
+window.flipPage = (d) => { bpPage = Math.max(0,Math.min(BOOK_PAGES.length-1,bpPage+d)); buildBookPage(); };
+function buildBookPage() {
+  const cont = document.getElementById('book-popup-cont');
+  const p = BOOK_PAGES[bpPage];
+  cont.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = p.img; img.alt = p.lbl;
+  img.style.cssText = 'max-height:70vh;max-width:90vw;object-fit:contain;border-radius:8px;';
+  img.onerror = () => { cont.innerHTML = `<div style="color:var(--gold);font-family:'Secular One',sans-serif;padding:2rem;text-align:center;">${p.lbl}</div>`; };
+  cont.appendChild(img);
+  document.getElementById('book-page-num').textContent = (bpPage+1) + ' / ' + BOOK_PAGES.length;
+}
+
+// ── DEV ──
+window.openDev = () => { const c=prompt('קוד:'); if(c===DEV_CODE) document.getElementById('dev-panel').classList.add('open'); };
+window.closeDev = () => document.getElementById('dev-panel').classList.remove('open');
+window.devCorrect = () => { closeDev(); selected = new Set(['badger','boar','raccoon']); showCharges(); };
+window.devWrong = () => { closeDev(); selected = new Set(['lion']); showWrong(); };
+window.devCharges = () => { closeDev(); selected = new Set(['badger','boar','raccoon']); showCharges(); };
+window.devNext = () => { closeDev(); window.location.href = 'stage5.html'; };
 </script>
 </body>
 </html>
