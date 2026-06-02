@@ -304,13 +304,13 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 }
 
 /* ══ STAGE C — Book ══ */
-#stg-C{display:flex;flex-direction:column;align-items:center;padding:.5rem 1rem;}
+#stg-C{display:flex;flex-direction:column;align-items:center;padding:0;}
 #stg-C .bg-station{position:absolute;inset:0;z-index:0;opacity:.35;}
-.book-area{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;padding:.5rem 1.5rem;}
-.book-container{flex:1;min-height:0;min-width:0;position:relative;width:100%;max-width:min(800px,95vw);display:flex;align-items:center;justify-content:center;}
+.book-area{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;padding:.2rem .5rem;}
+.book-container{flex:1;min-height:0;min-width:0;position:relative;width:100%;display:flex;align-items:center;justify-content:center;}
 .book-page{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s;}
 .book-page.show{opacity:1;pointer-events:all;}
-.book-page img{max-height:100%;max-width:100%;width:100%;height:100%;object-fit:contain;border-radius:8px;box-shadow:0 6px 36px rgba(0,0,0,.7);}
+.book-page img{max-height:100%;max-width:100%;object-fit:contain;border-radius:6px;box-shadow:0 6px 36px rgba(0,0,0,.7);}
 .book-nav{display:flex;align-items:center;gap:1.2rem;flex-shrink:0;}
 .book-arrow{width:38px;height:38px;background:rgba(10,21,10,.85);border:1px solid var(--border);color:var(--gold);border-radius:50%;cursor:pointer;font-size:1.15rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .book-arrow:hover{border-color:var(--gold-l);}
@@ -481,9 +481,9 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 /* ══ INSTRUCTIONS ══ */
 .inst-ov{position:fixed;inset:0;z-index:510;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .28s;}
 .inst-ov.show{opacity:1;pointer-events:all;}
-.inst-box{background:rgba(6,18,6,.97);border:1px solid var(--border);border-radius:14px;max-width:580px;width:100%;padding:2rem 2rem;}
-.inst-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:1.5rem;margin-bottom:1rem;text-align:center;}
-.inst-body{font-family:'Rubik',sans-serif;font-size:.86rem;color:var(--cream);line-height:1.8;}
+.inst-box{background:rgba(6,18,6,.97);border:1.5px solid var(--border);border-radius:14px;max-width:700px;width:95%;padding:2.2rem 2.4rem;}
+.inst-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:1.8rem;margin-bottom:1.1rem;text-align:center;}
+.inst-body{font-family:'Special Elite',serif;font-size:1.15rem;color:var(--cream);line-height:1.95;direction:rtl;text-align:right;margin-bottom:1.4rem;}
 .inst-body li{margin-bottom:.32rem;}
 </style>
 </head>
@@ -625,7 +625,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
   <!-- right 1/3: typewriter text -->
   <div class="r-panel" id="rp-D" style="opacity:1;z-index:10;justify-content:center;display:flex;flex-direction:column;gap:.8rem;">
     <div class="r-txt" id="rp-D-typewriter"></div>
-    <div id="rp-D-btn" style="display:none;">
+    <div id="rp-D-btn" style="opacity:0;transition:opacity .6s;pointer-events:none;">
       <div class="r-txt">צוות המעבדה מבקש את עזרתכם כדי לעשות סדר בכל הראיות ולהתאים את העקבות לחיות השמורה.</div>
       <button class="btn-sm" style="margin-top:.6rem;font-size:.95rem;padding:.5rem 1.4rem;" onclick="goToMatch()">לבדיקת הראיות</button>
     </div>
@@ -1128,7 +1128,7 @@ function initD(){
   const evArea=document.getElementById('ev-area');
   const dBtn=document.getElementById('rp-D-btn');
   if(evArea)evArea.classList.remove('show');
-  if(dBtn)dBtn.style.display='none';
+  if(dBtn){dBtn.style.opacity='0';dBtn.style.pointerEvents='none';}
   const twEl=document.getElementById('rp-D-typewriter');
   if(twEl){
     let typed='';
@@ -1139,7 +1139,7 @@ function initD(){
         // All chars typed — just show evidence, no content change
         setTimeout(()=>{
           if(evArea)evArea.classList.add('show');
-          if(dBtn)dBtn.style.display='block';
+          if(dBtn){dBtn.style.opacity='1';dBtn.style.pointerEvents='auto';}
         },500);
         return;
       }

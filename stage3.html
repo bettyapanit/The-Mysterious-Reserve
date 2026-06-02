@@ -27,32 +27,103 @@ html,body{height:100%;font-family:'Rubik',sans-serif;background:#000;color:var(-
 .bridge-title{font-family:'Secular One',sans-serif;font-size:clamp(1.1rem,2.8vw,1.5rem);color:var(--gold);margin-bottom:1rem;}
 .bridge-body{font-family:'Special Elite',serif;font-size:clamp(.95rem,2.2vw,1.15rem);color:var(--cream);line-height:1.9;margin-bottom:1.4rem;}
 .bridge-body strong{color:var(--gold-l);}
+
 .btn-gold{font-family:'Rubik',sans-serif;font-weight:600;font-size:1.05rem;padding:.8rem 2rem;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--jd);border:none;border-radius:8px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.4);transition:transform .2s;}
 .btn-gold:hover{transform:translateY(-2px);}
 
-/* Testimony screen */
+/* ══ TESTIMONY SCREEN ══ */
 #s-testimony{flex-direction:column;overflow:hidden;}
-.t-header{position:relative;z-index:2;background:rgba(6,12,6,.95);border-bottom:1px solid var(--border);padding:.5rem 1rem;flex-shrink:0;display:flex;align-items:center;gap:.7rem;backdrop-filter:blur(4px);}
-.t-title{font-family:'Secular One',sans-serif;font-size:clamp(.9rem,2.5vw,1.2rem);color:var(--gold);}
-.t-prog{font-family:'Rubik',sans-serif;font-size:.8rem;color:var(--dim);margin-right:auto;}
 
-/* TWO COLUMN GRID — no scroll */
-.t-body{position:relative;z-index:2;flex:1;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;gap:.4rem;padding:.5rem .8rem 4rem;align-content:start;}
+/* Header — hierarchy 1, centered */
+.t-header{
+  position:relative;z-index:2;
+  background:rgba(5,10,5,.96);
+  border-bottom:1px solid var(--border);
+  padding:.6rem 1rem;
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;gap:.8rem;
+  backdrop-filter:blur(4px);
+}
+.t-title{
+  font-family:'Secular One',sans-serif;
+  font-size:clamp(1.1rem,3vw,1.5rem);
+  color:var(--gold);
+  text-align:center;
+}
+.t-prog{
+  position:absolute;left:1rem;
+  font-family:'Rubik',sans-serif;font-size:.8rem;color:var(--dim);
+}
 
-.t-item{background:rgba(8,18,8,.78);border:1px solid rgba(45,90,45,.32);border-radius:8px;padding:.55rem .8rem;display:flex;align-items:flex-start;gap:.55rem;transition:border-color .2s;}
-.t-item.answered-true{border-color:rgba(0,200,80,.4);background:rgba(0,50,20,.3);}
-.t-item.answered-false{border-color:rgba(200,50,50,.4);background:rgba(50,0,0,.3);}
+/* TWO COLUMN GRID — bigger cells, no scroll */
+.t-body{
+  position:relative;z-index:2;
+  flex:1;overflow:hidden;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.5rem;
+  padding:.6rem .8rem 4.5rem;
+  align-content:start;
+}
 
-.t-animal{font-family:'Secular One',sans-serif;font-size:.75rem;color:var(--gold);flex-shrink:0;min-width:50px;padding-top:.1rem;line-height:1.3;}
-.t-text{font-family:'Special Elite',serif;font-size:clamp(.78rem,1.5vw,.9rem);color:var(--cream);line-height:1.55;flex:1;}
-.t-btns{display:flex;flex-direction:column;gap:.25rem;flex-shrink:0;}
-.t-btn{font-family:'Rubik',sans-serif;font-size:.7rem;font-weight:600;padding:.22rem .55rem;border-radius:16px;cursor:pointer;border:1px solid;transition:all .18s;white-space:nowrap;}
+.t-item{
+  background:rgba(8,18,8,.82);
+  border:1px solid rgba(45,90,45,.35);
+  border-radius:9px;
+  padding:.7rem .85rem;
+  display:flex;align-items:center;gap:.7rem;
+  transition:border-color .2s;
+}
+.t-item.answered-true{border-color:rgba(0,200,80,.45);background:rgba(0,50,20,.35);}
+.t-item.answered-false{border-color:rgba(200,50,50,.45);background:rgba(50,0,0,.35);}
+
+/* Animal thumbnail — square */
+.t-thumb{
+  width:52px;height:52px;flex-shrink:0;
+  border-radius:6px;overflow:hidden;
+  border:1px solid rgba(201,168,76,.2);
+  background:rgba(0,0,0,.3);
+  display:flex;align-items:center;justify-content:center;
+}
+.t-thumb img{width:100%;height:100%;object-fit:contain;}
+.t-thumb-fb{font-family:'Secular One',sans-serif;font-size:.65rem;color:var(--gold);text-align:center;}
+
+.t-main{flex:1;min-width:0;}
+.t-animal-name{font-family:'Secular One',sans-serif;font-size:.78rem;color:var(--gold);margin-bottom:.22rem;}
+.t-text{
+  font-family:'Special Elite',serif;
+  font-size:clamp(.88rem,1.6vw,1rem);
+  color:var(--cream);
+  line-height:1.55;
+}
+
+.t-btns{display:flex;flex-direction:column;gap:.28rem;flex-shrink:0;}
+.t-btn{
+  font-family:'Rubik',sans-serif;font-size:.72rem;font-weight:600;
+  padding:.25rem .6rem;border-radius:16px;cursor:pointer;border:1px solid;
+  transition:all .18s;white-space:nowrap;
+}
 .t-btn.tbtn-t{border-color:rgba(0,200,80,.35);color:rgba(0,220,80,.65);background:transparent;}
 .t-btn.tbtn-t.sel{background:rgba(0,200,80,.22);border-color:rgba(0,220,80,.65);color:#00e050;}
 .t-btn.tbtn-f{border-color:rgba(200,50,50,.35);color:rgba(200,80,80,.65);background:transparent;}
 .t-btn.tbtn-f.sel{background:rgba(200,50,50,.22);border-color:rgba(220,80,80,.65);color:#e05050;}
 
-.t-footer{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(6,12,6,.95);border-top:1px solid var(--border);padding:.45rem .8rem;display:flex;align-items:center;gap:.6rem;backdrop-filter:blur(4px);}
+/* Footer with float buttons (map/book) + instructions + accusation button */
+.t-footer{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:rgba(5,10,5,.96);border-top:1px solid var(--border);
+  padding:.5rem .9rem;
+  display:flex;align-items:center;gap:.55rem;
+  backdrop-filter:blur(4px);
+}
+.float-btns-r{display:flex;gap:.4rem;align-items:center;margin-right:auto;}
+.ft-btn-sm{
+  font-family:'Rubik',sans-serif;font-size:.78rem;
+  padding:.32rem .85rem;
+  background:rgba(10,22,10,.88);border:1px solid var(--border);
+  color:var(--gold);border-radius:6px;cursor:pointer;transition:all .18s;
+}
+.ft-btn-sm:hover{background:rgba(30,55,30,.9);border-color:var(--gold);}
 
 /* Instructions popup */
 .inst-ov{position:fixed;inset:0;z-index:510;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .3s;}
@@ -62,28 +133,33 @@ html,body{height:100%;font-family:'Rubik',sans-serif;background:#000;color:var(-
 .inst-body{font-family:'Rubik',sans-serif;font-size:1rem;color:var(--cream);line-height:1.85;margin-bottom:1.4rem;}
 .inst-body p{margin-bottom:.55rem;}
 
-/* Alert popup (before note) */
+/* Alert popup */
 .alert-ov{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .4s;}
 .alert-ov.show{opacity:1;pointer-events:all;}
-.alert-box{background:rgba(4,14,4,.97);border:2px solid rgba(201,168,76,.5);border-radius:14px;padding:2rem 2.2rem;max-width:460px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.8);}
-.alert-icon{font-size:2.5rem;margin-bottom:.7rem;}
-.alert-title{font-family:'Secular One',sans-serif;font-size:1.4rem;color:var(--gold-l);margin-bottom:.8rem;}
-.alert-body{font-family:'Rubik',sans-serif;font-size:1rem;color:var(--cream);line-height:1.8;margin-bottom:1.4rem;}
+.alert-box{background:rgba(4,14,4,.97);border:2px solid rgba(201,168,76,.5);border-radius:14px;padding:2rem 2.2rem;max-width:440px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.8);}
+.alert-icon{font-size:2.8rem;margin-bottom:.65rem;}
+.alert-title{font-family:'Secular One',sans-serif;font-size:1.5rem;color:var(--gold-l);margin-bottom:.7rem;}
+.alert-body{font-family:'Rubik',sans-serif;font-size:1.05rem;color:var(--cream);line-height:1.8;margin-bottom:1.4rem;}
 
-/* Anonymous note popup */
-.anon-ov{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .5s;}
+/* Note popup */
+.anon-ov{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;padding:.8rem;opacity:0;pointer-events:none;transition:opacity .5s;}
 .anon-ov.show{opacity:1;pointer-events:all;}
-.anon-outer{display:flex;flex-direction:column;align-items:center;gap:1rem;max-width:640px;width:100%;}
-.anon-wrap{position:relative;width:100%;}
-/* The note with image bg */
-.anon-note{position:relative;width:100%;min-height:240px;border-radius:6px;overflow:hidden;}
-.anon-bg-backing{position:absolute;inset:0;background:#f5edd8;border-radius:6px;}
-.anon-bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:6px;mix-blend-mode:multiply;}
-.anon-content{position:relative;z-index:2;padding:1.6rem 2rem 1.4rem;}
-.anon-text{font-family:'Dancing Script',cursive;font-size:clamp(.95rem,2.1vw,1.2rem);color:#1a200e;line-height:1.7;direction:rtl;text-align:right;}
-.anon-sig{font-family:'Dancing Script',cursive;font-size:clamp(.85rem,1.8vw,1rem);color:#3a4025;text-align:left;margin-top:.7rem;font-style:italic;}
+.anon-outer{display:flex;flex-direction:column;align-items:center;gap:.8rem;max-width:600px;width:100%;}
+.anon-note{position:relative;width:100%;border-radius:7px;overflow:hidden;min-height:220px;}
+.anon-bg-backing{position:absolute;inset:0;background:#ede8d8;border-radius:7px;}
+.anon-bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:7px;mix-blend-mode:multiply;}
+.anon-content{position:relative;z-index:2;padding:1.3rem 1.7rem 1.1rem;}
+.anon-text{
+  font-family:'Caveat',cursive;
+  font-size:clamp(.95rem,1.9vw,1.15rem);
+  color:#1a1a08;line-height:1.6;direction:rtl;text-align:right;
+}
+.anon-sig{
+  font-family:'Caveat',cursive;font-size:clamp(.82rem,1.6vw,1rem);
+  color:#3a3a20;text-align:left;margin-top:.6rem;font-style:italic;
+}
 /* Fallback */
-.anon-fallback{display:none;background:rgba(240,232,210,.95);border-radius:10px;padding:1.6rem 2rem;}
+.anon-fallback{display:none;background:rgba(237,232,216,.96);border-radius:9px;padding:1.3rem 1.7rem;}
 
 /* Dev */
 .dev-btn-f{position:fixed;top:.6rem;left:.5rem;width:26px;height:26px;background:transparent;border:none;cursor:pointer;z-index:900;opacity:.08;font-size:13px;display:flex;align-items:center;justify-content:center;}
@@ -131,7 +207,7 @@ html,body{height:100%;font-family:'Rubik',sans-serif;background:#000;color:var(-
   </div>
 </div>
 
-<!-- ══ WAIT 2 (returning to reserve) ══ -->
+<!-- ══ WAIT 2 ══ -->
 <div class="screen" id="s-wait2">
   <div class="wait-text">בדרך חזרה לשמורה...<br><span style="font-size:.85em;color:var(--cream);">מיד שם.</span></div>
 </div>
@@ -139,22 +215,31 @@ html,body{height:100%;font-family:'Rubik',sans-serif;background:#000;color:var(-
 <!-- ══ TESTIMONIES ══ -->
 <div class="screen" id="s-testimony">
   <div class="t-header">
-    <div class="t-title">🗣️ עדויות תושבי השמורה</div>
+    <div class="t-title">חקירת דיירי השמורה — העדויות</div>
     <div class="t-prog" id="t-prog">0 / 13 סומנו</div>
   </div>
-  <div class="t-body" id="t-body">
-    <!-- Rendered by JS -->
-  </div>
+  <div class="t-body" id="t-body"></div>
   <div class="t-footer">
-    <button class="btn-gold" onclick="showInst()" style="font-size:.82rem;padding:.38rem 1rem;">הוראות</button>
-    <div style="flex:1;"></div>
+    <!-- Left: instructions button -->
+    <button class="ft-btn-sm" onclick="showInst()">הוראות</button>
+    <!-- Center: accusation button (hidden until all answered) -->
+    <div style="flex:1;display:flex;justify-content:center;">
+      <button class="btn-gold" id="accuse-btn" style="display:none;font-size:.95rem;padding:.55rem 1.5rem;" onclick="goAccuse()">
+        יש לנו את זה. אנחנו יודעים מי הגנבים ומוכנים להגיש כתבי אישום!
+      </button>
+    </div>
+    <!-- Right: map + book buttons -->
+    <div class="float-btns-r">
+      <button class="ft-btn-sm" onclick="openMapPopup()">מפת השמורה</button>
+      <button class="ft-btn-sm" onclick="openBookPopup()">ספר הפרופילים</button>
+    </div>
   </div>
 </div>
 
 <!-- ══ INSTRUCTIONS ══ -->
 <div class="inst-ov" id="inst-ov">
   <div class="inst-box">
-    <div class="inst-title">עדויות תושבי השמורה</div>
+    <div class="inst-title">עדויות דיירי השמורה</div>
     <div class="inst-body">
       <p>לפניכם עדויות של תושבי השמורה על אירועי הלילה שבו נגנבה המפה.</p>
       <p>קראו כל עדות בקפידה וסמנו ליד כל משפט האם לדעתכם מדובר באמת או בשקר.</p>
@@ -166,71 +251,90 @@ html,body{height:100%;font-family:'Rubik',sans-serif;background:#000;color:var(-
   </div>
 </div>
 
-<!-- ══ ALERT POPUP (surprise note) ══ -->
+<!-- ══ MAP POPUP ══ -->
+<div id="map-popup" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.88);align-items:center;justify-content:center;flex-direction:column;gap:1rem;padding:1rem;">
+  <img src="reserve_map.png" alt="מפת השמורה" style="max-width:92%;max-height:84vh;object-fit:contain;border-radius:8px;box-shadow:0 6px 40px rgba(0,0,0,.7);">
+  <button class="btn-gold" onclick="closeMapPopup()" style="font-size:.95rem;padding:.5rem 1.6rem;">סגירת המפה</button>
+</div>
+
+<!-- ══ BOOK POPUP ══ -->
+<div id="book-popup" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.9);flex-direction:column;align-items:center;justify-content:center;gap:.8rem;padding:.6rem;">
+  <div id="book-popup-container" style="flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;"></div>
+  <div style="display:flex;align-items:center;gap:1.2rem;flex-shrink:0;">
+    <button onclick="flipPopupPage(-1)" style="width:38px;height:38px;background:rgba(10,22,10,.9);border:1px solid var(--border);color:var(--gold);border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;">&#8594;</button>
+    <span id="popup-page-num" style="font-family:'Secular One',sans-serif;font-size:.9rem;color:var(--dim);">1 / 1</span>
+    <button onclick="flipPopupPage(1)" style="width:38px;height:38px;background:rgba(10,22,10,.9);border:1px solid var(--border);color:var(--gold);border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;">&#8592;</button>
+  </div>
+  <button class="btn-gold" onclick="closeBookPopup()" style="font-size:.9rem;padding:.5rem 1.6rem;">סגור</button>
+</div>
+
+<!-- ══ ALERT (surprise note) ══ -->
 <div class="alert-ov" id="alert-ov">
   <div class="alert-box">
     <div class="alert-icon">📜</div>
     <div class="alert-title">שימו לב!</div>
     <div class="alert-body">מישהו השאיר לכם פתק!</div>
-    <button class="btn-gold" onclick="openNote()" style="font-size:1rem;padding:.7rem 2rem;">לפתיחת הפתק</button>
+    <button class="btn-gold" onclick="openNote()">לפתיחת הפתק</button>
   </div>
 </div>
 
 <!-- ══ ANONYMOUS NOTE ══ -->
 <div class="anon-ov" id="anon-ov">
   <div class="anon-outer">
-    <!-- Note with image background -->
-    <div class="anon-wrap">
-      <div class="anon-note" id="anon-note">
-        <div class="anon-bg-backing"></div>
-        <img class="anon-bg-img" src="note_bg.png" alt=""
-          onerror="this.style.display='none';document.getElementById('anon-note').style.background='rgba(240,232,210,.95)';">
-        <div class="anon-content">
-          <div class="anon-text">
-            ראיתי בסביבות שתיים בלילה שלוש דמויות ליד הגדר הדרום-מערבית של השמורה.<br><br>
-            הראשונה, גוף קטן עם רגליים קצרות, הגיעה ראשונה ועמדה ליד הגדר.<br><br>
-            השנייה, גוף גדול ומסיבי, שברה חור בגדר בכוח.<br><br>
-            השלישית, עם זנב ארוך ומפוספס, קפצה דרך החור ונעלמה מעבר לגדר.<br><br>
-            השתיים הראשונות רצו בחזרה צפונה דרך החורשה.
-          </div>
-          <div class="anon-sig">עד אנונימי. מבקש לא להיחשף.</div>
+    <div class="anon-note" id="anon-note">
+      <div class="anon-bg-backing"></div>
+      <img class="anon-bg-img" src="note_bg.png" alt=""
+        onerror="this.style.display='none';document.getElementById('anon-note').style.background='rgba(237,232,216,.96)';">
+      <div class="anon-content">
+        <div class="anon-text">
+          ראיתי בסביבות שתיים בלילה שלוש דמויות ליד הגדר הדרום-מערבית של השמורה.<br>
+          הראשונה, גוף קטן עם רגליים קצרות, עמדה ראשונה ליד הגדר.<br>
+          השנייה, גוף גדול ומסיבי, שברה חור בגדר בכוח.<br>
+          השלישית, עם זנב ארוך ומפוספס, קפצה דרך החור ונעלמה מעבר לגדר.<br>
+          השתיים הראשונות רצו בחזרה צפונה דרך החורשה.
         </div>
+        <div class="anon-sig">עד אנונימי. מבקש לא להיחשף.</div>
       </div>
     </div>
-    <button class="btn-gold" onclick="closeNote()" style="font-size:.95rem;padding:.65rem 1.8rem;">קראנו, אפשר לסגור את הפתק</button>
+    <button class="btn-gold" onclick="closeNote()" style="font-size:.92rem;padding:.62rem 1.7rem;">קראנו, אפשר לסגור את הפתק</button>
   </div>
 </div>
 
 <script>
 const DEV_CODE = '7763';
 
-// ── TESTIMONIES (Galit's exact wording, alphabetical, raccoon last) ──
 const TESTIMONIES = [
-  {id:'lion',    name:'אריה',    text:'ישנתי כל הלילה. קצת לפני חצות התעוררתי ושמעתי רעשי חפירה מכיוון אגמון הסלע, וראיתי את הגורילה ישנה.'},
-  {id:'gorilla', name:'גורילה',  text:'ישנתי רוב הלילה. התעוררתי פעם אחת באמצע הלילה כי שמעתי רעשים מכיוון עץ האלון העתיק.'},
-  {id:'badger',  name:'גירית',   text:'ישנתי כל הלילה, לא שמעתי כלום. לא יצאתי מהמחילה שלי.'},
-  {id:'bear',    name:'דב',      text:'ישנתי כל הלילה. לא שמעתי כלום. לא יצאתי מהמאורה.'},
-  {id:'zebra',   name:'זברה',    text:'לא ישנתי טוב. התעוררתי כמה פעמים. פעם אחת ראיתי שתי דמויות חוזרות לאזור השינה. אח"כ ראיתי את הפיל יוצא.'},
-  {id:'boar',    name:'חזיר בר', text:'ראיתי את האריה יוצא לפני חצות. הגירית ישנה לידי כל הלילה.'},
-  {id:'tiger',   name:'טיגריס',  text:'ישנתי כל הלילה. פעם אחת התעוררתי כי שמעתי רעש של משהו נשבר מכיוון החורשה הדרומית.'},
-  {id:'eagle',   name:'נץ',      text:'עשיתי סיור לילי וראיתי מלמעלה שלוש דמויות רצות דרומה דרך החורשה. ראיתי גם את השימפנזה, הטיגריס, הפיל, הזברה, השקנאי והגורילה ישנים.'},
-  {id:'elephant',name:'פיל',    text:'ישנתי כל הלילה. קמתי לפנות בוקר ויצאתי לאגמון הסלע, כמו בכל יום. ראיתי בור שמישהו חפר שם.'},
-  {id:'pelican', name:'שקנאי',   text:'אני ישן ליד בריכת הערבות. התעוררתי פעמיים. בשתי הפעמים שמעתי קולות חפירה.'},
-  {id:'chimp',   name:'שימפנזה', text:'ישנתי כל הלילה. קמתי לפנות בוקר ויצאתי לאגמון הסלע, כמו בכל יום. ראיתי בור שמישהו חפר שם.'},
-  {id:'sloth',   name:'עצלן',    text:'ישנתי כל הלילה, ליד האריה. אני לא מתעורר מכלום, לא שומע כלום.'},
-  {id:'raccoon', name:'רקון',    text:'אני בכלל לא הייתי כאן. אני גר בשמורה הסמוכה מדרום. אין לי קשר לפשע הזה.'},
+  {id:'lion',    name:'אריה',    img:'animals/Lion.png',         text:'ישנתי כל הלילה. קצת לפני חצות התעוררתי ושמעתי רעשי חפירה מכיוון אגמון הסלע, וראיתי את הגורילה ישנה.'},
+  {id:'gorilla', name:'גורילה',  img:'animals/Gorilla.png',      text:'ישנתי רוב הלילה. התעוררתי פעם אחת באמצע הלילה כי שמעתי רעשים מכיוון עץ האלון העתיק.'},
+  {id:'badger',  name:'גירית',   img:'animals/Badger.png',       text:'ישנתי כל הלילה, לא שמעתי כלום. לא יצאתי מהמחילה שלי.'},
+  {id:'bear',    name:'דב',      img:'animals/Bear.png',         text:'ישנתי כל הלילה. לא שמעתי כלום. לא יצאתי מהמאורה.'},
+  {id:'zebra',   name:'זברה',    img:'animals/Zebra.png',        text:'לא ישנתי טוב. התעוררתי כמה פעמים. פעם אחת ראיתי שתי דמויות חוזרות לאזור השינה. אח"כ ראיתי את הפיל יוצא.'},
+  {id:'boar',    name:'חזיר בר', img:'animals/Wild Boar.png',   text:'ראיתי את האריה יוצא לפני חצות. הגירית ישנה לידי כל הלילה.'},
+  {id:'tiger',   name:'טיגריס',  img:'animals/Tiger.png',        text:'ישנתי כל הלילה. פעם אחת התעוררתי כי שמעתי רעש של משהו נשבר מכיוון החורשה הדרומית.'},
+  {id:'eagle',   name:'נץ',      img:'animals/Hawk.png',         text:'עשיתי סיור לילי וראיתי מלמעלה שלוש דמויות רצות דרומה דרך החורשה. ראיתי גם את השימפנזה, הטיגריס, הפיל, הזברה, השקנאי והגורילה ישנים.'},
+  {id:'elephant',name:'פיל',    img:'animals/Elephant.png',     text:'ישנתי כל הלילה. קמתי לפנות בוקר ויצאתי לאגמון הסלע, כמו בכל יום. ראיתי בור שמישהו חפר שם.'},
+  {id:'pelican', name:'שקנאי',   img:'animals/Pelican.png',      text:'אני ישן ליד בריכת הערבות. התעוררתי פעמיים. בשתי הפעמים שמעתי קולות חפירה.'},
+  {id:'chimp',   name:'שימפנזה', img:'animals/Chimpanzee.png',  text:'ישנתי כל הלילה. קמתי לפנות בוקר ויצאתי לאגמון הסלע, כמו בכל יום. ראיתי בור שמישהו חפר שם.'},
+  {id:'sloth',   name:'עצלן',    img:'animals/Sloth.png',        text:'ישנתי כל הלילה, ליד האריה. אני לא מתעורר מכלום, לא שומע כלום.'},
+  {id:'raccoon', name:'רקון',    img:'animals/Raccoon.png',      text:'אני בכלל לא הייתי כאן. אני גר בשמורה הסמוכה מדרום. אין לי קשר לפשע הזה.'},
 ];
+
+// Book pages (same data as stage1 for popup)
+const BOOK_PAGES = [
+  {img:'book/cover.jpg', lbl:'ספר הפרופילים'},
+  {img:'book/page1.jpg', lbl:'דיירי השמורה'},
+  {img:'book/page2.jpg', lbl:'דיירי השמורה'},
+];
+let popupPage = 0;
 
 let answers = {};
 let alertShown = false;
 
-// Navigation
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-// WAIT → BRIDGE after 3.5s
 setTimeout(() => showScreen('s-bridge'), 3500);
 
 window.goBridge = function() {
@@ -242,11 +346,9 @@ window.goBridge = function() {
   }, 3000);
 };
 
-// Instructions
 window.showInst = () => document.getElementById('inst-ov').classList.add('show');
 window.closeInst = () => document.getElementById('inst-ov').classList.remove('show');
 
-// Render 2-column grid
 function renderTestimonies() {
   const body = document.getElementById('t-body');
   body.innerHTML = '';
@@ -254,20 +356,43 @@ function renderTestimonies() {
     const div = document.createElement('div');
     div.className = 't-item';
     div.id = 'ti-' + t.id;
-    div.innerHTML = `
-      <div class="t-animal">${t.name}</div>
-      <div class="t-text">${t.text}</div>
-      <div class="t-btns">
-        <button class="t-btn tbtn-t" id="tb-t-${t.id}" onclick="setAnswer('${t.id}','true')">✓ אמת</button>
-        <button class="t-btn tbtn-f" id="tb-f-${t.id}" onclick="setAnswer('${t.id}','false')">✗ שקר</button>
-      </div>`;
+
+    // Animal thumbnail
+    const thumb = document.createElement('div');
+    thumb.className = 't-thumb';
+    const img = document.createElement('img');
+    img.src = t.img;
+    img.alt = t.name;
+    img.onerror = function(){
+      this.style.display='none';
+      const fb = document.createElement('div');
+      fb.className = 't-thumb-fb';
+      fb.textContent = t.name;
+      thumb.appendChild(fb);
+    };
+    thumb.appendChild(img);
+
+    // Main content
+    const main = document.createElement('div');
+    main.className = 't-main';
+    main.innerHTML = `<div class="t-animal-name">${t.name}</div><div class="t-text">${t.text}</div>`;
+
+    // Buttons
+    const btns = document.createElement('div');
+    btns.className = 't-btns';
+    btns.innerHTML = `
+      <button class="t-btn tbtn-t" id="tb-t-${t.id}" onclick="setAnswer('${t.id}','true')">✓ אמת</button>
+      <button class="t-btn tbtn-f" id="tb-f-${t.id}" onclick="setAnswer('${t.id}','false')">✗ שקר</button>`;
+
+    div.appendChild(thumb);
+    div.appendChild(main);
+    div.appendChild(btns);
     body.appendChild(div);
   });
   updateProgress();
 }
 
 window.setAnswer = function(id, val) {
-  // Toggle: click same = remove
   if (answers[id] === val) delete answers[id];
   else answers[id] = val;
   updateUI(id);
@@ -289,6 +414,9 @@ function updateUI(id) {
 function updateProgress() {
   const n = Object.keys(answers).length;
   document.getElementById('t-prog').textContent = n + ' / 13 סומנו';
+  // Show accusation button once all answered (even after note closed)
+  const ab = document.getElementById('accuse-btn');
+  if (ab && n >= 13) ab.style.display = 'block';
 }
 
 function checkAllAnswered() {
@@ -298,7 +426,6 @@ function checkAllAnswered() {
   }
 }
 
-// Alert popup → then note
 function showAlert() {
   document.getElementById('alert-ov').classList.add('show');
 }
@@ -309,8 +436,48 @@ window.openNote = function() {
 };
 
 window.closeNote = function() {
+  // Close note → return to testimony screen (accuse btn now visible)
   document.getElementById('anon-ov').classList.remove('show');
 };
+
+window.goAccuse = function() {
+  window.location.href = 'stage4.html';
+};
+
+// Map + Book popups
+window.openMapPopup = function() {
+  const mp = document.getElementById('map-popup');
+  mp.style.display = 'flex';
+};
+window.closeMapPopup = function() {
+  document.getElementById('map-popup').style.display = 'none';
+};
+window.openBookPopup = function() {
+  popupPage = 0;
+  buildBookPopup();
+  document.getElementById('book-popup').style.display = 'flex';
+};
+window.closeBookPopup = function() {
+  document.getElementById('book-popup').style.display = 'none';
+};
+window.flipPopupPage = function(d) {
+  popupPage = Math.max(0, Math.min(BOOK_PAGES.length - 1, popupPage + d));
+  buildBookPopup();
+};
+function buildBookPopup() {
+  const cont = document.getElementById('book-popup-container');
+  const p = BOOK_PAGES[popupPage];
+  cont.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = p.img; img.alt = p.lbl;
+  img.style.cssText = 'max-height:100%;max-width:100%;object-fit:contain;border-radius:8px;box-shadow:0 6px 36px rgba(0,0,0,.7);';
+  img.onerror = function() {
+    this.style.display = 'none';
+    cont.innerHTML = `<div style="color:var(--gold);font-family:'Secular One',sans-serif;font-size:1rem;text-align:center;">${p.lbl}</div>`;
+  };
+  cont.appendChild(img);
+  document.getElementById('popup-page-num').textContent = (popupPage + 1) + ' / ' + BOOK_PAGES.length;
+}
 
 // Dev
 window.openDev = function() {
