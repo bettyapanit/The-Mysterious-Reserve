@@ -304,21 +304,21 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 }
 
 /* ══ STAGE C — Book ══ */
-#stg-C{display:flex;flex-direction:column;align-items:center;padding:0;}
+#stg-C{display:flex;flex-direction:column;align-items:center;padding:0;overflow:hidden;}
 #stg-C .bg-station{position:absolute;inset:0;z-index:0;opacity:.35;}
-.book-area{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;padding:.2rem .5rem;}
-.book-container{flex:1;min-height:0;min-width:0;position:relative;width:100%;display:flex;align-items:center;justify-content:center;}
+.book-area{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:0;padding:0;}
+.book-container{flex:1;min-height:0;min-width:0;position:relative;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .book-page{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s;}
 .book-page.show{opacity:1;pointer-events:all;}
-.book-page img{max-height:100%;max-width:100%;object-fit:contain;border-radius:6px;box-shadow:0 6px 36px rgba(0,0,0,.7);}
-.book-nav{display:flex;align-items:center;gap:1.2rem;flex-shrink:0;}
+.book-page img{height:100%;width:auto;max-width:100%;object-fit:contain;border-radius:6px;box-shadow:0 6px 36px rgba(0,0,0,.7);}
+.book-nav{display:flex;align-items:center;gap:1rem;flex-shrink:0;padding:.2rem 0;}
 .book-arrow{width:38px;height:38px;background:rgba(10,21,10,.85);border:1px solid var(--border);color:var(--gold);border-radius:50%;cursor:pointer;font-size:1.15rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .book-arrow:hover{border-color:var(--gold-l);}
 .book-arrow:disabled{opacity:.22;pointer-events:none;}
 .book-page-num{font-family:'Special Elite',serif;font-size:.85rem;color:var(--dim);}
 .book-fallback{color:var(--gold);font-family:'Secular One',sans-serif;font-size:1.1rem;padding:1.5rem;text-align:center;}
 .book-hint{font-family:'Rubik',sans-serif;font-size:.78rem;color:var(--dim);text-align:center;}
-.book-footer-slot{height:2.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.book-footer-slot{height:2rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
 /* ══ STAGE D — Evidence ══ */
 .ev-area{
@@ -481,9 +481,9 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--cream);font-fa
 /* ══ INSTRUCTIONS ══ */
 .inst-ov{position:fixed;inset:0;z-index:510;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .28s;}
 .inst-ov.show{opacity:1;pointer-events:all;}
-.inst-box{background:rgba(6,18,6,.97);border:1.5px solid var(--border);border-radius:14px;max-width:700px;width:95%;padding:2.2rem 2.4rem;}
-.inst-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:1.8rem;margin-bottom:1.1rem;text-align:center;}
-.inst-body{font-family:'Special Elite',serif;font-size:1.15rem;color:var(--cream);line-height:1.95;direction:rtl;text-align:right;margin-bottom:1.4rem;}
+.inst-box{background:rgba(6,18,6,.97);border:1.5px solid var(--border);border-radius:14px;max-width:700px;width:95%;padding:2.2rem 2.5rem;}
+.inst-title{font-family:'Secular One',sans-serif;color:var(--gold);font-size:1.8rem;margin-bottom:1rem;text-align:center;}
+.inst-body{font-family:'Special Elite',serif;font-size:1.2rem;color:var(--cream);line-height:2;direction:rtl;text-align:right;margin-bottom:1.4rem;}
 .inst-body li{margin-bottom:.32rem;}
 </style>
 </head>
@@ -1127,24 +1127,50 @@ function initD(){
   if(evBuilt)return;evBuilt=true;
   const evArea=document.getElementById('ev-area');
   const dBtn=document.getElementById('rp-D-btn');
-  if(evArea)evArea.classList.remove('show');
+  // Fully hide ev-area and button until typing completes
+  if(evArea){evArea.style.opacity='0';evArea.style.pointerEvents='none';}
   if(dBtn){dBtn.style.opacity='0';dBtn.style.pointerEvents='none';}
   const twEl=document.getElementById('rp-D-typewriter');
   if(twEl){
-    let typed='';
-    let idx=0;
+    let typed='';let idx=0;
     twEl.textContent='';
     function twNext(){
       if(idx>=D_TEXT.length){
-        // All chars typed — just show evidence, no content change
+        // Typing done: build evidence grid, THEN fade everything in
+        const g=document.getElementById('ev-grid');
+        if(g&&!g.children.length){
+          EVIDENCE.forEach((e)=>{
+            const d=document.createElement('div');
+            d.className='ev-card';
+            const img=document.createElement('img');
+            img.src=e.f;img.alt=e.n;
+            img.onerror=function(){
+              this.style.display='none';
+              const ph=document.createElement('div');
+              ph.className='ev-placeholder';
+              ph.style.cssText='display:flex;width:100%;aspect-ratio:1;align-items:center;justify-content:center;background:rgba(0,0,0,.3);border-radius:3px;font-size:1rem;color:var(--dim);';
+              ph.textContent=e.n;
+              d.insertBefore(ph,d.firstChild);
+            };
+            const numLbl=document.createElement('div');
+            numLbl.className='ev-lbl-sm';
+            numLbl.style.cssText='color:var(--gold);font-weight:700;font-size:.82rem;';
+            numLbl.textContent=e.n;
+            const descLbl=document.createElement('div');
+            descLbl.className='ev-lbl-sm';
+            descLbl.textContent=e.l||'';
+            d.appendChild(img);d.appendChild(numLbl);if(e.l)d.appendChild(descLbl);
+            g.appendChild(d);
+          });
+        }
+        // Fade in after short pause
         setTimeout(()=>{
-          if(evArea)evArea.classList.add('show');
-          if(dBtn){dBtn.style.opacity='1';dBtn.style.pointerEvents='auto';}
-        },500);
+          if(evArea){evArea.style.opacity='1';evArea.style.transition='opacity .7s';evArea.style.pointerEvents='auto';}
+          if(dBtn){dBtn.style.opacity='1';dBtn.style.transition='opacity .5s';dBtn.style.pointerEvents='auto';}
+        },400);
         return;
       }
-      const ch=D_TEXT[idx];
-      idx++;
+      const ch=D_TEXT[idx];idx++;
       typed+=ch;
       twEl.textContent=typed;
       const delay=ch==='.'?420:ch===','?160:ch===' '?48:33+Math.random()*16;
@@ -1152,31 +1178,6 @@ function initD(){
     }
     setTimeout(twNext,600);
   }
-  const g=document.getElementById('ev-grid');
-  EVIDENCE.forEach((e,i)=>{
-    const d=document.createElement('div');
-    d.className='ev-card';
-    const img=document.createElement('img');
-    img.src=e.f;img.alt=e.n;
-    img.onerror=function(){
-      this.style.display='none';
-      const ph=document.createElement('div');
-      ph.className='ev-placeholder';
-      ph.style.cssText='display:flex;width:100%;aspect-ratio:1;align-items:center;justify-content:center;background:rgba(0,0,0,.3);border-radius:3px;font-size:1rem;color:var(--dim);';
-      ph.textContent=e.n;
-      d.insertBefore(ph,d.firstChild);
-    };
-    const numLbl=document.createElement('div');
-    numLbl.className='ev-lbl-sm';
-    numLbl.style.cssText='color:var(--gold);font-weight:600;font-size:.65rem;';
-    numLbl.textContent=e.n;
-    const descLbl=document.createElement('div');
-    descLbl.className='ev-lbl-sm';
-    descLbl.textContent=e.l||'';
-    d.appendChild(img);d.appendChild(numLbl);if(e.l)d.appendChild(descLbl);
-    g.appendChild(d);
-  });
-  // Evidence shown by typewriter callback above
 }
 window.goToMatch=function(){showStage('E');};
 
@@ -1346,7 +1347,7 @@ const INST={
   B:{t:'פיצוח הקוד',b:'<ul><li>נתחו את 5 ניסיונות הפקח.</li><li>הזינו קוד תלת-ספרתי. ה-0 הוא הספרה השמאלית הראשונה.</li></ul>'},
   C:{t:'ספר הפרופילים',b:'<ul><li>דפדפו בין עמודי הספר עם החצים.</li><li>בעמוד האחרון לחצו להמשך.</li></ul>'},
   D:{t:'ראיות מהזירה',b:'<ul><li>13 עקבות ועוד 5 ראיות נוספות.</li><li>לאחר עיון לחצו "לבדיקת הראיות".</li></ul>'},
-  E:{t:'התאמת עקבות',b:'<ul><li>לחצו על עקבה מימין, אחר כך על החיה המתאימה משמאל.</li><li>עקבה 13 (?) אינה שייכת לאף חיה בשמורה.</li><li>אחרי 12 התאמות שלחו לאישור המעבדה.</li></ul>'},
+  E:{t:'התאמת עקבות לחיות',b:'<p style="margin-bottom:.7rem;">לפניכם תמונות של כל העקבות שנמצאו בזירה, וכן תמונות של 12 דיירי השמורה.</p><p style="margin-bottom:.7rem;">עליכם להתאים בין העקבות לחיות. גררו כל עקבה לחלון שלצד החיה אליה היא שייכת.</p><p style="margin-bottom:.7rem;">כדי להתחרט ולהחזיר עקבה כלשהי חזרה למאגר בצד ימין יש ללחוץ עליה.</p><p>כשאתם בטוחים שסיימתם — שלחו את ההתאמות לבדיקת המעבדה בכפתור מצד שמאל למטה.</p>'},
 };
 window.showInst=function(){const d=INST[curStg]||{t:'',b:''};document.getElementById('inst-title').textContent=d.t;document.getElementById('inst-body').innerHTML=d.b;document.getElementById('inst-ov').classList.add('show');};
 window.closeInst=()=>document.getElementById('inst-ov').classList.remove('show');
